@@ -1,0 +1,14 @@
+search.cpan.org on MetaCPAN
+
+This is an attempt to refcreate the look-and-feel of http://search.cpan.org/ using the
+MetaCPAN API as a back-end. https://github.com/CPAN-API/cpan-api/
+
+the same back-end that powers the fancier https://metacpan.org/
+
+There are a number of objectives:
+
+1) Some people complain that MetaCPAN.org is too fancy for them and they prefer the look-and-feel of search.cpan.org
+2) It will be able to provide a feedback to the MetaCPAN authors for the features that might be still missing in MetaCPAN
+3) This can be an interesting project to follow and explain with http://perlmaven.com/pro articles
+
+
