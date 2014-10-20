@@ -1,4 +1,4 @@
-package SCO;
+package MetaCPAN::SCO;
 use strict;
 use warnings;
 
