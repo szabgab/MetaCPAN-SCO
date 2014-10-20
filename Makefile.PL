@@ -7,7 +7,10 @@ my %conf = (
 	AUTHOR       => 'Gabor Szabo <szabgab@cpan.org>',
 	VERSION_FROM => 'lib/MetaCPAN/SCO.pm',
 	PREREQ_PM    => {
+		'Cwd'              => '0',
+		'File::Basename'   => '0',
 		'Plack::Request'   => '0',
+		'Template'         => '0',
 	},
 );
 
