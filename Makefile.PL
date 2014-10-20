@@ -3,9 +3,9 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 my %conf = (
-	NAME         => 'SCO',
+	NAME         => 'MetaCPAN::SCO',
 	AUTHOR       => 'Gabor Szabo <szabgab@cpan.org>',
-	VERSION_FROM => 'lib/SCO.pm',
+	VERSION_FROM => 'lib/MetaCPAN/SCO.pm',
 	PREREQ_PM    => {
 	},
 );
@@ -21,12 +21,12 @@ if (eval { ExtUtils::MakeMaker->VERSION(6.46) }) {
 		resources => {
 			repository => {
 				type       => 'git',
-				url        => 'http://github.com/szabgab/sco.git',
-				web        => 'http://github.com/szabgab/sco',
+				url        => 'http://github.com/szabgab/MetaCPAN-SCO.git',
+				web        => 'http://github.com/szabgab/MetaCPAN-SCO',
 				license    => 'http://dev.perl.org/licenses/',
 			},
 			bugtracker => {
-				web        => 'http://github.com/szabgab/sco/issues',
+				web        => 'http://github.com/szabgab/MetaCPAN-SCO/issues',
 			},
 			homepage   => 'http://perlmaven.com/',
 		},
