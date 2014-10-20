@@ -7,6 +7,7 @@ my %conf = (
 	AUTHOR       => 'Gabor Szabo <szabgab@cpan.org>',
 	VERSION_FROM => 'lib/MetaCPAN/SCO.pm',
 	PREREQ_PM    => {
+		'Plack::Request'   => '0',
 	},
 );
 
