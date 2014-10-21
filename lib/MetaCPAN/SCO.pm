@@ -59,6 +59,33 @@ sub run {
 			return template('author', { author => $author, distributions => $distros });
 		}
 
+		if ($path_info =~ m{^/dist/([^/]+)/$}) {
+			my $dist_name = $1;
+		}
+
+		if ($path_info =~ m{^/~([a-z]+)/([^/]+)/$}) {
+			my $pauseid = uc $1;
+			my $dist_name_ver = $2;
+			
+			# curl 'http://api.metacpan.org/v0/release/AADLER/Games-LogicPuzzle-0.20'
+			# curl 'http://api.metacpan.org/v0/release/Games-LogicPuzzle'
+			# from https://github.com/CPAN-API/cpan-api/wiki/API-docs
+			my $dist;
+			my $release;
+			eval {
+				my $json = get 'http://api.metacpan.org/v0/release/' . $pauseid . '/' . $dist_name_ver;
+				$dist = from_json $json;
+				1;
+			} or do {
+				my $err = $@  // 'Unknown error';
+				warn $err if $err;
+			};
+			$dist->{this_name} = $dist->{name};
+			my $author = get_author_info($pauseid);
+
+			return template('dist', { dist => $dist, author => $author });
+		}
+
 
 		my $reply = template('404');
 		return [ '404', [ 'Content-Type' => 'text/html' ], $reply->[2], ];
