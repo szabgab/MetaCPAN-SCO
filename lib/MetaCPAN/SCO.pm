@@ -86,6 +86,10 @@ sub run {
 			return template('dist', { dist => $dist, author => $author });
 		}
 
+		if ($path_info eq '/search') {
+			return search($request);
+		}
+
 
 		my $reply = template('404');
 		return [ '404', [ 'Content-Type' => 'text/html' ], $reply->[2], ];
@@ -97,6 +101,28 @@ sub run {
 			root => "$root/static/";
 		$app;
 	};
+}
+
+sub search {
+	my ($request) = @_;
+	my $query = $request->param('query');
+	my $mode = $request->param('mode');
+	
+	if ($mode eq 'author') {
+		my @authors = [];
+		eval {
+			my $json = get "http://api.metacpan.org/v0/author/_search?q=author.name:*$query*&size=5000&fields=name";
+			my $data = from_json $json;
+			@authors =
+				sort { $a->{id} cmp $b->{id} }
+				map { { id => $_->{_id}, name => $_->{fields}{name} } } @{ $data->{hits}{hits} };
+			1;
+		} or do {
+			my $err = $@  // 'Unknown error';
+			warn $err if $err;
+		};
+		return template('authors', {letters => ['A' .. 'Z'], authors => \@authors, selected_letter => 'X'});
+	}
 }
 
 sub get_distros_by_pauseid {
