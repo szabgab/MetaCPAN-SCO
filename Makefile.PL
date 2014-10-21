@@ -11,6 +11,9 @@ my %conf = (
 		'File::Basename'   => '0',
 		'Plack::Request'   => '0',
 		'Template'         => '0',
+        'LWP::Simple'      => '0',
+        'JSON'             => '0',
+        'Path::Tiny'       => '0',
 	},
 );
 
