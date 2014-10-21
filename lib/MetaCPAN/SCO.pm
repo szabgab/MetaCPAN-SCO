@@ -46,7 +46,7 @@ sub run {
 				while (my @vals = $it->()) {
 					push @table, \@vals;
 				}
-				return template('author', {letters => ['A' .. 'Z'], authors => \@table});
+				return template('author', {letters => ['A' .. 'Z'], authors => \@table, selected_letter => uc $lead});
 			}
 		}
 

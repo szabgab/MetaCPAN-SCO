@@ -5,7 +5,13 @@
     <% FOREACH cols = table.cols %>
        <tr>
        <% FOREACH item = cols %>
-          <td><a href="?<% item %>"> <% item %> </a></td>
+          <td>
+            <% IF item == selected_letter %>
+                <% item %>
+            <% ELSE %>
+                <a href="?<% item %>"> <% item %> </a>
+            <% END %>
+          </td>
        <% END %>
        </tr>
     <% END %>
