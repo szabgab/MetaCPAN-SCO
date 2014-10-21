@@ -36,7 +36,7 @@ sub run {
 		}
 		if ($request->path_info =~ m{^/author/?$}) {
 			my $query_string = $request->query_string;
-			return template('author', { letters => ['A' .. 'Z'] }) if not $query_string;
+			return template('author', { letters => ['A' .. 'Z'], authors => [] }) if not $query_string;
 			my $lead = substr $query_string, 0, 1;
 			my $authors = authors_starting_by(uc $lead);
 			if (@$authors) {
@@ -90,6 +90,11 @@ sub template {
 		if ref $vars ne 'HASH';
 
 	my $root = root();
+
+	my $ga_file = "$root/config/google_analytics.txt";
+	if ( -e $ga_file ) {
+		$vars->{google_analytics} = path($ga_file)->slurp_utf8  // '';
+	}
 
 	eval {
 		$vars->{totals} = from_json path("$root/totals.json")->slurp_utf8;
