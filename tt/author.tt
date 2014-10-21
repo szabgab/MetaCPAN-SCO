@@ -34,6 +34,27 @@ style="float:right"
   </table>
 </div>
 
-
+<% USE date %>
+<div class=box>
+  <h2 class=t2>Releases</h2>
+  <table width="100%">
+   <tr>
+    <th colspan=3><a href="?D=D">Distribution
+     <img src="http://st.pimg.net/tucs/img/sort_descending.gif" border=0 alt="">
+      </a></th>
+    <th><a href="?R=D">Released
+      </a></th>
+   </tr>
+   <% FOREACH d IN distributions %>
+     <tr class="<% IF loop.index % 2 %>s<% ELSE %>r<% END %>">
+       <td><a href="<% d.name %>/"><% d.name %></a></td>
+       <td><% d.abstract %></td>
+       <td><small>[<a href="<% d.download_url %>">Download</a>]&nbsp;[<a
+          href="/src/AADLER/Games-LogicPuzzle-0.20/">Browse</a>]</small></td>
+       <td nowrap><% date.format(d.date, '%d  %b %Y') %></td>
+     </tr>
+   <% END %>
+  </table>
+ </div>
 
 

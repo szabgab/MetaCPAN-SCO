@@ -10,6 +10,7 @@ use JSON qw(from_json);
 use LWP::Simple qw(get);
 use Path::Tiny qw(path);
 use Plack::Builder;
+use Plack::Response;
 use Plack::Request;
 use Template;
 
@@ -44,11 +45,18 @@ sub run {
 				return template('authors', {letters => ['A' .. 'Z'], authors => $authors, selected_letter => uc $lead});
 			}
 		}
-		if ($path_info =~ m{^/~([a-z]+)/?$}) {
+
+		if ($path_info =~ m{^/~([a-z]+)$}) {
+			my $res = Plack::Response->new();
+			$res->redirect("$path_info/", 301);
+			return $res->finalize;
+		}
+		if ($path_info =~ m{^/~([a-z]+)/$}) {
 			my $pauseid = uc $1;
 			my $author = get_author_info($pauseid);
 			$author->{cpantester} = substr($pauseid, 0, 1) . '/' . $pauseid;
-			return template('author', { author => $author });
+			my $distros = get_distros_by_pauseid($pauseid);
+			return template('author', { author => $author, distributions => $distros });
 		}
 
 
@@ -62,6 +70,33 @@ sub run {
 			root => "$root/static/";
 		$app;
 	};
+}
+
+sub get_distros_by_pauseid {
+	my ($pause_id) = @_;
+	# curl 'http://api.metacpan.org/v0/release/_search?q=author:SZABGAB&size=500'
+	# TODO the status:latest filter should be on the query not in the grep
+
+	my @data;
+	eval {
+		my $json = get 'http://api.metacpan.org/v0/release/_search?q=author:' . $pause_id . '&size=500';
+		my $raw = from_json $json;
+		@data =
+			sort { $a->{name} cmp $b->{name} }
+			map { {
+			name         => $_->{_source}{name},
+			abstract     => $_->{_source}{abstract},
+			date         => $_->{_source}{date},
+			download_url => $_->{_source}{download_url},
+			} }
+			grep { $_->{_source}{status} eq 'latest' }
+			@{ $raw->{hits}{hits} };
+		1;
+	} or do {
+		my $err = $@  // 'Unknown error';
+		warn $err if $err;
+	};
+	return \@data;
 }
 
 sub get_author_info {
