@@ -4,6 +4,7 @@ use warnings;
 
 use Cwd qw(abs_path);
 use File::Basename qw(dirname);
+use Plack::Builder;
 use Plack::Request;
 use Template;
 
@@ -16,6 +17,8 @@ SCO - search.cpan.org clone
 =cut
 
 sub run {
+	my $root = root();
+
 	my $app = sub {
 		my $env = shift;
 
@@ -26,12 +29,19 @@ sub run {
 
 		return [ '404', [ 'Content-Type' => 'text/html' ], ['404 Not Found'], ];
 	};
+
+	builder {
+		enable 'Plack::Middleware::Static',
+			path => qr{^/(favicon.ico|robots.txt)},
+			root => "$root/static/";
+		$app;
+	};
 }
 
 sub template {
 	my ( $file ) = @_;
 
-	my $root = dirname(dirname(dirname( abs_path(__FILE__) )));
+	my $root = root();
 
 	my $tt = Template->new(
 		INCLUDE_PATH => "$root/tt",
@@ -49,6 +59,9 @@ sub template {
 	return [ '200', [ 'Content-Type' => 'text/html' ], [$out], ];
 }
 
+sub root {
+	return dirname(dirname(dirname( abs_path(__FILE__) )));
+}
 
 1;
 
