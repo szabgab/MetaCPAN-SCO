@@ -7,7 +7,6 @@ use Cwd qw(abs_path);
 use Data::Dumper qw(Dumper);
 use File::Basename qw(dirname);
 use JSON qw(from_json);
-use List::MoreUtils qw(natatime);
 use LWP::Simple qw(get);
 use Path::Tiny qw(path);
 use Plack::Builder;
@@ -41,12 +40,7 @@ sub run {
 			my $lead = substr $query_string, 0, 1;
 			my $authors = authors_starting_by(uc $lead);
 			if (@$authors) {
-				my $it = natatime 4, @$authors;
-				my @table;
-				while (my @vals = $it->()) {
-					push @table, \@vals;
-				}
-				return template('author', {letters => ['A' .. 'Z'], authors => \@table, selected_letter => uc $lead});
+				return template('author', {letters => ['A' .. 'Z'], authors => $authors, selected_letter => uc $lead});
 			}
 		}
 
