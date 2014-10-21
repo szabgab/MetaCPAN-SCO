@@ -44,6 +44,13 @@ sub run {
 				return template('authors', {letters => ['A' .. 'Z'], authors => $authors, selected_letter => uc $lead});
 			}
 		}
+		if ($path_info =~ m{^/~([a-z]+)/?$}) {
+			my $pauseid = uc $1;
+			my $author = get_author_info($pauseid);
+			$author->{cpantester} = substr($pauseid, 0, 1) . '/' . $pauseid;
+			return template('author', { author => $author });
+		}
+
 
 		my $reply = template('404');
 		return [ '404', [ 'Content-Type' => 'text/html' ], $reply->[2], ];
@@ -55,6 +62,21 @@ sub run {
 			root => "$root/static/";
 		$app;
 	};
+}
+
+sub get_author_info {
+	my ($pause_id) = @_;
+	my $data;
+	eval {
+		my $json = get 'http://api.metacpan.org/v0/author/_search?q=author._id:' . $pause_id . '&size=1';
+		my $raw = from_json $json;
+		$data = $raw->{hits}{hits}[0]{_source};
+		1;
+	} or do {
+		my $err = $@  // 'Unknown error';
+		warn $err if $err;
+	};
+	return $data
 }
 
 sub authors_starting_by {

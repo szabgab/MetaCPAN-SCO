@@ -1,0 +1,33 @@
+<div class=box>
+  <div class=t1><% author.name %></div>
+<a href="http://hexten.net/cpan-faces/"><img src="" width=80 height=80 
+style="float:right"
+/></a>
+
+  <table style="min-height: 80px">
+  <tr>
+   <td class=label>CPAN Directory</td>
+   <td class=cell><a href="/CPAN/authors/<% author.dir %>"><% author.pauseid %></a>
+<small>[&nbsp;<a href="http://backpan.perl.org/authors/<% author.dir %>/">Archive</a>&nbsp;]</small>
+</td>
+  </tr>
+  <tr>
+   <td class=label>Email</td>
+   <td class=cell><a href="mailto:<% author.email.0 %>"><% author.email.0 %></a></td>
+  </tr>
+  <tr>
+   <td class=label>CPAN Testers</td>
+   <td class=cell>[<a href="http://www.cpantesters.org/author/<% author.cpantester %>.html">Module test results</a>]
+[<a href="http://matrix.cpantesters.org/?author=<% author.pauseid FILTER lower %>aadler">CPAN Testers Author Matrix</a>]</td>
+  </tr>
+  <tr>
+   <td class=label>&nbsp;</td>
+   <td class=cell>&nbsp;</td>
+  </tr>
+
+  </table>
+</div>
+
+
+
+
