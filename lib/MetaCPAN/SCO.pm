@@ -56,7 +56,9 @@ sub template {
 
 	my $root = root();
 
-	$vars->{totals} = from_json path("$root/totals.json")->slurp_utf8;
+	eval {
+		$vars->{totals} = from_json path("$root/totals.json")->slurp_utf8;
+	};
 
 	my $tt = Template->new(
 		INCLUDE_PATH => "$root/tt",
