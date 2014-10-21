@@ -30,3 +30,14 @@
   </tr></table>
  </center><br />
 
+<table width="100%">
+<% FOR row IN authors %>
+  <tr class="<% IF loop.index % 2 %>s<% ELSE %>r<% END %>">
+     <% FOR a IN row %>
+        <td>
+          <a href="/~<% a.id %>/"><b><% a.id %></b></a><br/><small><% a.name %></small>
+        </td>
+     <% END %>
+  </tr>
+<% END %>
+</table>

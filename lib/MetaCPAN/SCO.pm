@@ -4,8 +4,11 @@ use warnings;
 
 use Carp ();
 use Cwd qw(abs_path);
+use Data::Dumper qw(Dumper);
 use File::Basename qw(dirname);
 use JSON qw(from_json);
+use List::MoreUtils qw(natatime);
+use LWP::Simple qw(get);
 use Path::Tiny qw(path);
 use Plack::Builder;
 use Plack::Request;
@@ -33,7 +36,18 @@ sub run {
 			return template('feedback');
 		}
 		if ($request->path_info =~ m{^/author/?$}) {
-			return template('author');
+			my $query_string = $request->query_string;
+			return template('author') if not $query_string;
+			my $lead = substr $query_string, 0, 1;
+			my $authors = authors_starting_by(uc $lead);
+			if (@$authors) {
+				my $it = natatime 4, @$authors;
+				my @table;
+				while (my @vals = $it->()) {
+					push @table, \@vals;
+				}
+				return template('author', {authors => \@table});
+			}
 		}
 
 		my $reply = template('404');
@@ -47,6 +61,33 @@ sub run {
 		$app;
 	};
 }
+
+sub authors_starting_by {
+	my ($char) = @_;
+	# curl http://api.metacpan.org/v0/author/_search?size=10
+	# curl 'http://api.metacpan.org/v0/author/_search?q=author._id:S*&size=10'
+	# curl 'http://api.metacpan.org/v0/author/_search?size=10&fields=name'
+	# curl 'http://api.metacpan.org/v0/author/_search?q=author._id:S*&size=10&fields=name'
+	# or maybe use fetch to download and keep the full list locally:
+	# http://api.metacpan.org/v0/author/_search?pretty=true&q=*&size=100000 (from https://github.com/CPAN-API/cpan-api/wiki/API-docs )
+
+	my @authors = [];
+	if ($char =~ /[A-Z]/) {
+		eval {
+			my $json = get "http://api.metacpan.org/v0/author/_search?q=author._id:$char*&size=5000&fields=name";
+			my $data = from_json $json;
+			@authors =
+				sort { $a->{id} cmp $b->{id} }
+				map { { id => $_->{_id}, name => $_->{fields}{name} } } @{ $data->{hits}{hits} };
+			1;
+		} or do {
+			my $err = $@  // 'Unknown error';
+			warn $err if $err;
+		};
+	}
+	return \@authors;
+}
+
 
 sub template {
 	my ( $file, $vars ) = @_;
