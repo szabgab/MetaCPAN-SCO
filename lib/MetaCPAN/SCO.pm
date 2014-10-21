@@ -37,11 +37,11 @@ sub run {
 		}
 		if ($path_info =~ m{^/author/?$}) {
 			my $query_string = $request->query_string;
-			return template('author', { letters => ['A' .. 'Z'], authors => [] }) if not $query_string;
+			return template('authors', { letters => ['A' .. 'Z'], authors => [] }) if not $query_string;
 			my $lead = substr $query_string, 0, 1;
 			my $authors = authors_starting_by(uc $lead);
 			if (@$authors) {
-				return template('author', {letters => ['A' .. 'Z'], authors => $authors, selected_letter => uc $lead});
+				return template('authors', {letters => ['A' .. 'Z'], authors => $authors, selected_letter => uc $lead});
 			}
 		}
 
