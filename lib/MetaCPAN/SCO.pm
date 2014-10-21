@@ -32,6 +32,9 @@ sub run {
 		if ($request->path_info eq '/feedback') {
 			return template('feedback');
 		}
+		if ($request->path_info =~ m{^/author/?$}) {
+			return template('author');
+		}
 
 		my $reply = template('404');
 		return [ '404', [ 'Content-Type' => 'text/html' ], $reply->[2], ];
