@@ -18,7 +18,7 @@ style="float:right"
   <tr>
    <td class=label>CPAN Testers</td>
    <td class=cell>[<a href="http://www.cpantesters.org/author/<% author.cpantester %>.html">Module test results</a>]
-[<a href="http://matrix.cpantesters.org/?author=<% author.pauseid FILTER lower %>aadler">CPAN Testers Author Matrix</a>]</td>
+[<a href="http://matrix.cpantesters.org/?author=<% author.pauseid FILTER lower %>">CPAN Testers Author Matrix</a>]</td>
   </tr>
   <tr>
    <td class=label>&nbsp;</td>
