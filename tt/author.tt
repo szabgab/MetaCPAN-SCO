@@ -1,6 +1,6 @@
 <div class=box>
   <div class=t1><% author.name %></div>
-<a href="http://hexten.net/cpan-faces/"><img src="" width=80 height=80 
+<a href="http://hexten.net/cpan-faces/"><img src="<% author.gravatar_url %>" width=80 height=80 
 style="float:right"
 /></a>
 
@@ -15,16 +15,22 @@ style="float:right"
    <td class=label>Email</td>
    <td class=cell><a href="mailto:<% author.email.0 %>"><% author.email.0 %></a></td>
   </tr>
+<% IF author.website.size %>
+  <tr>
+   <td class=label>Homepage</td>
+   <td class=cell><a href="<% author.website.0 %>" rel="me"><% author.website.0 %></a></td>
+  </tr>
+<% ELSE %>
+  <tr>
+   <td class=label>&nbsp;</td>
+   <td class=cell>&nbsp;</td>
+  </tr>
+<% END %>
   <tr>
    <td class=label>CPAN Testers</td>
    <td class=cell>[<a href="http://www.cpantesters.org/author/<% author.cpantester %>.html">Module test results</a>]
 [<a href="http://matrix.cpantesters.org/?author=<% author.pauseid FILTER lower %>">CPAN Testers Author Matrix</a>]</td>
   </tr>
-  <tr>
-   <td class=label>&nbsp;</td>
-   <td class=cell>&nbsp;</td>
-  </tr>
-
   </table>
 </div>
 
