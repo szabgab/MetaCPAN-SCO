@@ -28,13 +28,14 @@ sub run {
 		my $env = shift;
 
 		my $request = Plack::Request->new($env);
-		if ($request->path_info eq '/') {
+		my $path_info = $request->path_info;
+		if ($path_info eq '/') {
 			return template('index', {front => 1});
 		}
-		if ($request->path_info eq '/feedback') {
+		if ($path_info eq '/feedback') {
 			return template('feedback');
 		}
-		if ($request->path_info =~ m{^/author/?$}) {
+		if ($path_info =~ m{^/author/?$}) {
 			my $query_string = $request->query_string;
 			return template('author', { letters => ['A' .. 'Z'], authors => [] }) if not $query_string;
 			my $lead = substr $query_string, 0, 1;
