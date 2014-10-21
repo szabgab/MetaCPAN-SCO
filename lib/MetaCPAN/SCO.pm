@@ -27,10 +27,11 @@ sub run {
 
 		my $request = Plack::Request->new($env);
 		if ($request->path_info eq '/') {
-			return template('index');
+			return template('index', {front => 1});
 		}
 
-		return [ '404', [ 'Content-Type' => 'text/html' ], ['404 Not Found'], ];
+		my $reply = template('404');
+		return [ '404', [ 'Content-Type' => 'text/html' ], $reply->[2], ];
 	};
 
 	builder {

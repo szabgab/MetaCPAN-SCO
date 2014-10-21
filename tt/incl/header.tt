@@ -8,7 +8,7 @@
 
   <link rel="stylesheet" href="http://st.pimg.net/tucs/style.css?3" />
 </head>
-<body id="cpansearch" onload="document.f.query.focus();" class="front">
+<body id="cpansearch" onload="document.f.query.focus();" <% IF front %>class="front"<% END %>>
 
 <div class="header">
 <center><div class="logo"><a href="/"><img src="http://st.pimg.net/tucs/img/cpan_banner.png" alt="CPAN"></a></div></center>

@@ -1,0 +1,11 @@
+<h1 class=huge>Not found</h1>
+<br>
+Whatever it was you were looking for, it's not here.
+This may be due to...
+<ul>
+<li>You made a typo in the URL</li>
+<li>What you are looking for no longer exists on CPAN</li>
+<!-- <li>You are completely confused, which is not my fault :-)</li> -->
+<li>You followed an invalid link. If this is the case, please
+inform the maintainer of the <a href="/">referring page</a>
+</ul> 
