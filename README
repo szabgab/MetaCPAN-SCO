@@ -1,8 +1,19 @@
-search.cpan.org on MetaCPAN
+search.cpan.org clone based on MetaCPAN API
 
 This is an attempt to recreate the look-and-feel of http://search.cpan.org/ using the
 MetaCPAN API as a back-end. https://github.com/CPAN-API/cpan-api/
 
-For a description of what the site and the code behind it should look like see
+For objectives, plans, and a description of what the site, and the code behind it should look like see
+http://perlmaven.com/search-cpan-org
 
+For a live version of this application visit http://sco.perlmaven.com/
+
+
+Development environment:
+------------------------
+
+* Install the prerequisites via Makefile.PL
+* Run bin/fetch.pl to fetch some meta-meta-data from MetaCPAN::API
+* Run plackup -r
+* Borwse to http://localhost:5000/
 
