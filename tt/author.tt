@@ -24,7 +24,7 @@
       <tr class="<% IF loop.index % 2 %>s<% ELSE %>r<% END %>">
          <% FOR a IN cols %>
             <td>
-              <a href="/~<% a.id %>/"><b><% a.id %></b></a><br/><small><% a.name %></small>
+              <a href="/~<% a.id FILTER lower %>/"><b><% a.id %></b></a><br/><small><% a.name %></small>
             </td>
          <% END %>
       </tr>
