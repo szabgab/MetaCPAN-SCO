@@ -2,8 +2,11 @@ package MetaCPAN::SCO;
 use strict;
 use warnings;
 
+use Carp ();
 use Cwd qw(abs_path);
 use File::Basename qw(dirname);
+use JSON qw(from_json);
+use Path::Tiny qw(path);
 use Plack::Builder;
 use Plack::Request;
 use Template;
@@ -39,9 +42,14 @@ sub run {
 }
 
 sub template {
-	my ( $file ) = @_;
+	my ( $file, $vars ) = @_;
+	$vars //= {};
+	Carp::confess 'Need to pass HASH-ref to template()'
+		if ref $vars ne 'HASH';
 
 	my $root = root();
+
+	$vars->{totals} = from_json path("$root/totals.json")->slurp_utf8;
 
 	my $tt = Template->new(
 		INCLUDE_PATH => "$root/tt",
@@ -54,7 +62,7 @@ sub template {
 		POST_PROCESS => 'incl/footer.tt',
 	);
 	my $out;
-	$tt->process( "$file.tt", {}, \$out )
+	$tt->process( "$file.tt", $vars, \$out )
 		|| die $tt->error();
 	return [ '200', [ 'Content-Type' => 'text/html' ], [$out], ];
 }

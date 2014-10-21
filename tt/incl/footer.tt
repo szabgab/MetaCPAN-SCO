@@ -1,4 +1,8 @@
 
+<div class="footer"><div class="cpanstats">
+<% totals.distribution %> Distributions, <% totals.module %> Modules, <% totals.author %> Authors 
+</div></div>
+
  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.js"></script>
 </body>
 </html>
