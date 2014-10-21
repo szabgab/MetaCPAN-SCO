@@ -47,8 +47,10 @@ my %configure_requires = (
 );
 my %build_requires = ();
 my %test_requires = (
-	'Test::More'           => '1.00',
-	'Test::WWW::Mechanize' => '0',
+	'Test::More'            => '1.00',
+	'Test::WWW::Mechanize'  => '0',
+    'Plack::Test'           => '0',
+    'HTTP::Request::Common' => '0',
 );
 
 ###   merging data "standard code"

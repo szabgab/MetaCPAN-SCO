@@ -118,7 +118,9 @@ sub template {
 }
 
 sub root {
-	return dirname(dirname(dirname( abs_path(__FILE__) )));
+	my $dir = dirname(dirname(dirname( abs_path(__FILE__) )));
+	$dir =~ s{blib/?$}{};
+	return $dir;
 }
 
 1;
