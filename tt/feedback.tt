@@ -1,0 +1,34 @@
+<br><div class=t4> Feedback</div><br>
+
+You arrived to the search.cpan.org clone project.
+<p>
+
+If you have any feedback about this site, its design or how it presents
+the information, then please visit <a href="">GitHub</a> and report the issue there.
+<p>
+If you have a question about an issue with a particular module, or the content of its documentation, please contact the author of that module.
+<p>
+If the feedback you want to give is not specifically about this site, then
+please try one of the following forums that best fits.
+
+<dl>
+<dt><a href="http://groups.google.com/groups/dir?q=comp.lang.perl">comp.lang.perl newgroups</a></dt>
+<dd>
+The usenet newsgroups are a great resource and your questions will reach
+a wide audience of experienced perl users (and some not so experienced ones too)
+</dd>
+
+<dt><a href="mailto:modules@cpan.org">modules@cpan.org</a></dt>
+<dd>
+The modules list is a small group of people who will give advice on various
+aspects of module naming and uploading to CPAN.
+</dd>
+
+<dt><a href="http://www.perlmonks.org/">Perl Monks</a></dt>
+<dd>
+Perl Monks is another great resource where you will find many experienced
+perl users all willing to help you out.
+</dd>
+
+</dl>
+
