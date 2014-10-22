@@ -23,7 +23,7 @@
 </div>
 
 <form method="get" action="/search" name="f" class="searchbox">
-<input type="text" name="query" value="" size="35">
+<input type="text" name="query" value="<% query %>" size="35">
 <br>in <select name="mode">
  <option value="all">All</option>
  <option value="module" >Modules</option>

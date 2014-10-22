@@ -22,11 +22,13 @@ SCO - search.cpan.org clone
 
 =cut
 
+my $env;
+
 sub run {
 	my $root = root();
 
 	my $app = sub {
-		my $env = shift;
+		$env = shift;
 
 		my $request = Plack::Request->new($env);
 		my $path_info = $request->path_info;
@@ -210,6 +212,9 @@ sub template {
 	eval {
 		$vars->{totals} = from_json path("$root/totals.json")->slurp_utf8;
 	};
+
+	my $request = Plack::Request->new($env);
+	$vars->{query} = $request->param('query');
 
 	my $tt = Template->new(
 		INCLUDE_PATH => "$root/tt",
