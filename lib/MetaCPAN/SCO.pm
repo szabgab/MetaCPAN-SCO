@@ -215,6 +215,7 @@ sub template {
 
 	my $request = Plack::Request->new($env);
 	$vars->{query} = $request->param('query');
+	$vars->{mode}  = $request->param('mode');
 
 	my $tt = Template->new(
 		INCLUDE_PATH => "$root/tt",

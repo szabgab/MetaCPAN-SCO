@@ -25,10 +25,10 @@
 <form method="get" action="/search" name="f" class="searchbox">
 <input type="text" name="query" value="<% query %>" size="35">
 <br>in <select name="mode">
- <option value="all">All</option>
- <option value="module" >Modules</option>
- <option value="dist" >Distributions</option>
- <option value="author" >Authors</option>
+ <option value="all"     <% IF mode == 'all'    %>selected<% END %> >All</option>
+ <option value="module"  <% IF mode == 'module' %>selected<% END %> >Modules</option>
+ <option value="dist"    <% IF mode == 'dist'   %>selected<% END %> >Distributions</option>
+ <option value="author"  <% IF mode == 'author' %>selected<% END %> >Authors</option>
 </select>&nbsp;<input type="submit" value="CPAN Search">
 </form>
 </div>
