@@ -4,6 +4,7 @@
 <div class=toc>
 <div class='indexgroup'>
 <ul   class='indexList indexList1'>
+  <li class='indexItem indexItem1'><a href='#What_is_this_site'>What is this site?</a>
   <li class='indexItem indexItem1'><a href='#What_is_CPAN_Search?'>What is CPAN Search?</a>
   <li class='indexItem indexItem1'><a href='#I&#39;m_having_trouble_connecting_to_search_and_I_think_it_may_be_down,_whom_do_I_contact?'>I&#39;m having trouble connecting to search and I think it may be down, whom do I contact?</a>
   <li class='indexItem indexItem1'><a href='#Why_is_&#34;Module_X&#34;_not_listed_in_the_Catalogue?_Where_do_I_send_suggestions/feedback?'>Why is &#34;Module X&#34; not listed in the Catalogue? Where do I send suggestions/feedback?</a>
@@ -17,6 +18,16 @@
 </ul>
 </div>
 </div>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="What_is_this_site"
+>What is this site? <img alt='^' src='http://st.pimg.net/tucs/img/up.gif'></a></h1>
+
+<p>
+This is an open source clone of <a href="http://search.cpan.org/">search.cpan.org</a> using the
+<a href="https://github.com/CPAN-API/cpan-api/">MetaCPAN API</a> as the back-end. The source-code
+of this site is available via <a href="https://github.com/szabgab/MetaCPAN-SCO">GitHub</a>.
+</p>
 
 <h1><a class='u' href='#___top' title='click to go to top of document'
 name="What_is_CPAN_Search?"
