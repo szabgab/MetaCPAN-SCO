@@ -6,13 +6,16 @@ use Carp ();
 use Cwd qw(abs_path);
 use Data::Dumper qw(Dumper);
 use File::Basename qw(dirname);
-use JSON qw(from_json);
+use HTTP::Tiny;
+use JSON qw(from_json to_json);
 use LWP::Simple qw(get);
 use Path::Tiny qw(path);
 use Plack::Builder;
 use Plack::Response;
 use Plack::Request;
+use POSIX qw(strftime);
 use Template;
+use Time::Local qw(timegm);
 
 our $VERSION = '0.01';
 
@@ -112,11 +115,61 @@ sub run {
 	};
 }
 sub recent {
+	my ($end_ymd) = @_;
+
 	# http://api.metacpan.org/v0/release/_search?q=status:latest&fields=name,status,date&sort=date:desc&size=100
+
+	# 10 most recent releases by OALDERS
+	# curl 'http://api.metacpan.org/v0/release/_search?q=status:latest%20AND%20author:OALDERS&fields=name,author,status,date,abstract&sort=date:desc&size=10'
+
+	$end_ymd //= strftime('%Y%m%d', gmtime);
+	my @ymd = unpack('A4 A2 A2', $end_ymd);
+	my $end_y_m_d = join '-', @ymd;
+	my $end_time = timegm(0, 0, 0, $ymd[2], $ymd[1]-1, $ymd[0]);
+	my $start_time = $end_time - 7 * 24 * 60 * 60;
+	my $start_y_m_d = strftime('%Y-%m-%d', gmtime($start_time));
+	my $start_ymd   = strftime('%Y%m%d', gmtime($start_time));
+	my $next_ymd;
+	if ($end_time < time - 24*60*60) {
+		my $next_time = $end_time + 7 * 24 * 60 * 60;
+		$next_ymd   = strftime('%Y%m%d', gmtime($next_time));
+	}
+
+	my $ua = HTTP::Tiny->new();
+	my $query_json = to_json {
+		query => {
+			match_all => {},
+		},
+		filter => {
+			and => [
+				{ term => { status => 'latest', } },
+				{
+					"range" => {
+						"date" => {
+							"from" => "${start_y_m_d}T23:59:59",
+							"to" => "${end_y_m_d}T23:59:59",
+						},
+					},
+				},
+			]
+		},
+		fields => ["name", "author", "status", "date", "abstract"],
+		sort => { date => 'desc' },
+		size => 2000,
+	};
 
 	my @days;
 	eval {
-		my $json = get 'http://api.metacpan.org/v0/release/_search?q=status:latest&fields=name,author,status,date,abstract&sort=date:desc&size=100';
+		my $resp = $ua->request(
+			'POST',
+			'http://api.metacpan.org/v0/release/_search',
+			{
+				headers => { 'Content-Type' => 'application/json' },
+				content => $query_json,
+			}
+		);
+		die if not $resp->{success};
+		my $json = $resp->{content};
 		my $data = from_json $json;
 		my @distros = map { $_->{fields} } @{ $data->{hits}{hits} };
 		my %days;
@@ -128,7 +181,9 @@ sub recent {
 		my $err = $@  // 'Unknown error';
 		warn $err if $err;
 	};
-	return \@days;
+	my %resp =  ( days => \@days, prev => $start_ymd );
+	$resp{next} = $next_ymd;
+	return \%resp;
 }
 
 sub search {

@@ -10,11 +10,13 @@ my %conf = (
 		'Cwd'              => '0',
         'Data::Dumper'     => '0',
 		'File::Basename'   => '0',
+		'HTTP::Tiny'       => '0',
 		'Plack::Request'   => '0',
 		'Template'         => '0',
         'LWP::Simple'      => '0',
         'JSON'             => '0',
         'Path::Tiny'       => '0',
+		'POSIX'            => '0',
 	},
 );
 
