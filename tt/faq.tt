@@ -1,0 +1,151 @@
+<br><div class=t4> Frequently Asked Questions</div>
+<a name="___top"></a>
+<div class=pod>
+<div class=toc>
+<div class='indexgroup'>
+<ul   class='indexList indexList1'>
+  <li class='indexItem indexItem1'><a href='#What_is_CPAN_Search?'>What is CPAN Search?</a>
+  <li class='indexItem indexItem1'><a href='#I&#39;m_having_trouble_connecting_to_search_and_I_think_it_may_be_down,_whom_do_I_contact?'>I&#39;m having trouble connecting to search and I think it may be down, whom do I contact?</a>
+  <li class='indexItem indexItem1'><a href='#Why_is_&#34;Module_X&#34;_not_listed_in_the_Catalogue?_Where_do_I_send_suggestions/feedback?'>Why is &#34;Module X&#34; not listed in the Catalogue? Where do I send suggestions/feedback?</a>
+  <li class='indexItem indexItem1'><a href='#I_have_uploaded_a_distribution_to_CPAN_but_queries_on_search.cpan.org_do_not_find_it.'>I have uploaded a distribution to CPAN but queries on search.cpan.org do not find it.</a>
+  <li class='indexItem indexItem1'><a href='#Are_there_any_other_search_engines_for_CPAN?'>Are there any other search engines for CPAN?</a>
+  <li class='indexItem indexItem1'><a href='#Can_I_get_the_results_to_be_output_in_XML_format?'>Can I get the results to be output in XML format?</a>
+  <li class='indexItem indexItem1'><a href='#Can_I_get_an_RSS_file_of_the_recent_modules_for_my_news_portal,_etc?'>Can I get an RSS file of the recent modules for my news portal, etc?</a>
+  <li class='indexItem indexItem1'><a href='#Is_there_a_API?'>Is there a API?</a>
+  <li class='indexItem indexItem1'><a href='#Do_you_keep_statistics_on_which_modules_are_most_popular?'>Do you keep statistics on which modules are most popular?</a>
+  <li class='indexItem indexItem1'><a href='#Where_do_the_author&#39;s_pictures_come_from_and_how_do_I_set_mine?'>Where do the author&#39;s pictures come from and how do I set mine?</a>
+</ul>
+</div>
+</div>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="What_is_CPAN_Search?"
+>What is CPAN Search? <img alt='^' src='http://st.pimg.net/tucs/img/up.gif'></a></h1>
+
+<p>CPAN Search is a search engine for the distributions,
+modules,
+docs,
+and ID&#39;s on CPAN.
+It was conceived and built by Graham Barr as a way to make things easier to navigate.
+Originally named TUCS [ The Ultimate CPAN Search ] it was later named CPAN Search or Search DOT CPAN.</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="I&#39;m_having_trouble_connecting_to_search_and_I_think_it_may_be_down,_whom_do_I_contact?"
+>I&#39;m having trouble connecting to search and I think it may be down,
+whom do I contact? <img alt='^' src='http://st.pimg.net/tucs/img/up.gif'></a></h1>
+
+<p>If you are having technical difficulties with the site itself,
+send mail to <i>cpansearch@perl.org</i> and try to be as detailed as possible in your note describing the problem.</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Why_is_&#34;Module_X&#34;_not_listed_in_the_Catalogue?_Where_do_I_send_suggestions/feedback?"
+>Why is &#34;Module X&#34; not listed in the Catalogue?
+Where do I send suggestions/feedback? <img alt='^' src='http://st.pimg.net/tucs/img/up.gif'></a></h1>
+
+<p>The Catalogue on the front page is based on the Perl 5 Module List and if there is a module you think should be included in a particular category,
+you may either use the feedback link on the top of the page or send mail to feedback@search.cpan.org with your suggestions.</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="I_have_uploaded_a_distribution_to_CPAN_but_queries_on_search.cpan.org_do_not_find_it."
+>I have uploaded a distribution to CPAN but queries on search.cpan.org do not find it. <img alt='^' src='http://st.pimg.net/tucs/img/up.gif'></a></h1>
+
+<ul>
+<li>There is a delay between when a distribution is uploaded and when it is indexed,
+please try again in a few hours.</li>
+
+<li>search.cpan.org only indexes distributions that unpack to a single top-level directory,
+i.e.
+a distribution that unpacks into its own directory instead of dumping into the current working directory.
+We suggest the use of h2xs -cfn YOUR::MODULE to construct the framework and,
+once the module is complete,
+using make dist to create the distribution for upload to CPAN.
+See the <a href="/perldoc?h2xs" class="podlinkpod"
+>h2xs</a>,
+<a href="/perldoc?ExtUtil%3A%3AMakeMaker" class="podlinkpod"
+>ExtUtil::MakeMaker</a>,
+and <a href="/perldoc?perlmodlib" class="podlinkpod"
+>perlmodlib</a> documentation for more details.</li>
+</ul>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Are_there_any_other_search_engines_for_CPAN?"
+>Are there any other search engines for CPAN? <img alt='^' src='http://st.pimg.net/tucs/img/up.gif'></a></h1>
+
+<p>Yes.</p>
+
+<dl>
+<dt><a name='http'></a><a name="http://kobesearch.cpan.org/"
+><a href="http://kobesearch.cpan.org/" class="podlinkurl"
+>http://kobesearch.cpan.org/</a></a></dt>
+
+<dd>
+<p>Randy Kobes&#39; search engine at Winnipeg.</p>
+
+<dt><a name='http'></a><a name="http://wait.cpan.org/"
+><a href="http://wait.cpan.org/" class="podlinkurl"
+>http://wait.cpan.org/</a></a></dt>
+
+<dd>
+<p>WAIT which searches all documents on CPAN</p>
+
+<dt><a name='http'></a><a name="http://perldoc.perl.org/"
+><a href="http://perldoc.perl.org/" class="podlinkurl"
+>http://perldoc.perl.org/</a></a></dt>
+
+<dd>
+<p>perldoc.perl.org contains the core documentation for Perl version 5.8.6,
+in HTML and PDF formats.</p>
+</dd>
+</dl>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Can_I_get_the_results_to_be_output_in_XML_format?"
+>Can I get the results to be output in XML format? <img alt='^' src='http://st.pimg.net/tucs/img/up.gif'></a></h1>
+
+<p>Yes,
+by adding a &#39;format=xml&#39; in the URL like so: <a href="http://search.cpan.org/search?mode=module&#38;format=xml&#38;query=LWP" class="podlinkurl"
+>http://search.cpan.org/search?mode=module&#38;format=xml&#38;query=LWP</a> This feature is NOT supported and it may change at any time so don&#39;t build applications to depend on its continued presence.</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Can_I_get_an_RSS_file_of_the_recent_modules_for_my_news_portal,_etc?"
+>Can I get an RSS file of the recent modules for my news portal,
+etc? <img alt='^' src='http://st.pimg.net/tucs/img/up.gif'></a></h1>
+
+<p>Yes,
+we have an RSS file at <a href="http://search.cpan.org/rss/search.rss" class="podlinkurl"
+>http://search.cpan.org/rss/search.rss</a>.
+If you use it,
+you must also provide a link back to CPAN Search at <a href="http://search.cpan.org/" class="podlinkurl"
+>http://search.cpan.org/</a>.
+Please send a note to feedback@search.cpan.org to inform us of the URL.</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Is_there_a_API?"
+>Is there a API? <img alt='^' src='http://st.pimg.net/tucs/img/up.gif'></a></h1>
+
+<p>Yes,
+there are API urls that will return JSON.
+Here are some examples</p>
+
+<pre class="sh_perl"> <a href="http://search.cpan.org/api/module/Dancer" class="podlinkurl"
+>http://search.cpan.org/api/module/Dancer</a>
+ <a href="http://search.cpan.org/api/dist/Dancer" class="podlinkurl"
+>http://search.cpan.org/api/dist/Dancer</a>
+ <a href="http://search.cpan.org/api/author/SUKRIA" class="podlinkurl"
+>http://search.cpan.org/api/author/SUKRIA</a></pre>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Do_you_keep_statistics_on_which_modules_are_most_popular?"
+>Do you keep statistics on which modules are most popular? <img alt='^' src='http://st.pimg.net/tucs/img/up.gif'></a></h1>
+
+<p>No. search.cpan.org is only one way to access what is on CPAN. Any statistics gathered by search.cpan.org would not be very representative because we have no way to gather statistics for downloads from all the worldwide CPAN mirrors</p>
+
+<h1><a class='u' href='#___top' title='click to go to top of document'
+name="Where_do_the_author&#39;s_pictures_come_from_and_how_do_I_set_mine?"
+>Where do the author&#39;s pictures come from and how do I set mine? <img alt='^' src='http://st.pimg.net/tucs/img/up.gif'></a></h1>
+
+<p>They come from the Gravatar associated with that author&#39;s cpan.org email address. To set yours, simply sign up at <a href="http://site.gravatar.com/signup" class="podlinkurl"
+>http://site.gravatar.com/signup</a> using your cpan.org address. We cache the gravatars so give it a day or so to catch up.</p>
+
+</div>
+

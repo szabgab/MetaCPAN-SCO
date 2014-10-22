@@ -38,6 +38,9 @@ sub run {
 		if ($path_info eq '/feedback') {
 			return template('feedback');
 		}
+		if ($path_info eq '/faq.html') {
+			return template('faq');
+		}
 		if ($path_info =~ m{^/author/?$}) {
 			my $query_string = $request->query_string;
 			return template('authors', { letters => ['A' .. 'Z'], authors => [] }) if not $query_string;
