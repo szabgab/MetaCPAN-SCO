@@ -89,7 +89,7 @@ sub run {
 		}
 
 		if ($path_info eq '/search') {
-			return search($request);
+			return search($request->param('query'), $request->param('mode'));
 		}
 
 
@@ -106,9 +106,7 @@ sub run {
 }
 
 sub search {
-	my ($request) = @_;
-	my $query = $request->param('query');
-	my $mode = $request->param('mode');
+	my ($query, $mode) = @_;
 	
 	if ($mode eq 'author') {
 		my @authors = [];
