@@ -41,6 +41,10 @@ sub run {
 		if ($path_info eq '/faq.html') {
 			return template('faq');
 		}
+		if ($path_info eq '/recent') {
+			my $recent = recent($request->param('d'));
+			return template('recent', { recent => $recent });
+		}
 		if ($path_info =~ m{^/author/?$}) {
 			my $query_string = $request->query_string;
 			return template('authors', { letters => ['A' .. 'Z'], authors => [] }) if not $query_string;
@@ -106,6 +110,25 @@ sub run {
 			root => "$root/static/";
 		$app;
 	};
+}
+sub recent {
+	# http://api.metacpan.org/v0/release/_search?q=status:latest&fields=name,status,date&sort=date:desc&size=100
+
+	my @days;
+	eval {
+		my $json = get 'http://api.metacpan.org/v0/release/_search?q=status:latest&fields=name,author,status,date,abstract&sort=date:desc&size=100';
+		my $data = from_json $json;
+		my @distros = map { $_->{fields} } @{ $data->{hits}{hits} };
+		my %days;
+		foreach my $d (@distros) {
+			push @{ $days{ substr($d->{date}, 0, 10) } }, $d;
+		}
+		@days = map { { date => "${_}T12:00:00", dists => $days{$_} } } reverse sort keys %days;
+	} or do {
+		my $err = $@  // 'Unknown error';
+		warn $err if $err;
+	};
+	return \@days;
 }
 
 sub search {

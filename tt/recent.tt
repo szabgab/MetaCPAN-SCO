@@ -1,0 +1,31 @@
+<% USE date %>
+<br><div class=t4> Uploads <a title="RSS 1.0" href="/uploads.rdf"><img src="http://st.pimg.net/tucs/img/rss-10.gif" align=right></a></div>
+
+<% FOR day IN recent %>
+  <div class=path>
+    <center>
+    <table>
+      <tr>
+        <% IF loop.first %>
+           <td><a href="/recent?d=20141015"><img src="http://st.pimg.net/tucs/img/left.png" border=0 alt="<<"></a></td>
+        <% END %>
+           <td class=datecell><span><big><b><% date.format(day.date, '%d  %B %Y') %></b></big></span></td>
+        <% IF loop.first %>
+           <td><img src="http://st.pimg.net/tucs/img/right.png" border=0 alt=">>"></td>
+        <% END %>
+      </tr>
+    </table>
+    </center>
+  </div>
+   
+  <ul>
+    <% FOR dist IN day.dists %>
+      <li><a href="/~<% dist.author FILTER lower %>/<% dist.name %>/"><% dist.name %></a>
+        <% IF dist.abstract %>
+          <small> -- <% dist.abstract %> </small>
+        <% END %>
+      </li>
+    <% END %>
+  </ul>
+<% END %>
+
