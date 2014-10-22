@@ -123,6 +123,29 @@ sub search {
 		};
 		return template('authors', {letters => ['A' .. 'Z'], authors => \@authors, selected_letter => 'X'});
 	}
+
+	if ($mode eq 'dist') {
+		my @releases = [];
+		eval {
+			my $json = get "http://api.metacpan.org/v0/release/_search?q=name:*$query*&size=500&fields=date,name,author,abstract,distribution";
+			my $data = from_json $json;
+			@releases =
+				sort { $a->{name} cmp $b->{name} }
+				map { $_->{fields} } @{ $data->{hits}{hits} };
+
+			1;
+		} or do {
+			my $err = $@  // 'Unknown error';
+			die $err if $err;
+		};
+		return template('dists', { dists => \@releases });
+	}
+
+	if ($mode eq 'module') {
+	}
+
+	# 'all' is the default behaviour:
+
 }
 
 sub get_distros_by_pauseid {
