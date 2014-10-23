@@ -26,10 +26,11 @@ style="float:right"
     <td class=cell colspan=3>
      <form action="/redirect">
       <select name="url">
-       <option value="/~aadler/Games-LogicPuzzle-0.13/">Games-LogicPuzzle-0.13&nbsp;&nbsp;--&nbsp;&nbsp;01 Nov 2004</option>
-       <option value="/~aadler/Games-LogicPuzzle-0.12/">Games-LogicPuzzle-0.12&nbsp;&nbsp;--&nbsp;&nbsp;01 Nov 2004</option>
-       <option value="/~aadler/Games-LogicPuzzle-0.10/">Games-LogicPuzzle-0.10&nbsp;&nbsp;--&nbsp;&nbsp;20 Mar 2003</option>
-      </select><input type=submit value="Goto">
+       <% FOR r IN releases %>
+         <option value="/~<% r.author FILTER lower %>/<% r.name %>/"><% r.name %>&nbsp;&nbsp;--&nbsp;&nbsp;<% date.format(r.date, '%d  %b %Y') %></option>
+       <% END %>
+      </select>
+      <input type=submit value="Goto">
      </form></td></tr>
 
 

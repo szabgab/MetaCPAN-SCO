@@ -99,19 +99,27 @@ sub run {
 
 sub get_dist_data {
 	my ($pauseid, $dist_name_ver) = @_;
-			
+
+	# to test: http://search.cpan.org/~ddumont/Config-Model-Itself-1.241/
+
 	# curl 'http://api.metacpan.org/v0/release/AADLER/Games-LogicPuzzle-0.20'
 	# curl 'http://api.metacpan.org/v0/release/Games-LogicPuzzle'
 	# from https://github.com/CPAN-API/cpan-api/wiki/API-docs
 	my $dist;
 	my $release;
 	my @files;
+	my @releases;
 	eval {
 		my $json1 = get 'http://api.metacpan.org/v0/release/' . $pauseid . '/' . $dist_name_ver;
 		$dist = from_json $json1;
 		my $json2 = get "http://api.metacpan.org/v0/file/_search?q=release:$dist_name_ver&size=1000&fields=release,path,module.name,abstract,module.version,documentation";
 		my $data2 = from_json $json2;
 		@files = map { $_->{fields} } @{ $data2->{hits}{hits} };
+
+		my $json3 = get 'http://api.metacpan.org/v0/release/_search?q=distribution:Config-Model-Itself&limit=20&fields=author,name,date,status';
+		my $data3 = from_json $json3;
+		@releases = reverse sort { $a->{date} cmp $b->{date} } grep { $_->{status} eq 'cpan' } map { $_->{fields} } @{ $data3->{hits}{hits} };
+
 		1;
 	} or do {
 		my $err = $@  // 'Unknown error';
@@ -146,7 +154,7 @@ sub get_dist_data {
 	my @special_files = sort { lc $a->{path} cmp lc $b->{path} } values %special;
 	$dist->{this_name} = $dist->{name};
 	my $author = get_author_info($pauseid);
-	return { dist => $dist, author => $author, special_files => \@special_files, modules => \@modules, documentation => \@documentation };
+	return { dist => $dist, author => $author, special_files => \@special_files, modules => \@modules, documentation => \@documentation, releases => \@releases };
 }
 
 
