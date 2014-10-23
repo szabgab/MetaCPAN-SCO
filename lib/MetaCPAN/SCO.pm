@@ -76,57 +76,8 @@ sub run {
 		}
 
 		if ($path_info =~ m{^/~([a-z]+)/([^/]+)/$}) {
-			my $pauseid = uc $1;
-			my $dist_name_ver = $2;
-			
-			# curl 'http://api.metacpan.org/v0/release/AADLER/Games-LogicPuzzle-0.20'
-			# curl 'http://api.metacpan.org/v0/release/Games-LogicPuzzle'
-			# from https://github.com/CPAN-API/cpan-api/wiki/API-docs
-			my $dist;
-			my $release;
-			my @files;
-			eval {
-				my $json1 = get 'http://api.metacpan.org/v0/release/' . $pauseid . '/' . $dist_name_ver;
-				$dist = from_json $json1;
-				my $json2 = get "http://api.metacpan.org/v0/file/_search?q=release:$dist_name_ver&size=1000&fields=release,path,module.name,abstract,module.version,documentation";
-				my $data2 = from_json $json2;
-				@files = map { $_->{fields} } @{ $data2->{hits}{hits} };
-				1;
-			} or do {
-				my $err = $@  // 'Unknown error';
-				warn $err if $err;
-			};
-
-			my %SPECIAL = map { $_ => 1 } qw(
-				Changes CHANGES LICENSE MANIFEST README
-				Makefile.PL Build.PL META.yml META.json
-			);
-
-			$_->{name} = delete $_->{'module.name'} for @files;
-			$_->{version} = delete $_->{'module.version'} for @files;
-
-			my @modules = sort { $a->{name} cmp $b->{name} } grep { $_->{name} } @files;
-			my @documentation = sort { $a->{documentation} cmp $b->{documentation} } grep { $_->{documentation} and not $_->{name} } @files;
-
-			# It seem sco shows META.json if it is available or META.yml if that is available, but not both
-			# and prefers to show META.json
-			# http://search.cpan.org/~jdb/PPM-Repositories-0.20/
-			# http://search.cpan.org/~ironcamel/Business-BalancedPayments-1.0401/
-			# I wonder if showing both (when available) can be considered a slight improvement or if we should
-			# hide META.yml if there is a META.json already?
-
-			my %special = map { $_->{path} => $_ } grep { $SPECIAL{$_->{path}} } @files;
-			if ($special{'META.json'}) {
-				delete $special{'META.yml'};
-			}
-
-			# TODO: the MANIFEST file gets special treatment here and instead of linking to src/ it is linked without
-			# anything and then it is shown with links to the actual files.
-			my @special_files = sort { lc $a->{path} cmp lc $b->{path} } values %special;
-			$dist->{this_name} = $dist->{name};
-			my $author = get_author_info($pauseid);
-
-			return template('dist', { dist => $dist, author => $author, special_files => \@special_files, modules => \@modules, documentation => \@documentation });
+			my $data = get_dist_data(uc $1, $2);
+			return template('dist', $data);
 		}
 
 		if ($path_info eq '/search') {
@@ -145,6 +96,60 @@ sub run {
 		$app;
 	};
 }
+
+sub get_dist_data {
+	my ($pauseid, $dist_name_ver) = @_;
+			
+	# curl 'http://api.metacpan.org/v0/release/AADLER/Games-LogicPuzzle-0.20'
+	# curl 'http://api.metacpan.org/v0/release/Games-LogicPuzzle'
+	# from https://github.com/CPAN-API/cpan-api/wiki/API-docs
+	my $dist;
+	my $release;
+	my @files;
+	eval {
+		my $json1 = get 'http://api.metacpan.org/v0/release/' . $pauseid . '/' . $dist_name_ver;
+		$dist = from_json $json1;
+		my $json2 = get "http://api.metacpan.org/v0/file/_search?q=release:$dist_name_ver&size=1000&fields=release,path,module.name,abstract,module.version,documentation";
+		my $data2 = from_json $json2;
+		@files = map { $_->{fields} } @{ $data2->{hits}{hits} };
+		1;
+	} or do {
+		my $err = $@  // 'Unknown error';
+		warn $err if $err;
+	};
+
+	my %SPECIAL = map { $_ => 1 } qw(
+		Changes CHANGES LICENSE MANIFEST README
+		Makefile.PL Build.PL META.yml META.json
+	);
+
+	$_->{name} = delete $_->{'module.name'} for @files;
+	$_->{version} = delete $_->{'module.version'} for @files;
+
+	my @modules = sort { $a->{name} cmp $b->{name} } grep { $_->{name} } @files;
+	my @documentation = sort { $a->{documentation} cmp $b->{documentation} } grep { $_->{documentation} and not $_->{name} } @files;
+
+	# It seem sco shows META.json if it is available or META.yml if that is available, but not both
+	# and prefers to show META.json
+	# http://search.cpan.org/~jdb/PPM-Repositories-0.20/
+	# http://search.cpan.org/~ironcamel/Business-BalancedPayments-1.0401/
+	# I wonder if showing both (when available) can be considered a slight improvement or if we should
+	# hide META.yml if there is a META.json already?
+
+	my %special = map { $_->{path} => $_ } grep { $SPECIAL{$_->{path}} } @files;
+	if ($special{'META.json'}) {
+		delete $special{'META.yml'};
+	}
+
+	# TODO: the MANIFEST file gets special treatment here and instead of linking to src/ it is linked without
+	# anything and then it is shown with links to the actual files.
+	my @special_files = sort { lc $a->{path} cmp lc $b->{path} } values %special;
+	$dist->{this_name} = $dist->{name};
+	my $author = get_author_info($pauseid);
+	return { dist => $dist, author => $author, special_files => \@special_files, modules => \@modules, documentation => \@documentation };
+}
+
+
 sub recent {
 	my ($end_ymd) = @_;
 
