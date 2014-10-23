@@ -75,18 +75,21 @@ FAIL (<% dist.tests.fail %>)&nbsp;&nbsp;
 </td>
    </tr>
    <tr>
-    <td class=label>Special Files</td>
-    <td class=cell colspan=3><table><tr class=distfiles>
-     <td>
-      <a href="/src/<% author.pauseid FILTER upper %>/<% dist.name %>/Makefile.PL">Makefile.PL</a><br>
+     <td class=label>Special Files</td>
+     <td class=cell colspan=3>
+         <table>
+             <% USE table(special_files, rows=2) %>
+             <tr class=distfiles>
+                 <% FOREACH col = table.cols %>
+                    <td>
+                      <% FOR file IN col %>
+                        <a href="/src/<% author.pauseid FILTER upper %>/<% dist.name %>/<% file.path %>"><% file.path %></a><br>
+                      <% END %>
+                   </td>
+                 <% END %>
+             </tr>
+         </table>
      </td>
-     <td>
-      <a href="MANIFEST">MANIFEST</a><br>
-     </td>
-     <td>
-      <a href="/src/<% author.pauseid FILTER upper %>/<% dist.name %>/README">README</a><br>
-     </td>
-    </tr></table></td>
    </tr>
   </table>
 </div>

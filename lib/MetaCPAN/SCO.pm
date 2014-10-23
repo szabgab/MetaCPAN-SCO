@@ -84,18 +84,38 @@ sub run {
 			# from https://github.com/CPAN-API/cpan-api/wiki/API-docs
 			my $dist;
 			my $release;
+			my @files;
 			eval {
-				my $json = get 'http://api.metacpan.org/v0/release/' . $pauseid . '/' . $dist_name_ver;
-				$dist = from_json $json;
+				my $json1 = get 'http://api.metacpan.org/v0/release/' . $pauseid . '/' . $dist_name_ver;
+				$dist = from_json $json1;
+				my $json2 = get "http://api.metacpan.org/v0/file/_search?q=release:$dist_name_ver&size=1000&fields=release,path,module.name";
+				my $data2 = from_json $json2;
+				@files = map { $_->{fields} } @{ $data2->{hits}{hits} };
 				1;
 			} or do {
 				my $err = $@  // 'Unknown error';
 				warn $err if $err;
 			};
+
+			my %SPECIAL = map { $_ => 1 } qw(
+				Changes CHANGES LICENSE MANIFEST README
+				Makefile.PL Build.PL META.yml META.json
+			);
+
+			# It seem sco shows META.json if it is available or META.yml if that is available, but not both
+			# and prefers to show META.json
+			# http://search.cpan.org/~jdb/PPM-Repositories-0.20/
+			# http://search.cpan.org/~ironcamel/Business-BalancedPayments-1.0401/
+			# I wonder if showing both (when available) can be considered a slight improvement or if we should
+			# hide META.yml if there is a META.json already?
+
+			# TODO: the MANIFEST file gets special treatment here and instead of linking to src/ it is linked without
+			# anything and then it is shown with links to the actual files.
+			my @special_files = sort { lc $a->{path} cmp lc $b->{path} } grep { $SPECIAL{$_->{path}} } @files;
 			$dist->{this_name} = $dist->{name};
 			my $author = get_author_info($pauseid);
 
-			return template('dist', { dist => $dist, author => $author });
+			return template('dist', { dist => $dist, author => $author, special_files => \@special_files });
 		}
 
 		if ($path_info eq '/search') {
@@ -331,7 +351,7 @@ sub template {
 	);
 	my $out;
 	$tt->process( "$file.tt", $vars, \$out )
-		|| die $tt->error();
+		|| Carp::confess $tt->error();
 	return [ '200', [ 'Content-Type' => 'text/html' ], [$out], ];
 }
 
