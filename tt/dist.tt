@@ -1,7 +1,7 @@
 <% USE date %>
 
 <div class=path>
-   <div id=permalink class="noprint"><a href="/dist/<% dist.metadata.name %>/">permalink</a></div>
+   <div id="permalink" class="noprint"><a href="/dist/<% dist.metadata.name %>/">permalink</a></div>
   <a href="/~<% author.pauseid FILTER lower %>/"><% author.name %></a> &gt; <% dist.this_name %>
  </div>
 
@@ -17,7 +17,7 @@ style="float:right"
     <td class=cell><% dist.name %></td>
     <td><small>&nbsp;[<a href="<% dist.download_url %>">Download</a>]
     [<a href="/src/<% author.pauseid FILTER upper %>/<% dist.name %>/">Browse</a>]&nbsp;</small></td>
-    <td><small><% date.format(dist.date, '%d  %b %Y') %></small>
+    <td><small><% date.format(dist.date, '%d %b %Y') %></small>
     </td>
    </tr>
 
