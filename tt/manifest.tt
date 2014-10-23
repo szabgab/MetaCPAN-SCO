@@ -1,0 +1,25 @@
+<a name="_top"></a>
+  <div class=path>
+<div id=permalink class="noprint"><a href="/perldoc?MANIFEST">permalink</a></div>
+  <a href="/~<% username %>/"><% author.name %></a> &gt;
+  <a href="/~<% username %>/<% dist_name %>/"><% dist_name %></a> &gt;
+  MANIFEST
+</div>
+
+<span class="noprint">
+  <a href="/src/<% pauseid %>/<% dist_name %>/MANIFEST">Source</a> &nbsp;
+</span>
+
+<table class=manifest>
+  <% FOR row IN manifest %>
+     <tr><td><a href="/src/<% pauseid %>/<% dist_name %>/<% row.file %>"><% row.file %></a>
+<!--
+           <% IF row.pod %>
+              &nbsp;<small>[<a href="lib/Config/Model/Itself.pm">pod</a>]</small>
+           <% END %>
+-->
+         </td>
+         <td><% row.text %></td></tr>
+   </td><td></td></tr>
+  <% END %>
+</table>

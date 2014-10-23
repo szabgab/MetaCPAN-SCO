@@ -85,8 +85,25 @@ sub run {
 			my $dist_name = $1;
 		}
 
-		if ( $path_info =~ m{^/~([a-z]+)/([^/]+)/$} ) {
-			my $data = get_dist_data( uc $1, $2 );
+		# ~ealleniii/Config-Options-0.08/
+		if ( $path_info =~ m{^/~([a-z]+)/([^/]+)/(MANIFEST)?$} ) {
+			my ($pauseid, $dist_name, $file) = (uc($1), $2, $3);
+			if ($file) {
+				my $manifest = get "http://api.metacpan.org/source/$pauseid/$dist_name/$file";
+				my @rows = split /\r?\n/, $manifest;
+				my @entries;
+				foreach my $row (@rows) {
+					$row =~ s/^\s+|\s+$//g;
+					my ($file, $text) = split /\s+/, $row, 2;
+					push @entries, {
+						file => $file,
+						text => $text,
+					};
+				}
+				my $author  = get_author_info($pauseid);
+				return template( 'manifest', { manifest => \@entries, pauseid => $pauseid, dist_name => $dist_name, author => $author, username => lc($pauseid) } );
+			}
+			my $data = get_dist_data( $pauseid, $dist_name );
 			return template( 'dist', $data );
 		}
 
