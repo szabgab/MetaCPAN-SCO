@@ -71,6 +71,7 @@ FAIL (<% dist.tests.fail %>)&nbsp;&nbsp;
 <% CASE 'unknown' %>Unknown
 <% CASE 'perl_5' %><a href="http://dev.perl.org/licenses/">The Perl 5 License (Artistic 1 & GPL 1)</a>
 <% CASE 'artistic_2' %><a href="http://www.perlfoundation.org/artistic_license_2_0">The Artistic License 2.0 (GPL Compatible)</a>
+<% CASE 'lgpl_2_1' %><a href="http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt">The GNU Lesser General Public License, Version 2.1, February 1999</a>
 <% CASE %> TODO <% dist.metadata.license.0 %>
 <% END %>
 </td>
