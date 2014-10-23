@@ -45,14 +45,16 @@ style="float:right"
     </small></td></tr>
 
 
-<tr>
-    <td class=label>CPAN Testers</td>
-    <td class=cell colspan=3><small>
-PASS (<% dist.tests.pass %>)&nbsp;&nbsp;
-FAIL (<% dist.tests.fail %>)&nbsp;&nbsp;
-     [&nbsp;<a href="http://www.cpantesters.org/distro/<% dist.metadata.name.substr(0, 1) %>/<% dist.metadata.name %>.html#<% dist.name %>">View&nbsp;Reports</a>&nbsp;]
-     [&nbsp;<a href="http://matrix.cpantesters.org/?dist=<% dist.metadata.name %>+<% dist.metadata.version %>">Perl/Platform&nbsp;Version&nbsp;Matrix</a>&nbsp;]
-    </small></td></tr>
+<% IF dist.tests.pass || dist.tests.pass %>
+    <tr>
+        <td class=label>CPAN Testers</td>
+        <td class=cell colspan=3><small>
+    PASS (<% dist.tests.pass %>)&nbsp;&nbsp;
+    FAIL (<% dist.tests.fail %>)&nbsp;&nbsp;
+         [&nbsp;<a href="http://www.cpantesters.org/distro/<% dist.metadata.name.substr(0, 1) %>/<% dist.metadata.name %>.html#<% dist.name %>">View&nbsp;Reports</a>&nbsp;]
+         [&nbsp;<a href="http://matrix.cpantesters.org/?dist=<% dist.metadata.name %>+<% dist.metadata.version %>">Perl/Platform&nbsp;Version&nbsp;Matrix</a>&nbsp;]
+        </small></td></tr>
+<% END %>
 
 
    <tr>
