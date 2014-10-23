@@ -145,10 +145,9 @@ sub get_dist_data {
 		my $json3 = get
 			"http://api.metacpan.org/v0/release/_search?q=distribution:$dist->{metadata}{name}&limit=20&fields=author,name,date,status";
 		my $data3 = from_json $json3;
-		@releases
-			= reverse sort { $a->{date} cmp $b->{date} }
-			grep           { $_->{status} eq 'cpan' }
-			map            { $_->{fields} } @{ $data3->{hits}{hits} };
+		@releases = reverse sort { $a->{date} cmp $b->{date} }
+			grep { $_->{status} eq 'cpan' }
+			map  { $_->{fields} } @{ $data3->{hits}{hits} };
 
 		1;
 	} or do {
@@ -282,8 +281,7 @@ sub search {
 				= get
 				"http://api.metacpan.org/v0/author/_search?q=author.name:*$query*&size=5000&fields=name";
 			my $data = from_json $json;
-			@authors
-				= sort { $a->{id} cmp $b->{id} }
+			@authors = sort { $a->{id} cmp $b->{id} }
 				map { { id => $_->{_id}, name => $_->{fields}{name} } }
 				@{ $data->{hits}{hits} };
 			1;
@@ -339,8 +337,7 @@ sub get_distros_by_pauseid {
 			. $pause_id
 			. '&size=500';
 		my $raw = from_json $json;
-		@data
-			= sort { $a->{name} cmp $b->{name} }
+		@data = sort { $a->{name} cmp $b->{name} }
 			map {
 			{
 				name         => $_->{_source}{name},
@@ -394,8 +391,7 @@ sub authors_starting_by {
 				= get
 				"http://api.metacpan.org/v0/author/_search?q=author._id:$char*&size=5000&fields=name";
 			my $data = from_json $json;
-			@authors
-				= sort { $a->{id} cmp $b->{id} }
+			@authors = sort { $a->{id} cmp $b->{id} }
 				map { { id => $_->{_id}, name => $_->{fields}{name} } }
 				@{ $data->{hits}{hits} };
 			1;

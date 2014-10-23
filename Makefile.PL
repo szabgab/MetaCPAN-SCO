@@ -47,6 +47,8 @@ my %build_requires     = ();
 my %test_requires      = (
 	'Test::More'            => '1.00',
 	'Test::WWW::Mechanize'  => '0',
+	'Test::Code::TidyAll'   => '0',
+	'Perl::Tidy'            => '0',
 	'Plack::Test'           => '0',
 	'HTTP::Request::Common' => '0',
 );
