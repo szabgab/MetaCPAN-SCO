@@ -1,7 +1,8 @@
+*.swp
+/.tidyall.d/
 /MYMETA.*
 /Makefile
 /blib/
-/pm_to_blib
-*.swp
-/totals.json
 /config
+/pm_to_blib
+/totals.json

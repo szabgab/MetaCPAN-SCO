@@ -9,7 +9,6 @@ plan tests => 2;
 
 use MetaCPAN::SCO;
 
-
 my $app = MetaCPAN::SCO->run;
 is( ref $app, 'CODE', 'Got app' );
 

@@ -32,20 +32,18 @@ curl http://api.metacpan.org/v0/module/_search?size=0
 
 =cut
 
-
 sub run {
-    my ($self, $root) = @_;
+	my ( $self, $root ) = @_;
 
-    my %totals;
-    foreach my $name (qw(author distribution module)) {
-        my $json = get "http://api.metacpan.org/v0/$name/_search?size=0";
-        my $data = from_json $json;
-        $totals{$name} = $data->{hits}{total};
-    }
-    path("$root/totals.json")->spew_utf8(to_json \%totals);
-    return; 
+	my %totals;
+	foreach my $name (qw(author distribution module)) {
+		my $json = get "http://api.metacpan.org/v0/$name/_search?size=0";
+		my $data = from_json $json;
+		$totals{$name} = $data->{hits}{total};
+	}
+	path("$root/totals.json")->spew_utf8( to_json \%totals );
+	return;
 }
-
 
 1;
 
