@@ -83,7 +83,11 @@ FAIL (<% dist.tests.fail %>)&nbsp;&nbsp;
                  <% FOREACH col = table.cols %>
                     <td>
                       <% FOR file IN col %>
-                        <a href="/src/<% author.pauseid FILTER upper %>/<% dist.name %>/<% file.path %>"><% file.path %></a><br>
+                        <% IF file.path == 'MANIFEST' %>
+                            <a href="<% file.path %>"><% file.path %></a><br>
+                        <% ELSE %>
+                            <a href="/src/<% author.pauseid FILTER upper %>/<% dist.name %>/<% file.path %>"><% file.path %></a><br>
+                        <% END %>
                       <% END %>
                    </td>
                  <% END %>
