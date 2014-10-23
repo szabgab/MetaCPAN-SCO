@@ -95,10 +95,14 @@ sub run {
 				foreach my $row (@rows) {
 					$row =~ s/^\s+|\s+$//g;
 					my ($file, $text) = split /\s+/, $row, 2;
-					push @entries, {
+					my %e = (
 						file => $file,
 						text => $text,
-					};
+					);
+					if ($file =~ /\.(pod|pm)$/) {
+						$e{pod} = $file;
+					}
+					push @entries, \%e;
 				}
 				my $author  = get_author_info($pauseid);
 				return template( 'manifest', { manifest => \@entries, pauseid => $pauseid, dist_name => $dist_name, author => $author, username => lc($pauseid) } );

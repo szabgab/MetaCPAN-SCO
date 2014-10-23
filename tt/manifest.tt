@@ -13,11 +13,9 @@
 <table class=manifest>
   <% FOR row IN manifest %>
      <tr><td><a href="/src/<% pauseid %>/<% dist_name %>/<% row.file %>"><% row.file %></a>
-<!--
            <% IF row.pod %>
-              &nbsp;<small>[<a href="lib/Config/Model/Itself.pm">pod</a>]</small>
+              &nbsp;<small>[<a href="<% row.pod %>">pod</a>]</small>
            <% END %>
--->
          </td>
          <td><% row.text %></td></tr>
    </td><td></td></tr>
