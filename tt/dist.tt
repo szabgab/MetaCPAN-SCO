@@ -109,7 +109,11 @@ style="float:right"
     <% FOREACH module IN modules %>
       <tr class="<% IF loop.index % 2 %>s<% ELSE %>r<% END %>">
         <td>
-         <a href="<% module.path %>"><% module.name %></a>
+         <% IF module.documentation %>
+            <a href="<% module.path %>"><% module.name %></a>
+         <% ELSE %>
+            <% module.name %>
+         <% END %>
         </td>
         <td width="99%">
          <small><% module.abstract %> &nbsp;</small>
@@ -121,5 +125,17 @@ style="float:right"
   </table>
  </div>
 
-
+<% IF documentation.size %>
+<div class=box>
+  <h2 class=t2>Documentation</h2>
+  <table width="100%">
+    <% FOR doc IN documentation %>
+      <tr class="<% IF loop.index % 2 %>s<% ELSE %>r<% END %>">
+        <td><a href="<% doc.path %>"><% doc.documentation %></a></td>
+        <td width="99%"><small><% doc.abstract %></small></td>
+      </tr>
+    <% END %>
+  </table>
+</div>
+<% END %>
 

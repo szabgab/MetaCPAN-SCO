@@ -88,7 +88,7 @@ sub run {
 			eval {
 				my $json1 = get 'http://api.metacpan.org/v0/release/' . $pauseid . '/' . $dist_name_ver;
 				$dist = from_json $json1;
-				my $json2 = get "http://api.metacpan.org/v0/file/_search?q=release:$dist_name_ver&size=1000&fields=release,path,module.name,abstract,module.version";
+				my $json2 = get "http://api.metacpan.org/v0/file/_search?q=release:$dist_name_ver&size=1000&fields=release,path,module.name,abstract,module.version,documentation";
 				my $data2 = from_json $json2;
 				@files = map { $_->{fields} } @{ $data2->{hits}{hits} };
 				1;
@@ -102,9 +102,11 @@ sub run {
 				Makefile.PL Build.PL META.yml META.json
 			);
 
-			my @modules = grep { $_->{'module.name'} } @files;
-			$_->{name} = delete $_->{'module.name'} for @modules;
-			$_->{version} = delete $_->{'module.version'} for @modules;
+			$_->{name} = delete $_->{'module.name'} for @files;
+			$_->{version} = delete $_->{'module.version'} for @files;
+
+			my @modules = sort { $a->{name} cmp $b->{name} } grep { $_->{name} } @files;
+			my @documentation = sort { $a->{documentation} cmp $b->{documentation} } grep { $_->{documentation} and not $_->{name} } @files;
 
 			# It seem sco shows META.json if it is available or META.yml if that is available, but not both
 			# and prefers to show META.json
@@ -124,7 +126,7 @@ sub run {
 			$dist->{this_name} = $dist->{name};
 			my $author = get_author_info($pauseid);
 
-			return template('dist', { dist => $dist, author => $author, special_files => \@special_files, modules => \@modules });
+			return template('dist', { dist => $dist, author => $author, special_files => \@special_files, modules => \@modules, documentation => \@documentation });
 		}
 
 		if ($path_info eq '/search') {
