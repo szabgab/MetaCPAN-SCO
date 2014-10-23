@@ -22,7 +22,7 @@ test_psgi $app, sub {
 };
 
 subtest dist_local_tie => sub {
-	plan tests => 7;
+	plan tests => 13;
 
 	test_psgi $app, sub {
 		my $cb   = shift;
@@ -44,6 +44,23 @@ subtest dist_local_tie => sub {
 			q{<a href="http://dev.perl.org/licenses/">The Perl 5 License (Artistic 1 & GPL 1)</a>},
 			'license'
 		);
+		contains( $html, ' git://github.com/perlancar/perl-Locale-Tie.git ',
+			'github url' );
+		contains( $html,
+			'<a href="https://metacpan.org/release/Locale-Tie">Website</a>',
+			'Website' );
+		contains(
+			$html,
+			'<a href="lib/Locale/Tie.pm">Locale::Tie</a>',
+			'link to module'
+		);
+		contains(
+			$html,
+			'<small>Get/set locale via (localizeable) variables &nbsp;</small>',
+			'abstract'
+		);
+		contains( $html, 'META.json', 'META.json' );
+		unlike $html, qr{META.yml}, 'no META.yml';
 	};
 };
 
@@ -55,7 +72,7 @@ sub contains {
 	if ( not $res ) {
 		diag $str;
 		diag "\nDoes not contain:\n\n";
-		diag $expected;
+		diag "'$expected'";
 	}
 	return $res;
 }
