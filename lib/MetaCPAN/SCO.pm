@@ -143,7 +143,7 @@ sub get_dist_data {
 		@files = map { $_->{fields} } @{ $data2->{hits}{hits} };
 
 		my $json3 = get
-			'http://api.metacpan.org/v0/release/_search?q=distribution:Config-Model-Itself&limit=20&fields=author,name,date,status';
+			"http://api.metacpan.org/v0/release/_search?q=distribution:$dist->{metadata}{name}&limit=20&fields=author,name,date,status";
 		my $data3 = from_json $json3;
 		@releases
 			= reverse sort { $a->{date} cmp $b->{date} }
