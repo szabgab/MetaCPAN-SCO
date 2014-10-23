@@ -5,20 +5,52 @@ use Test::More;
 use Plack::Test;
 use HTTP::Request::Common qw(GET);
 
-plan tests => 3;
+plan tests => 4;
 
 use MetaCPAN::SCO;
 
 my $app = MetaCPAN::SCO->run;
 is( ref $app, 'CODE', 'Got app' );
 
-test_psgi $app, sub {
-	my $cb = shift;
-	like(
-		$cb->( GET '/' )->content,
-		qr{<title>The CPAN Search Site - search.cpan.org</title>},
-		'root route'
-	);
+subtest home => sub {
+	plan tests => 3;
+
+	test_psgi $app, sub {
+		my $cb   = shift;
+		my $html = $cb->( GET '/' )->content;
+		like( $html,
+			qr{<title>The CPAN Search Site - search.cpan.org</title>},
+			'root route' );
+		contains( $html, q{<a href="/author/">Authors</a>}, 'authors link' );
+		contains( $html, q{<a href="http://log.perl.org/">News</a>},
+			'news link' );    # link differs in sco
+	};
+};
+
+subtest author => sub {
+	plan tests => 4 + 3;
+
+	test_psgi $app, sub {
+		my $cb   = shift;
+		my $html = $cb->( GET '/author/' )->content;
+		contains( $html, q{<br><div class="t4">Author</div><br>}, 'Author' );
+		contains( $html, q{<a href="?A"> A </a>}, 'link to A' );
+		contains( $html, q{<a href="?M"> M </a>}, 'link to M' );
+		contains( $html, q{<a href="?Q"> Q </a>}, 'link to Q' );
+	};
+
+	test_psgi $app, sub {
+		my $cb   = shift;
+		my $html = $cb->( GET '/author/?Q' )->content;
+		like( $html, qr{<td>\s*Q\s*</td>}, 'Q without link' );
+		unlike( $html, qr{<td>Q</td>}, 'no link to Q' );
+		contains(
+			$html,
+			q{<a href="/~qantins/"><b>QANTINS</b></a><br/><small>Marc Qantins</small>},
+			'QANTINS'
+		);
+	};
+
 };
 
 subtest dist_local_tie => sub {
