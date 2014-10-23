@@ -22,7 +22,7 @@ test_psgi $app, sub {
 };
 
 test_psgi $app, sub {
-	my $cb = shift;
+	my $cb      = shift;
 	my $content = $cb->( GET '/~perlancar/Locale-Tie-0.03/' )->content;
 	unlike $content, qr/ARRAY/;
 };
