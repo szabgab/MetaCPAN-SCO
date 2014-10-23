@@ -176,6 +176,7 @@ sub get_dist_data {
 	my ( $pauseid, $dist_name_ver ) = @_;
 
 	# to test: http://search.cpan.org/~ddumont/Config-Model-Itself-1.241/
+	# to test: ~perlancar/Locale-Tie-0.03/
 
 	# curl 'http://api.metacpan.org/v0/release/AADLER/Games-LogicPuzzle-0.20'
 	# curl 'http://api.metacpan.org/v0/release/Games-LogicPuzzle'
@@ -213,8 +214,16 @@ sub get_dist_data {
 		Makefile.PL Build.PL META.yml META.json
 	);
 
-	$_->{name}    = delete $_->{'module.name'}    for @files;
-	$_->{version} = delete $_->{'module.version'} for @files;
+	for my $f (@files) {
+		$f->{name}    = delete $f->{'module.name'};
+		$f->{version} = delete $f->{'module.version'};
+
+# If a file has several packages in it, then the 'name' field will be an ARRAY
+# http://search.cpan.org/~perlancar/Locale-Tie-0.03/
+		if ( ref $f->{name} ) {
+			$f->{name} = $f->{name}[0];
+		}
+	}
 
 	my @modules
 		= sort { $a->{name} cmp $b->{name} } grep { $_->{name} } @files;
