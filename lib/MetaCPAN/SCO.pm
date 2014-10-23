@@ -80,10 +80,20 @@ sub run {
 			return template('dist', $data);
 		}
 
+		#if ($path_info =~ m{^/src/([^/]+)/([^/]+)/(.*)}) {
+		if ($path_info =~ m{^/src/(.*)}) {
+			my $res = Plack::Response->new();
+			#http://api.metacpan.org/source/DDUMONT/Config-Model-Itself-1.241/Build.PL
+
+			# meta information about a file:
+			# http://api.metacpan.org/v0/file/_search?q=path:Build.PL%20AND%20release:Config-Model-Itself-1.241&limit=1
+			$res->redirect("http://api.metacpan.org/source/$1", 301);
+			return $res->finalize;
+		}
+
 		if ($path_info eq '/search') {
 			return search($request->param('query'), $request->param('mode'));
 		}
-
 
 		my $reply = template('404');
 		return [ '404', [ 'Content-Type' => 'text/html' ], $reply->[2], ];
@@ -96,6 +106,8 @@ sub run {
 		$app;
 	};
 }
+
+
 
 sub get_dist_data {
 	my ($pauseid, $dist_name_ver) = @_;
@@ -232,7 +244,7 @@ sub recent {
 
 sub search {
 	my ($query, $mode) = @_;
-	
+
 	if ($mode eq 'author') {
 		my @authors = [];
 		eval {
