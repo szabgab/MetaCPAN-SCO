@@ -106,16 +106,16 @@ style="float:right"
  <div class=box>
   <h2 class=t2>Modules</h2>
   <table width="100%">
-    <% FOREACH p IN dist.provides %>
+    <% FOREACH module IN modules %>
       <tr class="<% IF loop.index % 2 %>s<% ELSE %>r<% END %>">
         <td>
-         <a href="TODO"><% p %></a>
+         <a href="<% module.path %>"><% module.name %></a>
         </td>
         <td width="99%">
-         <small>TODO &nbsp;</small>
+         <small><% module.abstract %> &nbsp;</small>
         </td>
         <td>&nbsp;</td>
-        <td class="version">TODO</td>
+        <td class="version"><% module.version %></td>
       </tr>
     <% END %>
   </table>
