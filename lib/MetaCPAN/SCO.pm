@@ -109,9 +109,14 @@ sub run {
 			# I wonder if showing both (when available) can be considered a slight improvement or if we should
 			# hide META.yml if there is a META.json already?
 
+			my %special = map { $_->{path} => $_ } grep { $SPECIAL{$_->{path}} } @files;
+			if ($special{'META.json'}) {
+				delete $special{'META.yml'};
+			}
+
 			# TODO: the MANIFEST file gets special treatment here and instead of linking to src/ it is linked without
 			# anything and then it is shown with links to the actual files.
-			my @special_files = sort { lc $a->{path} cmp lc $b->{path} } grep { $SPECIAL{$_->{path}} } @files;
+			my @special_files = sort { lc $a->{path} cmp lc $b->{path} } values %special;
 			$dist->{this_name} = $dist->{name};
 			my $author = get_author_info($pauseid);
 
