@@ -13,6 +13,7 @@ use Path::Tiny qw(path);
 use Plack::Builder;
 use Plack::Response;
 use Plack::Request;
+use Pod::Simple::HTML;
 use POSIX qw(strftime);
 use Template;
 use Time::Local qw(timegm);
@@ -86,9 +87,14 @@ sub run {
 		}
 
 		# ~ealleniii/Config-Options-0.08/
-		if ( $path_info =~ m{^/~([a-z]+)/([^/]+)/(MANIFEST)?$} ) {
+		if ( $path_info =~ m{^/~([a-z]+)/([^/]+)/(.*)?$} ) {
 			my ( $pauseid, $dist_name, $file ) = ( uc($1), $2, $3 );
-			if ($file) {
+			if ( not $file ) {
+				my $data = get_dist_data( $pauseid, $dist_name );
+				return template( 'dist', $data );
+			}
+
+			if ( $file eq 'MANIFEST' ) {
 				my $manifest = get
 					"http://api.metacpan.org/source/$pauseid/$dist_name/$file";
 				my @rows = split /\r?\n/, $manifest;
@@ -117,8 +123,24 @@ sub run {
 					}
 				);
 			}
-			my $data = get_dist_data( $pauseid, $dist_name );
-			return template( 'dist', $data );
+
+			if ( $file =~ /\.(pod|pm)$/ ) {
+				my $source = get
+					"http://api.metacpan.org/source/$pauseid/$dist_name/$file";
+
+				my $p = Pod::Simple::HTML->new;
+				$p->output_string( \my $pod );
+				$p->index(1);
+				$p->html_header_before_title('');
+				$p->html_header_after_title('');
+				$p->html_footer('');
+				$p->parse_string_document($source);
+
+		   # fetch info about the distribution to show on the right-hand side.
+
+				return template( 'pod', { pod => $pod } );
+			}
+
 		}
 
 		#if ($path_info =~ m{^/src/([^/]+)/([^/]+)/(.*)}) {
