@@ -50,6 +50,8 @@ my %test_requires      = (
 	'Test::WWW::Mechanize'  => '0',
 	'Test::Code::TidyAll'   => '0',
 	'Perl::Tidy'            => '0',
+	'Perl::Critic'          => '0',
+	'Test::Perl::Critic'    => '0',
 	'Plack::Test'           => '0',
 	'HTTP::Request::Common' => '0',
 );
