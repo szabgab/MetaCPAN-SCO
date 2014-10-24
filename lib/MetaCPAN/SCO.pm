@@ -290,18 +290,18 @@ sub recent {
 			and => [
 				{ term => { status => 'latest', } },
 				{
-					"range" => {
-						"date" => {
-							"from" => "${start_y_m_d}T23:59:59",
-							"to"   => "${end_y_m_d}T23:59:59",
+					range => {
+						date => {
+							from => "${start_y_m_d}T23:59:59",
+							to   => "${end_y_m_d}T23:59:59",
 						},
 					},
 				},
 			]
 		},
-		fields => [ "name", "author", "status", "date", "abstract" ],
-		sort => { date => 'desc' },
-		size => 2000,
+		fields => [qw(name author status date abstract)],
+		sort   => { date => 'desc' },
+		size   => 2000,
 	};
 
 	my @days;
