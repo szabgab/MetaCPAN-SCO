@@ -5,7 +5,7 @@ use Test::More;
 use Plack::Test;
 use HTTP::Request::Common qw(GET);
 
-plan tests => 6;
+plan tests => 7;
 
 use MetaCPAN::SCO;
 
@@ -175,6 +175,37 @@ subtest dist_text_mediawiki => sub {
 		);
 	};
 
+};
+
+subtest dist_text_mediawiki => sub {
+	plan tests => 9;
+
+	test_psgi $app, sub {
+		my $cb = shift;
+		my $html
+			= $cb->( GET '/~ddumont/Config-Model-Itself-1.241/' )->content;
+		unlike $html, qr/ARRAY/;
+		contains( $html,
+			q{<a href="/src/DDUMONT/Config-Model-Itself-1.241/LICENSE">LICENSE</a><br>}
+		);
+		contains( $html,
+			q{<a href="lib/Config/Model/Itself.pm">Config::Model::Itself</a>}
+		);
+		contains( $html,
+			q{<a href="lib/Config/Model/Itself/BackendDetector.pm">Config::Model::Itself::BackendDetector</a>}
+		);
+		contains( $html, q{Config::Model::Itself::TkEditUI} );
+		unlike( $html, qr{\QConfig/Model/Itself/TkEditUI}, 'no link' );
+
+		contains( $html, q{<h2 class="t2">Modules</h2>}, 'Modules' );
+		contains( $html, q{<h2 class="t2">Documentation</h2>},
+			'documentation' );
+		contains(
+			$html,
+			q{<a href="lib/Config/Model/models/Itself/Class.pod">Config::Model::models::Itself::Class</a>},
+			'link to pod'
+		);
+	};
 };
 
 sub contains {

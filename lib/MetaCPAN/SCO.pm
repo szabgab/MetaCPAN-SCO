@@ -175,9 +175,6 @@ sub run {
 sub get_dist_data {
 	my ( $pauseid, $dist_name_ver ) = @_;
 
-	# to test: http://search.cpan.org/~ddumont/Config-Model-Itself-1.241/
-	# to test: ~perlancar/Locale-Tie-0.03/
-
 	# curl 'http://api.metacpan.org/v0/release/AADLER/Games-LogicPuzzle-0.20'
 	# curl 'http://api.metacpan.org/v0/release/Games-LogicPuzzle'
 	# from https://github.com/CPAN-API/cpan-api/wiki/API-docs
