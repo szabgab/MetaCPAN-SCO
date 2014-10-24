@@ -4,20 +4,46 @@ use warnings;
 use Test::More;
 use Plack::Test;
 use HTTP::Request::Common qw(GET);
+use Test::HTML::Tidy;
+use HTML::Tidy;
 
 plan tests => 7;
 
 use MetaCPAN::SCO;
 
+my $tidy = HTML::Tidy->new;
+
+# HTML 4: <script src="/jquery.js" type="text/javascript"></script>
+# HTML 5: <script src="/jquery.js"></script>
+$tidy->ignore( text => qr{<script> inserting "type" attribute} );
+
+# HTML 4: <link rel="stylesheet" href="/style.css" type="text/css" />
+# HTML 5: <link rel="stylesheet" href="/style.css" />
+$tidy->ignore( text => qr{<link> inserting "type" attribute} );
+
+# HTML 4.01    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+# HTML 5       <meta charset="utf-8" />
+$tidy->ignore( text => qr{<meta> proprietary attribute "charset"} );
+$tidy->ignore( text => qr{<meta> lacks "content" attribute} );
+
+# AFAIK HTML 5 does not support the "summary" attribute
+$tidy->ignore( text => qr{<table> lacks "summary" attribute} );
+
+# We should probably replace & in gravatar URLS by &amp; instead of hiding the warning:
+#$tidy->ignore( text => qr{unescaped & or unknown entity "&d"} );
+
+#$tidy->ignore( text => qr{inserting} ); #: <script> inserting "type" attribute} );
+
 my $app = MetaCPAN::SCO->run;
 is( ref $app, 'CODE', 'Got app' );
 
 subtest home => sub {
-	plan tests => 3;
+	plan tests => 4;
 
 	test_psgi $app, sub {
 		my $cb   = shift;
 		my $html = $cb->( GET '/' )->content;
+		html_tidy_ok( $tidy, $html );
 		like( $html,
 			qr{<title>The CPAN Search Site - search.cpan.org</title>},
 			'root route' );
@@ -28,11 +54,12 @@ subtest home => sub {
 };
 
 subtest authors => sub {
-	plan tests => 4 + 3;
+	plan tests => 5 + 4;
 
 	test_psgi $app, sub {
 		my $cb   = shift;
 		my $html = $cb->( GET '/author/' )->content;
+		html_tidy_ok( $tidy, $html );
 		contains( $html, q{<br><div class="t4">Author</div><br>}, 'Author' );
 		contains( $html, q{<a href="?A"> A </a>}, 'link to A' );
 		contains( $html, q{<a href="?M"> M </a>}, 'link to M' );
@@ -42,6 +69,7 @@ subtest authors => sub {
 	test_psgi $app, sub {
 		my $cb   = shift;
 		my $html = $cb->( GET '/author/?Q' )->content;
+		html_tidy_ok( $tidy, $html );
 		like( $html, qr{<td>\s*Q\s*</td>}, 'Q without link' );
 		unlike( $html, qr{<td>Q</td>}, 'no link to Q' );
 		contains(
@@ -53,11 +81,12 @@ subtest authors => sub {
 };
 
 subtest author => sub {
-	plan tests => 6;
+	plan tests => 8;
 
 	test_psgi $app, sub {
 		my $cb   = shift;
 		my $html = $cb->( GET '/~szabgab/' )->content;
+		html_tidy_ok( $tidy, $html );
 		contains(
 			$html,
 			q{<a href="Dwimmer-0.32/">Dwimmer-0.32</a>},
@@ -82,6 +111,7 @@ subtest author => sub {
 	test_psgi $app, sub {
 		my $cb   = shift;
 		my $html = $cb->( GET '/~quinnm/' )->content;
+		html_tidy_ok( $tidy, $html );
 
 # difference between sco and the clone
 #contains( $html, q{<a href="mailto:CENSORED">CENSORED</a>}, 'censored e-mail' );
@@ -97,11 +127,12 @@ subtest author => sub {
 };
 
 subtest dist_local_tie => sub {
-	plan tests => 13;
+	plan tests => 14;
 
 	test_psgi $app, sub {
 		my $cb   = shift;
 		my $html = $cb->( GET '/~perlancar/Locale-Tie-0.03/' )->content;
+		html_tidy_ok( $tidy, $html );
 		unlike $html, qr/ARRAY/;
 		contains( $html, q{Locale-Tie-0.03}, 'dist-ver name' );
 		contains( $html, q{23 Oct 2014},     'date' );
@@ -116,7 +147,7 @@ subtest dist_local_tie => sub {
 		contains( $html, q{<a href="MANIFEST">MANIFEST</a>}, 'MANIFEST' );
 		contains(
 			$html,
-			q{<a href="http://dev.perl.org/licenses/">The Perl 5 License (Artistic 1 & GPL 1)</a>},
+			q{<a href="http://dev.perl.org/licenses/">The Perl 5 License (Artistic 1 &amp; GPL 1)</a>},
 			'license'
 		);
 		contains( $html, ' git://github.com/perlancar/perl-Locale-Tie.git ',
@@ -140,12 +171,13 @@ subtest dist_local_tie => sub {
 };
 
 subtest dist_text_mediawiki => sub {
-	plan tests => 10;
+	plan tests => 11;
 
 	test_psgi $app, sub {
 		my $cb = shift;
 		my $html
 			= $cb->( GET '/~szabgab/Text-MediawikiFormat-1.01/' )->content;
+		html_tidy_ok( $tidy, $html );
 		unlike $html, qr/ARRAY/;
 
 # TODO
@@ -178,12 +210,13 @@ subtest dist_text_mediawiki => sub {
 };
 
 subtest dist_text_mediawiki => sub {
-	plan tests => 9;
+	plan tests => 12;
 
 	test_psgi $app, sub {
 		my $cb = shift;
 		my $html
 			= $cb->( GET '/~ddumont/Config-Model-Itself-1.241/' )->content;
+		html_tidy_ok( $tidy, $html );
 		unlike $html, qr/ARRAY/;
 		contains( $html,
 			q{<a href="/src/DDUMONT/Config-Model-Itself-1.241/LICENSE">LICENSE</a><br>}
@@ -204,6 +237,11 @@ subtest dist_text_mediawiki => sub {
 			$html,
 			q{<a href="lib/Config/Model/models/Itself/Class.pod">Config::Model::models::Itself::Class</a>},
 			'link to pod'
+		);
+		contains( $html,
+			q{<a href="config-model-edit">config-model-edit</a>} );
+		contains( $html,
+			q{<a href="http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt">The GNU Lesser General Public License, Version 2.1, February 1999</a>}
 		);
 	};
 };

@@ -54,6 +54,9 @@ my %test_requires      = (
 	'Test::Perl::Critic'    => '0',
 	'Plack::Test'           => '0',
 	'HTTP::Request::Common' => '0',
+	'Test::HTML::Tidy'      => '0',
+	'HTML::Tidy'            => '0',
+
 );
 
 ###   merging data "standard code"

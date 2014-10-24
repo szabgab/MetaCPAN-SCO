@@ -437,6 +437,7 @@ sub get_author_info {
 		my $err = $@ // 'Unknown error';
 		warn $err if $err;
 	};
+	$data->{gravatar_url} =~ s{&}{&amp;}g;
 	return $data;
 }
 
