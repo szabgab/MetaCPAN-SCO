@@ -1,18 +1,18 @@
 <% USE date %>
 
-<div class=path>
+<div class="path">
    <div id="permalink" class="noprint"><a href="/dist/<% dist.metadata.name %>/">permalink</a></div>
   <a href="/~<% author.pauseid FILTER lower %>/"><% author.name %></a> &gt; <% dist.this_name %>
  </div>
 
- <div class=box>
-  <h1 class=t1><% dist.this_name %></h1>
+ <div class="box">
+  <h1 class="t1"><% dist.this_name %></h1>
 <a href="http://hexten.net/cpan-faces/"><img src="<% author.gravatar_url %>" width=80 height=80 alt="<% author.name %>" style="float:right" /></a>
 
   <table>
    <tr>
-    <td class=label>This Release</td>
-    <td class=cell><% dist.name %></td>
+    <td class="label">This Release</td>
+    <td class="cell"><% dist.name %></td>
     <td><small>&nbsp;[<a href="<% dist.download_url %>">Download</a>]
     [<a href="/src/<% author.pauseid FILTER upper %>/<% dist.name %>/">Browse</a>]&nbsp;</small></td>
     <td><small><% date.format(dist.date, '%d %b %Y') %></small>
@@ -20,8 +20,8 @@
    </tr>
 
    <tr>
-    <td class=label>Other Releases</td>
-    <td class=cell colspan=3>
+    <td class="label">Other Releases</td>
+    <td class="cell" colspan="3">
      <form action="/redirect">
       <select name="url">
        <% FOR r IN releases %>
@@ -35,8 +35,8 @@
 
 
    <tr>
-    <td class=label>Links</td>
-    <td class=cell colspan=3><small>
+    <td class="label">Links</td>
+    <td class="cell" colspan="3"><small>
      [&nbsp;<a href="http://metacpan.org/release/<% dist.metadata.name %>">MetaCPAN</a>&nbsp;]
      [&nbsp;<a href="https://rt.cpan.org/Public/Dist/Display.html?Name=<% dist.metadata.name %>">View/Report&nbsp;Bugs</a>&nbsp;]
      <% IF dist.resources.homepage %>
@@ -48,8 +48,8 @@
 
 <% IF dist.resources.repository.url %>
    <tr>
-    <td class=label>Repository</td>
-    <td class=cell colspan=3>
+    <td class="label">Repository</td>
+    <td class="cell" colspan="3">
       <small> <% dist.resources.repository.url %> - <a href="<% dist.resources.repository.web %>">Website</a></small>
     </td></tr>
 <% END %>
@@ -57,8 +57,8 @@
 
 <% IF dist.tests.pass || dist.tests.pass %>
     <tr>
-        <td class=label>CPAN Testers</td>
-        <td class=cell colspan=3><small>
+        <td class="label">CPAN Testers</td>
+        <td class="cell" colspan="3"><small>
     PASS (<% dist.tests.pass %>)&nbsp;&nbsp;
     FAIL (<% dist.tests.fail %>)&nbsp;&nbsp;
          [&nbsp;<a href="http://www.cpantesters.org/distro/<% dist.metadata.name.substr(0, 1) %>/<% dist.metadata.name %>.html#<% dist.name %>">View&nbsp;Reports</a>&nbsp;]
@@ -68,8 +68,8 @@
 
 
    <tr>
-    <td class=label>Rating</td>
-    <td class=cell colspan=3 nowrap><small>
+    <td class="label">Rating</td>
+    <td class="cell" colspan="3" nowrap><small>
 <img src="http://st.pimg.net/tucs/img/stars-0.0.gif" alt="">
      (0 Reviews)
      [&nbsp;<a href="http://cpanratings.perl.org/rate/?distribution=<% dist.metadata.name %>">Rate&nbsp;this&nbsp;distribution</a>&nbsp;]
@@ -77,8 +77,8 @@
 
 
    <tr>
-    <td class=label>License</td>
-    <td class=cell colspan=3>
+    <td class="label">License</td>
+    <td class="cell" colspan="3">
 <% SWITCH dist.metadata.license.0 %>
 <% CASE 'unknown' %>Unknown
 <% CASE 'perl_5' %><a href="http://dev.perl.org/licenses/">The Perl 5 License (Artistic 1 &amp; GPL 1)</a>
@@ -89,11 +89,11 @@
 </td>
    </tr>
    <tr>
-     <td class=label>Special Files</td>
-     <td class=cell colspan=3>
+     <td class="label">Special Files</td>
+     <td class="cell" colspan="3">
          <table>
              <% USE table(special_files, rows=2) %>
-             <tr class=distfiles>
+             <tr class="distfiles">
                  <% FOREACH col = table.cols %>
                     <td>
                       <% FOR file IN col %>

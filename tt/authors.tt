@@ -1,6 +1,6 @@
 <br><div class="t4">Author</div><br>
  <center>
-  <table class=chmenu>
+  <table class="chmenu">
     <% USE table(letters, cols=2) %>
     <% FOREACH cols = table.cols %>
        <tr>

@@ -38,11 +38,12 @@ my $app = MetaCPAN::SCO->run;
 is( ref $app, 'CODE', 'Got app' );
 
 subtest home => sub {
-	plan tests => 4;
+	plan tests => 5;
 
 	test_psgi $app, sub {
 		my $cb   = shift;
 		my $html = $cb->( GET '/' )->content;
+		html_check($html);
 		html_tidy_ok( $tidy, $html );
 		like( $html,
 			qr{<title>The CPAN Search Site - search.cpan.org</title>},
@@ -54,11 +55,12 @@ subtest home => sub {
 };
 
 subtest authors => sub {
-	plan tests => 5 + 4;
+	plan tests => 6 + 5;
 
 	test_psgi $app, sub {
 		my $cb   = shift;
 		my $html = $cb->( GET '/author/' )->content;
+		html_check($html);
 		html_tidy_ok( $tidy, $html );
 		contains( $html, q{<br><div class="t4">Author</div><br>}, 'Author' );
 		contains( $html, q{<a href="?A"> A </a>}, 'link to A' );
@@ -69,6 +71,7 @@ subtest authors => sub {
 	test_psgi $app, sub {
 		my $cb   = shift;
 		my $html = $cb->( GET '/author/?Q' )->content;
+		html_check($html);
 		html_tidy_ok( $tidy, $html );
 		like( $html, qr{<td>\s*Q\s*</td>}, 'Q without link' );
 		unlike( $html, qr{<td>Q</td>}, 'no link to Q' );
@@ -81,11 +84,12 @@ subtest authors => sub {
 };
 
 subtest author => sub {
-	plan tests => 8;
+	plan tests => 10;
 
 	test_psgi $app, sub {
 		my $cb   = shift;
 		my $html = $cb->( GET '/~szabgab/' )->content;
+		html_check($html);
 		html_tidy_ok( $tidy, $html );
 		contains(
 			$html,
@@ -111,6 +115,7 @@ subtest author => sub {
 	test_psgi $app, sub {
 		my $cb   = shift;
 		my $html = $cb->( GET '/~quinnm/' )->content;
+		html_check($html);
 		html_tidy_ok( $tidy, $html );
 
 # difference between sco and the clone
@@ -127,11 +132,12 @@ subtest author => sub {
 };
 
 subtest dist_local_tie => sub {
-	plan tests => 14;
+	plan tests => 15;
 
 	test_psgi $app, sub {
 		my $cb   = shift;
 		my $html = $cb->( GET '/~perlancar/Locale-Tie-0.03/' )->content;
+		html_check($html);
 		html_tidy_ok( $tidy, $html );
 		unlike $html, qr/ARRAY/;
 		contains( $html, q{Locale-Tie-0.03}, 'dist-ver name' );
@@ -171,12 +177,13 @@ subtest dist_local_tie => sub {
 };
 
 subtest dist_text_mediawiki => sub {
-	plan tests => 11;
+	plan tests => 12;
 
 	test_psgi $app, sub {
 		my $cb = shift;
 		my $html
 			= $cb->( GET '/~szabgab/Text-MediawikiFormat-1.01/' )->content;
+		html_check($html);
 		html_tidy_ok( $tidy, $html );
 		unlike $html, qr/ARRAY/;
 
@@ -210,12 +217,13 @@ subtest dist_text_mediawiki => sub {
 };
 
 subtest dist_text_mediawiki => sub {
-	plan tests => 12;
+	plan tests => 13;
 
 	test_psgi $app, sub {
 		my $cb = shift;
 		my $html
 			= $cb->( GET '/~ddumont/Config-Model-Itself-1.241/' )->content;
+		html_check($html);
 		html_tidy_ok( $tidy, $html );
 		unlike $html, qr/ARRAY/;
 		contains( $html,
@@ -257,5 +265,23 @@ sub contains {
 		diag "'$expected'";
 	}
 	return $res;
+}
+
+sub html_check {
+	my ( $html, $name ) = @_;
+	$name //= '';
+	local $Test::Builder::Level = $Test::Builder::Level + 1;
+
+	my @rows = split /\r?\n/, $html;
+	my @fails;
+	foreach my $i ( 0 .. @rows - 1 ) {
+		if ( $rows[$i] =~ /class=(?!")/ ) {
+			push @fails, "row $i   $rows[$i]";
+		}
+	}
+	ok( @fails == 0, $name );
+	foreach my $f (@fails) {
+		diag $f;
+	}
 }
 
