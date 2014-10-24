@@ -5,7 +5,7 @@ use Test::More;
 use Plack::Test;
 use HTTP::Request::Common qw(GET);
 
-plan tests => 4;
+plan tests => 5;
 
 use MetaCPAN::SCO;
 
@@ -27,7 +27,7 @@ subtest home => sub {
 	};
 };
 
-subtest author => sub {
+subtest authors => sub {
 	plan tests => 4 + 3;
 
 	test_psgi $app, sub {
@@ -50,7 +50,50 @@ subtest author => sub {
 			'QANTINS'
 		);
 	};
+};
 
+subtest author => sub {
+	plan tests => 6;
+
+	test_psgi $app, sub {
+		my $cb   = shift;
+		my $html = $cb->( GET '/~szabgab/' )->content;
+		contains(
+			$html,
+			q{<a href="Dwimmer-0.32/">Dwimmer-0.32</a>},
+			'link to a release'
+		);
+		contains(
+			$html,
+			q{<a href="http://backpan.perl.org/authors/id/S/SZ/SZABGAB/">Archive</a>},
+			'backpan'
+		);
+
+# the differences between the data found in 00whois.xml and what MetaCPAN provides
+#contains( $html, q{<a href="mailto:gabor%40pti.co.il">gabor@pti.co.il</a>}, 'e-mail' );
+#contains( $html, q{<a href="http://szabgab.com/" rel="me">http://szabgab.com/</a>}, 'Homepage');
+		contains( $html,
+			q{<a href="mailto:szabgab@gmail.com">szabgab@gmail.com</a>} );
+		contains( $html,
+			q{<a href="http://perlmaven.com/" rel="me">http://perlmaven.com/</a>}
+		);
+	};
+
+	test_psgi $app, sub {
+		my $cb   = shift;
+		my $html = $cb->( GET '/~quinnm/' )->content;
+
+# difference between sco and the clone
+#contains( $html, q{<a href="mailto:CENSORED">CENSORED</a>}, 'censored e-mail' );
+#contains( $html, q{<a href="http://quinnmurphy.net" rel="me">http://quinnmurphy.net</a>}, 'Homepage');
+		contains( $html,
+			q{<a href="mailto:quinnm@cpan.org">quinnm@cpan.org</a>}, '' );
+		contains(
+			$html,
+			q{<a href="http://quinnmurphy.net/" rel="me">http://quinnmurphy.net/</a>},
+			'Homepage'
+		);
+	};
 };
 
 subtest dist_local_tie => sub {

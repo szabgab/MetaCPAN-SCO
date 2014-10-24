@@ -420,6 +420,12 @@ sub get_distros_by_pauseid {
 
 sub get_author_info {
 	my ($pause_id) = @_;
+
+ # The data is received from MetaCPAN it is not what the authors set on PAUSE.
+ # See https://github.com/CPAN-API/cpan-api/issues/351
+ # The source of the data on SCO is this xml file:
+ # http://www.cpan.org/authors/00whois.xml
+
 	my $data;
 	eval {
 		my $json
