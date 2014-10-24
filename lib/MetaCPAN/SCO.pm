@@ -212,6 +212,7 @@ sub get_dist_data {
 	my %SPECIAL = map { $_ => 1 } qw(
 		Changes CHANGES LICENSE MANIFEST README
 		Makefile.PL Build.PL META.yml META.json
+		ARTISTIC SIGNATURE
 	);
 
 	for my $f (@files) {

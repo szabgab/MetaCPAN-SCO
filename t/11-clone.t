@@ -5,7 +5,7 @@ use Test::More;
 use Plack::Test;
 use HTTP::Request::Common qw(GET);
 
-plan tests => 5;
+plan tests => 6;
 
 use MetaCPAN::SCO;
 
@@ -137,6 +137,44 @@ subtest dist_local_tie => sub {
 		contains( $html, 'META.json', 'META.json' );
 		unlike $html, qr{META.yml}, 'no META.yml';
 	};
+};
+
+subtest dist_text_mediawiki => sub {
+	plan tests => 10;
+
+	test_psgi $app, sub {
+		my $cb = shift;
+		my $html
+			= $cb->( GET '/~szabgab/Text-MediawikiFormat-1.01/' )->content;
+		unlike $html, qr/ARRAY/;
+
+# TODO
+#contains( $html, q{<font color=red><b>** UNAUTHORIZED RELEASE **</b></font>}, 'UNAUTHORIZED' );
+		contains( $html, q{<small>14 Sep 2014</small>}, 'date' );
+		contains( $html,
+			q{<a href="/src/SZABGAB/Text-MediawikiFormat-1.01/ARTISTIC">ARTISTIC</a><br>}
+		);
+		contains( $html,
+			q{<a href="/src/SZABGAB/Text-MediawikiFormat-1.01/Build.PL">Build.PL</a><br>}
+		);
+		contains( $html,
+			q{<a href="/src/SZABGAB/Text-MediawikiFormat-1.01/Changes">Changes</a><br>}
+		);
+		contains( $html,
+			q{<a href="/src/SZABGAB/Text-MediawikiFormat-1.01/Makefile.PL">Makefile.PL</a><br>}
+		);
+		contains( $html, q{<a href="MANIFEST">MANIFEST</a><br>} );
+		contains( $html,
+			q{<a href="/src/SZABGAB/Text-MediawikiFormat-1.01/META.json">META.json</a><br>}
+		);
+		contains( $html,
+			q{<a href="/src/SZABGAB/Text-MediawikiFormat-1.01/README">README</a><br>}
+		);
+		contains( $html,
+			q{<a href="/src/SZABGAB/Text-MediawikiFormat-1.01/SIGNATURE">SIGNATURE</a><br>}
+		);
+	};
+
 };
 
 sub contains {
