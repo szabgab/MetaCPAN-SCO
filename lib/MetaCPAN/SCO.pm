@@ -82,8 +82,18 @@ sub run {
 				{ author => $author, distributions => $distros } );
 		}
 
+		if ( $path_info =~ m{^/dist/([^/]+)$} ) {
+			my $res = Plack::Response->new();
+			$res->redirect( "$path_info/", 301 );
+			return $res->finalize;
+		}
+
 		if ( $path_info =~ m{^/dist/([^/]+)/$} ) {
 			my $dist_name = $1;
+			my @releases  = get_releases($dist_name);
+			my $data
+				= get_dist_data( $releases[0]{author}, $releases[0]{name} );
+			return template( 'dist', $data );
 		}
 
 		# ~ealleniii/Config-Options-0.08/
@@ -179,7 +189,7 @@ sub get_releases {
 	my ($dist_name) = @_;
 
 	my $json = get
-		"http://api.metacpan.org/v0/release/_search?q=distribution:$dist_name&limit=20&fields=author,name,date,status";
+		"http://api.metacpan.org/v0/release/_search?q=distribution:$dist_name&limit=30&fields=author,name,date,status";
 	my $data = from_json $json;
 	my @releases = reverse sort { $a->{date} cmp $b->{date} }
 		grep { $_->{status} eq 'cpan' }
