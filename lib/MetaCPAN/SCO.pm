@@ -252,8 +252,10 @@ sub get_dist_data {
 			and not $_->{documentation}
 			and not $_->{name}
 			and not $_->{directory} eq 'true'
-			and not( $_->{path} =~ /(\.map|\.conf)$/
-			) # TODO: unclear why to filter these but they were not shown on http://search.cpan.org/~tlinden/apid-0.04/
+
+# TODO: unclear why to filter these but they were not shown on http://search.cpan.org/~tlinden/apid-0.04/
+			and not( $_->{path} =~ m{(\.map|\.conf|\.ini|cpanfile)$} )
+			and not( $_->{path} =~ m{t/} )
 		} @files;
 
 # TODO: the MANIFEST file gets special treatment here and instead of linking to src/ it is linked without
