@@ -50,7 +50,7 @@
    <tr>
     <td class="label">Repository</td>
     <td class="cell" colspan="3">
-      <small> <% dist.resources.repository.url %> - <a href="<% dist.resources.repository.web %>">Website</a></small>
+      <small> <% dist.resources.repository.url %> <% IF dist.resources.repository.web %>- <a href="<% dist.resources.repository.web %>">Website</a><% END %></small>
     </td></tr>
 <% END %>
 

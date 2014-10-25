@@ -7,7 +7,7 @@ use HTTP::Request::Common qw(GET);
 use Test::HTML::Tidy;
 use HTML::Tidy;
 
-plan tests => 9;
+plan tests => 10;
 
 use MetaCPAN::SCO;
 
@@ -157,6 +157,23 @@ subtest dist_arrat_unique => sub {
 		like( $html, qr{FAIL \(\d+\)},    'FAIL' );
 		like( $html, qr{NA \(\d+\)},      'NA' );
 		like( $html, qr{UNKNOWN \(\d+\)}, 'UNKNOWN' );
+	};
+};
+
+# TODO: Other releases should not list the current release (and the swithching has not been tested yet either)
+subtest dist_apid => sub {
+	plan tests => 7;
+
+	test_psgi $app, sub {
+		my $cb   = shift;
+		my $html = $cb->( GET '/~tlinden/apid-0.04/' )->content;
+		html_check($html);
+		html_tidy_ok( $tidy, $html );
+		unlike $html, qr/ARRAY/;
+		contains( $html, q{apid-0.04},   'dist-ver name' );
+		contains( $html, q{24 Oct 2014}, 'date' );
+		unlike( $html, qr{Website}, 'No Website' );
+		unlike( $html, qr{<a href="">Website</a>}, 'No empty website link' );
 	};
 };
 
