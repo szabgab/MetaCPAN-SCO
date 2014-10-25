@@ -153,3 +153,21 @@
 </div>
 <% END %>
 
+<% IF other_files.size %>
+<div class=box>
+  <h2 class="t2">Other Files</h2>
+  <table width="100%">
+   <tr>
+      <% USE table(special_files, cols=2) %>
+      <% FOREACH col = table.cols %>
+        <td class="column">
+          <% FOREACH row IN col %>
+            <a href="<% row.path %>"><% row.filename %></a><br>
+          <% END %>
+        </td>
+      <% END %>
+   </tr>
+  </table>
+ </div>
+<% END %>
+

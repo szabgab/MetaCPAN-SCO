@@ -161,8 +161,9 @@ subtest dist_arrat_unique => sub {
 };
 
 # TODO: Other releases should not list the current release (and the swithching has not been tested yet either)
+# 'Other Files' were listed on SCO
 subtest dist_apid => sub {
-	plan tests => 8;
+	plan tests => 14;
 
 	test_psgi $app, sub {
 		my $cb   = shift;
@@ -175,6 +176,30 @@ subtest dist_apid => sub {
 		unlike( $html, qr{Website}, 'No Website' );
 		unlike( $html, qr{<a href="">Website</a>}, 'No empty website link' );
 		unlike( $html, qr{<h2 class="t2">Modules</h2>}, 'No Modules' );
+		contains( $html,
+			q{<a href="/src/TLINDEN/apid-0.04/Changelog">Changelog</a>},
+			'Changelog' );
+		contains( $html,
+			q{<a href="/src/TLINDEN/apid-0.04/INSTALL">INSTALL</a>},
+			'INSTALL' );
+	TODO: {
+			local $TODO = 'other files';
+			contains( $html, q{<h2 class="t2">Other Files</h2>},
+				'Other Files' );
+			contains( $html,
+				q{<a href="/src/TLINDEN/apid-0.04/README.md">README.md</a>},
+				'README.md' );
+			contains(
+				$html,
+				q{<a href="/src/TLINDEN/apid-0.04/sample/README">sample/README</a>},
+				'sample/README'
+			);
+			contains(
+				$html,
+				q{<a href="/src/TLINDEN/apid-0.04/sample/index.html">sample/index.html</a>},
+				'sample/index.html'
+			);
+		}
 	};
 };
 
