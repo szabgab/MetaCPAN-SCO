@@ -163,7 +163,7 @@ subtest dist_arrat_unique => sub {
 # TODO: Other releases should not list the current release (and the swithching has not been tested yet either)
 # 'Other Files' were listed on SCO
 subtest dist_apid => sub {
-	plan tests => 14;
+	plan tests => 17;
 
 	test_psgi $app, sub {
 		my $cb   = shift;
@@ -176,6 +176,21 @@ subtest dist_apid => sub {
 		unlike( $html, qr{Website}, 'No Website' );
 		unlike( $html, qr{<a href="">Website</a>}, 'No empty website link' );
 		unlike( $html, qr{<h2 class="t2">Modules</h2>}, 'No Modules' );
+		unlike(
+			$html,
+			qr{<option value="/~tlinden/apid-0.04/">},
+			'exclude current distro from other releases'
+		);
+		contains(
+			$html,
+			q{<option value="/~tlinden/apid-0.03/">},
+			'other releases'
+		);
+		contains(
+			$html,
+			q{<option value="/~tlinden/apid-0.02/">},
+			'other releases'
+		);
 		contains( $html,
 			q{<a href="/src/TLINDEN/apid-0.04/Changelog">Changelog</a>},
 			'Changelog' );

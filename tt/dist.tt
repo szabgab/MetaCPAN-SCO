@@ -26,7 +26,9 @@
      <form action="/redirect">
       <select name="url">
        <% FOR r IN releases %>
-         <option value="/~<% r.author FILTER lower %>/<% r.name %>/"><% r.name %>&nbsp;&nbsp;--&nbsp;&nbsp;<% date.format(r.date, '%d  %b %Y') %></option>
+         <% UNLESS r.name == dist.name %>
+           <option value="/~<% r.author FILTER lower %>/<% r.name %>/"><% r.name %>&nbsp;&nbsp;--&nbsp;&nbsp;<% date.format(r.date, '%d  %b %Y') %></option>
+         <% END %>
        <% END %>
       </select>
       <input type="submit" value="Goto">
