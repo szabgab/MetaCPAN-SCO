@@ -197,8 +197,6 @@ subtest dist_apid => sub {
 		contains( $html,
 			q{<a href="/src/TLINDEN/apid-0.04/INSTALL">INSTALL</a>},
 			'INSTALL' );
-	TODO: {
-			local $TODO = 'other files';
 			contains( $html, q{<h2 class="t2">Other Files</h2>},
 				'Other Files' );
 			contains( $html,
@@ -214,7 +212,6 @@ subtest dist_apid => sub {
 				q{<a href="/src/TLINDEN/apid-0.04/sample/index.html">sample/index.html</a>},
 				'sample/index.html'
 			);
-		}
 	};
 };
 
