@@ -175,6 +175,17 @@ sub run {
 	};
 }
 
+sub get_releases {
+	my ($dist_name) = @_;
+	my $json3 = get
+		"http://api.metacpan.org/v0/release/_search?q=distribution:$dist_name&limit=20&fields=author,name,date,status";
+	my $data3 = from_json $json3;
+	my @releases = reverse sort { $a->{date} cmp $b->{date} }
+		grep { $_->{status} eq 'cpan' }
+		map  { $_->{fields} } @{ $data3->{hits}{hits} };
+	return @releases;
+}
+
 sub get_dist_data {
 	my ( $pauseid, $dist_name_ver ) = @_;
 
@@ -184,7 +195,6 @@ sub get_dist_data {
 	my $dist;
 	my $release;
 	my @files;
-	my @releases;
 
 	eval {
 		my $json1
@@ -197,18 +207,12 @@ sub get_dist_data {
 		my $data2 = from_json $json2;
 		@files = map { $_->{fields} } @{ $data2->{hits}{hits} };
 
-		my $json3 = get
-			"http://api.metacpan.org/v0/release/_search?q=distribution:$dist->{metadata}{name}&limit=20&fields=author,name,date,status";
-		my $data3 = from_json $json3;
-		@releases = reverse sort { $a->{date} cmp $b->{date} }
-			grep { $_->{status} eq 'cpan' }
-			map  { $_->{fields} } @{ $data3->{hits}{hits} };
-
 		1;
 	} or do {
 		my $err = $@ // 'Unknown error';
 		warn $err if $err;
 	};
+	my @releases = get_releases( $dist->{metadata}{name} );
 
 	my %SPECIAL = map { $_ => 1 } qw(
 		Changes CHANGES Changelog
