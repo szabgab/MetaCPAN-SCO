@@ -7,7 +7,7 @@ use HTTP::Request::Common qw(GET);
 use Test::HTML::Tidy;
 use HTML::Tidy;
 
-plan tests => 11;
+plan tests => 12;
 
 use MetaCPAN::SCO;
 
@@ -338,6 +338,28 @@ subtest dist_ddumont_text_mediawiki => sub {
 		contains( $html,
 			q{<a href="http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt">The GNU Lesser General Public License, Version 2.1, February 1999</a>}
 		);
+	};
+};
+
+subtest dist_wonko_html_template => sub {
+	plan tests => 10;
+
+	test_psgi $app, sub {
+		my $cb   = shift;
+		my $html = $cb->( GET '/~wonko/HTML-Template-2.95/' )->content;
+		html_check($html);
+		html_tidy_ok( $tidy, $html );
+		unlike $html, qr/ARRAY/;
+		contains( $html,
+			q{<a href="lib/HTML/Template.pm">HTML::Template</a>} );
+		contains( $html,
+			q{<a href="lib/HTML/Template/FAQ.pm">HTML::Template::FAQ</a>} );
+		unlike( $html, qr{Documentation} );
+		unlike( $html,
+			qr{<a href="t/testlib/IO/Capture.pm">IO::Capture</a>} );
+		unlike( $html, qr{<a href="t/testlib/_Auxiliary.pm">_Auxiliary</a>} );
+		unlike( $html, qr{Other Files} );
+		unlike( $html, qr{bench/new\.pl} );
 	};
 };
 

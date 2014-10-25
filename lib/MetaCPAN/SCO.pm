@@ -247,7 +247,9 @@ sub get_dist_data {
 	my @modules
 		= sort { $a->{name} cmp $b->{name} } grep { $_->{name} } @files;
 	my @documentation = sort { $a->{documentation} cmp $b->{documentation} }
-		grep { $_->{documentation} and not $_->{name} } @files;
+		grep {
+		$_->{documentation} and not $_->{name} and $_->{path} !~ m{^t/}
+		} @files;
 
 # It seem sco shows META.json if it is available or META.yml if that is available, but not both
 # and prefers to show META.json
@@ -270,8 +272,11 @@ sub get_dist_data {
 			and not $_->{directory} eq 'true'
 
 # TODO: unclear why to filter these but they were not shown on http://search.cpan.org/~tlinden/apid-0.04/
-			and not( $_->{path} =~ m{(\.map|\.conf|\.ini|cpanfile)$} )
-			and not( $_->{path} =~ m{t/} )
+# README.md, sample/index.html sample/README
+#and not( $_->{path} =~ m{(\.map|\.conf|\.ini|cpanfile)$} )
+#and not( $_->{path} =~ m{t/} )
+# TODO: http://search.cpan.org/dist/HTML-Template/  has all kinds of other files to filter, so there probably need to be a white-list
+			and ( $_->{path} =~ /README/ or $_->{path} =~ m{\.html$} )
 		} @files;
 
 # TODO: the MANIFEST file gets special treatment here and instead of linking to src/ it is linked without
