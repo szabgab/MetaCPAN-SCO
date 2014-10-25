@@ -7,7 +7,7 @@ use HTTP::Request::Common qw(GET);
 use Test::HTML::Tidy;
 use HTML::Tidy;
 
-plan tests => 10;
+plan tests => 11;
 
 use MetaCPAN::SCO;
 
@@ -358,6 +358,39 @@ subtest recent => sub {
 
 # TODO: /uploads.rdf
 # TODO: http://localhost:5000/~babkin/triceps-2.0.0/  (missing Other releases, CPAN Testers, missing bug count, date is incorrect, missing other files)
+
+subtest manifest => sub {
+	plan tests => 7;
+
+	test_psgi $app, sub {
+		my $cb = shift;
+		my $html
+			= $cb->( GET '/~szabgab/Array-Unique-0.08/MANIFEST' )->content;
+		html_check($html);
+		html_tidy_ok( $tidy, $html );
+		unlike $html, qr/ARRAY/;
+		contains( $html,
+			q{<a href="/src/SZABGAB/Array-Unique-0.08/MANIFEST">Source</a>},
+			'source' );
+		contains(
+			$html,
+			q{<a href="/src/SZABGAB/Array-Unique-0.08/MANIFEST">MANIFEST</a>},
+			'MANIFEST'
+		);
+		contains(
+			$html,
+			q{<a href="/src/SZABGAB/Array-Unique-0.08/lib/Array/Unique.pm">lib/Array/Unique.pm</a>},
+			'src lib/Array/Unique.pm'
+		);
+		contains( $html, q{[<a href="lib/Array/Unique.pm">pod</a>]}, 'pod' );
+	};
+
+};
+
+# TODO: http://search.cpan.org/~szabgab/Array-Unique-0.08/lib/Array/Unique.pm
+# TODO: http://search.cpan.org/dist/Array-Unique/
+# TODO: http://search.cpan.org/dist/Array-Unique/lib/Array/Unique.pm
+# TODO: search!
 
 sub contains {
 	my ( $str, $expected, $name ) = @_;

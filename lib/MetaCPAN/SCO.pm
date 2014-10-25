@@ -102,6 +102,7 @@ sub run {
 				my @rows = split /\r?\n/, $manifest;
 				my @entries;
 				foreach my $row (@rows) {
+					next if $row =~ /^\s*$/;
 					$row =~ s/^\s+|\s+$//g;
 					my ( $file, $text ) = split /\s+/, $row, 2;
 					my %e = (
