@@ -133,7 +133,7 @@ subtest author => sub {
 
 # Date was showing 04 Jun 2008 in the clone
 # "Other Releases" was showing with an empty selector, even though there are no other releases
-subtest dist_arrat_unique => sub {
+subtest dist_szabgab_array_unique => sub {
 	plan tests => 11;
 
 	test_psgi $app, sub {
@@ -162,7 +162,7 @@ subtest dist_arrat_unique => sub {
 
 # TODO: Other releases should not list the current release (and the swithching has not been tested yet either)
 # 'Other Files' were listed on SCO
-subtest dist_apid => sub {
+subtest dist_tlinden_apid => sub {
 	plan tests => 17;
 
 	test_psgi $app, sub {
@@ -214,7 +214,7 @@ subtest dist_apid => sub {
 	};
 };
 
-subtest dist_local_tie => sub {
+subtest dist_perlancar_local_tie => sub {
 	plan tests => 15;
 
 	test_psgi $app, sub {
@@ -259,7 +259,7 @@ subtest dist_local_tie => sub {
 	};
 };
 
-subtest dist_text_mediawiki => sub {
+subtest dist_szabgab_text_mediawiki => sub {
 	plan tests => 13;
 
 	test_psgi $app, sub {
@@ -303,7 +303,7 @@ subtest dist_text_mediawiki => sub {
 
 };
 
-subtest dist_text_mediawiki => sub {
+subtest dist_ddumont_text_mediawiki => sub {
 	plan tests => 13;
 
 	test_psgi $app, sub {
@@ -391,6 +391,35 @@ subtest manifest => sub {
 # TODO: http://search.cpan.org/dist/Array-Unique/
 # TODO: http://search.cpan.org/dist/Array-Unique/lib/Array/Unique.pm
 # TODO: search!
+
+#subtest dist_array_unique => sub {
+#	plan tests => 11;
+#
+#	test_psgi $app, sub {
+#		my $cb   = shift;
+#		my $html = $cb->( GET '/dist/Array-Unique/' )->content;
+#		html_check($html);
+#		html_tidy_ok( $tidy, $html );
+#		unlike $html, qr/ARRAY/;
+#		contains( $html, q{Array-Unique-0.08}, 'dist-ver name' );
+#	TODO: {
+#			local $TODO = 'Some slight inacccuracy in the date';
+#			contains( $html, q{03 Jun 2008}, 'date' );
+#		}
+#		unlike( $html, qr{Other Releases}, 'no Other Releases' );
+#		unlike(
+#			$html,
+#			qr{<select name="url">\s*</select>},
+#			'no empty selector'
+#		);
+#		like( $html, qr{PASS \(\d+\)},    'PASS' );
+#		like( $html, qr{FAIL \(\d+\)},    'FAIL' );
+#		like( $html, qr{NA \(\d+\)},      'NA' );
+#		like( $html, qr{UNKNOWN \(\d+\)}, 'UNKNOWN' );
+#	};
+#};
+
+exit;
 
 sub contains {
 	my ( $str, $expected, $name ) = @_;
