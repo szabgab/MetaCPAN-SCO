@@ -84,13 +84,13 @@ subtest authors => sub {
 };
 
 subtest author => sub {
-	plan tests => 10;
+	plan tests => 11;
 
 	test_psgi $app, sub {
 		my $cb   = shift;
 		my $html = $cb->( GET '/~szabgab/' )->content;
 		html_check($html);
-		html_tidy_ok( $tidy, $html );
+		html_tidy_ok( $tidy, $html ) or diag $html;
 		contains(
 			$html,
 			q{<a href="Dwimmer-0.32/">Dwimmer-0.32</a>},
@@ -117,6 +117,8 @@ subtest author => sub {
 		my $html = $cb->( GET '/~quinnm/' )->content;
 		html_check($html);
 		html_tidy_ok( $tidy, $html );
+		contains( $html, q{<title>Quinn Murphy  - search.cpan.org</title>},
+			'title' );
 
 # difference between sco and the clone
 #contains( $html, q{<a href="mailto:CENSORED">CENSORED</a>}, 'censored e-mail' );
@@ -163,7 +165,7 @@ subtest dist_szabgab_array_unique => sub {
 # TODO: Other releases should not list the current release (and the swithching has not been tested yet either)
 # 'Other Files' were listed on SCO
 subtest dist_tlinden_apid => sub {
-	plan tests => 17;
+	plan tests => 18;
 
 	test_psgi $app, sub {
 		my $cb   = shift;
@@ -173,6 +175,9 @@ subtest dist_tlinden_apid => sub {
 		unlike $html, qr/ARRAY/;
 		contains( $html, q{apid-0.04},   'dist-ver name' );
 		contains( $html, q{24 Oct 2014}, 'date' );
+		contains( $html,
+			q{<title>T. Linden / apid-0.04 - search.cpan.org</title>},
+			'title' );
 		unlike( $html, qr{Website}, 'No Website' );
 		unlike( $html, qr{<a href="">Website</a>}, 'No empty website link' );
 		unlike( $html, qr{<h2 class="t2">Modules</h2>}, 'No Modules' );

@@ -1,3 +1,5 @@
+<% USE HTML %>
+
 <div class="box">
   <div class="t1"><% author.name %></div>
 <a href="http://hexten.net/cpan-faces/"><img src="<% author.gravatar_url %>" alt="<% author.name %>" width="80" height="80" style="float:right"
@@ -47,7 +49,7 @@
    <% FOREACH d IN distributions %>
      <tr class="<% IF loop.index % 2 %>s<% ELSE %>r<% END %>">
        <td><a href="<% d.name %>/"><% d.name %></a></td>
-       <td><% d.abstract %></td>
+       <td><% HTML.escape(d.abstract) %></td>
        <td><small>[<a href="<% d.download_url %>">Download</a>]&nbsp;[<a
           href="/src/AADLER/Games-LogicPuzzle-0.20/">Browse</a>]</small></td>
        <td nowrap><% date.format(d.date, '%d  %b %Y') %></td>
@@ -55,5 +57,4 @@
    <% END %>
   </table>
  </div>
-
 

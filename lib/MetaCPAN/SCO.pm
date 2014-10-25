@@ -37,13 +37,20 @@ sub run {
 		my $request   = Plack::Request->new($env);
 		my $path_info = $request->path_info;
 		if ( $path_info eq '/' ) {
-			return template( 'index', { front => 1 } );
+			return template(
+				'index',
+				{
+					front => 1,
+					title => 'The CPAN Search Site - search.cpan.org',
+				}
+			);
 		}
 		if ( $path_info eq '/feedback' ) {
-			return template('feedback');
+			return template( 'feedback',
+				{ title => 'Site Feedback - search.cpan.org', } );
 		}
 		if ( $path_info eq '/faq.html' ) {
-			return template('faq');
+			return template( 'faq', { title => 'FAQ - search.cpan.org', } );
 		}
 		if ( $path_info eq '/recent' ) {
 			my $recent = recent( $request->param('d') );
@@ -51,9 +58,14 @@ sub run {
 		}
 		if ( $path_info =~ m{^/author/?$} ) {
 			my $query_string = $request->query_string;
-			return template( 'authors',
-				{ letters => [ 'A' .. 'Z' ], authors => [] } )
-				if not $query_string;
+			return template(
+				'authors',
+				{
+					letters => [ 'A' .. 'Z' ],
+					authors => [],
+					title   => 'The CPAN Search Site - search.cpan.org',
+				}
+			) if not $query_string;
 			my $lead = substr $query_string, 0, 1;
 			my $authors = authors_starting_by( uc $lead );
 			if (@$authors) {
@@ -62,7 +74,8 @@ sub run {
 					{
 						letters         => [ 'A' .. 'Z' ],
 						authors         => $authors,
-						selected_letter => uc $lead
+						selected_letter => uc($lead),
+						title => 'The CPAN Search Site - search.cpan.org',
 					}
 				);
 			}
@@ -78,8 +91,14 @@ sub run {
 			my $author  = get_author_info($pauseid);
 			$author->{cpantester} = substr( $pauseid, 0, 1 ) . '/' . $pauseid;
 			my $distros = get_distros_by_pauseid($pauseid);
-			return template( 'author',
-				{ author => $author, distributions => $distros } );
+			return template(
+				'author',
+				{
+					author        => $author,
+					distributions => $distros,
+					title         => "$author->{name}  - search.cpan.org",
+				}
+			);
 		}
 
 		if ( $path_info =~ m{^/dist/([^/]+)$} ) {
@@ -248,7 +267,9 @@ sub get_dist_data {
 		= sort { $a->{name} cmp $b->{name} } grep { $_->{name} } @files;
 	my @documentation = sort { $a->{documentation} cmp $b->{documentation} }
 		grep {
-		$_->{documentation} and not $_->{name} and $_->{path} !~ m{^t/}
+		        $_->{documentation}
+			and not $_->{name}
+			and $_->{path} !~ m{^t/}
 		} @files;
 
 # It seem sco shows META.json if it is available or META.yml if that is available, but not both
@@ -293,6 +314,7 @@ sub get_dist_data {
 		documentation => \@documentation,
 		releases      => \@releases,
 		other_files   => \@other_files,
+		title         => "$author->{name} / $dist->{name} - search.cpan.org",
 	};
 }
 
