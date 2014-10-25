@@ -197,21 +197,20 @@ subtest dist_apid => sub {
 		contains( $html,
 			q{<a href="/src/TLINDEN/apid-0.04/INSTALL">INSTALL</a>},
 			'INSTALL' );
-			contains( $html, q{<h2 class="t2">Other Files</h2>},
-				'Other Files' );
-			contains( $html,
-				q{<a href="/src/TLINDEN/apid-0.04/README.md">README.md</a>},
-				'README.md' );
-			contains(
-				$html,
-				q{<a href="/src/TLINDEN/apid-0.04/sample/README">sample/README</a>},
-				'sample/README'
-			);
-			contains(
-				$html,
-				q{<a href="/src/TLINDEN/apid-0.04/sample/index.html">sample/index.html</a>},
-				'sample/index.html'
-			);
+		contains( $html, q{<h2 class="t2">Other Files</h2>}, 'Other Files' );
+		contains( $html,
+			q{<a href="/src/TLINDEN/apid-0.04/README.md">README.md</a>},
+			'README.md' );
+		contains(
+			$html,
+			q{<a href="/src/TLINDEN/apid-0.04/sample/README">sample/README</a>},
+			'sample/README'
+		);
+		contains(
+			$html,
+			q{<a href="/src/TLINDEN/apid-0.04/sample/index.html">sample/index.html</a>},
+			'sample/index.html'
+		);
 	};
 };
 
