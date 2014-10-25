@@ -177,12 +177,13 @@ sub run {
 
 sub get_releases {
 	my ($dist_name) = @_;
-	my $json3 = get
+
+	my $json = get
 		"http://api.metacpan.org/v0/release/_search?q=distribution:$dist_name&limit=20&fields=author,name,date,status";
-	my $data3 = from_json $json3;
+	my $data = from_json $json;
 	my @releases = reverse sort { $a->{date} cmp $b->{date} }
 		grep { $_->{status} eq 'cpan' }
-		map  { $_->{fields} } @{ $data3->{hits}{hits} };
+		map  { $_->{fields} } @{ $data->{hits}{hits} };
 	return @releases;
 }
 
