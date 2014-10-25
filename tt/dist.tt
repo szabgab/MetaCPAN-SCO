@@ -156,15 +156,15 @@
 <% END %>
 
 <% IF other_files.size %>
-<div class=box>
+<div class="box">
   <h2 class="t2">Other Files</h2>
   <table width="100%">
    <tr>
-      <% USE table(special_files, cols=2) %>
+      <% USE table(other_files, cols=2) %>
       <% FOREACH col = table.cols %>
         <td class="column">
           <% FOREACH row IN col %>
-            <a href="<% row.path %>"><% row.filename %></a><br>
+            <a href="/src/<% author.pauseid FILTER upper %>/<% dist.name %>/<% row.path %>"><% row.path %></a><br>
           <% END %>
         </td>
       <% END %>

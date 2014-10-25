@@ -184,6 +184,7 @@ sub get_dist_data {
 	my $release;
 	my @files;
 	my @releases;
+
 	eval {
 		my $json1
 			= get 'http://api.metacpan.org/v0/release/'
@@ -191,7 +192,7 @@ sub get_dist_data {
 			. $dist_name_ver;
 		$dist = from_json $json1;
 		my $json2 = get
-			"http://api.metacpan.org/v0/file/_search?q=release:$dist_name_ver&size=1000&fields=release,path,module.name,abstract,module.version,documentation";
+			"http://api.metacpan.org/v0/file/_search?q=release:$dist_name_ver&size=1000&fields=release,path,module.name,abstract,module.version,documentation,directory";
 		my $data2 = from_json $json2;
 		@files = map { $_->{fields} } @{ $data2->{hits}{hits} };
 
@@ -245,6 +246,16 @@ sub get_dist_data {
 		delete $special{'META.yml'};
 	}
 
+	my @other_files = sort { lc $a->{path} cmp lc $b->{path} }
+		grep {
+		        not $SPECIAL{ $_->{path} }
+			and not $_->{documentation}
+			and not $_->{name}
+			and not $_->{directory} eq 'true'
+			and not( $_->{path} =~ /(\.map|\.conf)$/
+			) # TODO: unclear why to filter these but they were not shown on http://search.cpan.org/~tlinden/apid-0.04/
+		} @files;
+
 # TODO: the MANIFEST file gets special treatment here and instead of linking to src/ it is linked without
 # anything and then it is shown with links to the actual files.
 	my @special_files
@@ -257,7 +268,8 @@ sub get_dist_data {
 		special_files => \@special_files,
 		modules       => \@modules,
 		documentation => \@documentation,
-		releases      => \@releases
+		releases      => \@releases,
+		other_files   => \@other_files,
 	};
 }
 
