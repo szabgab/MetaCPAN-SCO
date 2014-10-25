@@ -19,6 +19,7 @@
     </td>
    </tr>
 
+<% IF releases.size %>
    <tr>
     <td class="label">Other Releases</td>
     <td class="cell" colspan="3">
@@ -30,8 +31,7 @@
       </select>
       <input type="submit" value="Goto">
      </form></td></tr>
-
-
+<% END %>
 
 
    <tr>

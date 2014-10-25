@@ -7,7 +7,7 @@ use HTTP::Request::Common qw(GET);
 use Test::HTML::Tidy;
 use HTML::Tidy;
 
-plan tests => 7;
+plan tests => 9;
 
 use MetaCPAN::SCO;
 
@@ -129,6 +129,32 @@ subtest author => sub {
 			'Homepage'
 		);
 	};
+};
+
+# Date was showing 04 Jun 2008 in the clone
+# "Other Releases" was showing with an empty selector, even though there are no other releases
+subtest dist_arrat_unique => sub {
+	plan tests => 7;
+
+	test_psgi $app, sub {
+		my $cb   = shift;
+		my $html = $cb->( GET '/~szabgab/Array-Unique-0.08/' )->content;
+		html_check($html);
+		html_tidy_ok( $tidy, $html );
+		unlike $html, qr/ARRAY/;
+		contains( $html, q{Array-Unique-0.08}, 'dist-ver name' );
+	TODO: {
+			local $TODO = 'Some slight inacccuracy in the date';
+			contains( $html, q{03 Jun 2008}, 'date' );
+		}
+		unlike( $html, qr{Other Releases}, 'no Other Releases' );
+		unlike(
+			$html,
+			qr{<select name="url">\s*</select>},
+			'no empty selector'
+		);
+	};
+
 };
 
 subtest dist_local_tie => sub {
@@ -254,6 +280,24 @@ subtest dist_text_mediawiki => sub {
 	};
 };
 
+subtest recent => sub {
+	plan tests => 4;
+
+	test_psgi $app, sub {
+		my $cb   = shift;
+		my $html = $cb->( GET '/recent' )->content;
+		html_check($html);
+		html_tidy_ok( $tidy, $html );
+		unlike $html, qr/ARRAY/;
+		contains( $html,
+			q{<div class="t4"> Uploads <a title="RSS 1.0" href="/uploads.rdf">}
+		);
+	};
+};
+
+# TODO /uploads.rdf
+# http://localhost:5000/~babkin/triceps-2.0.0/  (missing Other releases, CPAN Testers, missing bug count, date is incorrect, missing other files)
+
 sub contains {
 	my ( $str, $expected, $name ) = @_;
 	$name //= '';
@@ -269,7 +313,7 @@ sub contains {
 
 sub html_check {
 	my ( $html, $name ) = @_;
-	$name //= '';
+	$name //= 'html_check';
 	local $Test::Builder::Level = $Test::Builder::Level + 1;
 
 	my @rows = split /\r?\n/, $html;
