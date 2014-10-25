@@ -115,6 +115,7 @@
 </div>
 
 
+<% IF modules.size %>
  <div class="box">
   <h2 class="t2">Modules</h2>
   <table width="100%">
@@ -136,6 +137,7 @@
     <% END %>
   </table>
  </div>
+<% END %>
 
 <% IF documentation.size %>
 <div class="box">

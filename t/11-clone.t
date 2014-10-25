@@ -162,7 +162,7 @@ subtest dist_arrat_unique => sub {
 
 # TODO: Other releases should not list the current release (and the swithching has not been tested yet either)
 subtest dist_apid => sub {
-	plan tests => 7;
+	plan tests => 8;
 
 	test_psgi $app, sub {
 		my $cb   = shift;
@@ -174,6 +174,7 @@ subtest dist_apid => sub {
 		contains( $html, q{24 Oct 2014}, 'date' );
 		unlike( $html, qr{Website}, 'No Website' );
 		unlike( $html, qr{<a href="">Website</a>}, 'No empty website link' );
+		unlike( $html, qr{<h2 class="t2">Modules</h2>}, 'No Modules' );
 	};
 };
 
