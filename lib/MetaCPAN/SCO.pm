@@ -91,6 +91,8 @@ sub run {
 			my ( $pauseid, $dist_name, $file ) = ( uc($1), $2, $3 );
 			if ( not $file ) {
 				my $data = get_dist_data( $pauseid, $dist_name );
+
+				#die Dumper $data;
 				return template( 'dist', $data );
 			}
 

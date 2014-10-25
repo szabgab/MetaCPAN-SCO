@@ -134,7 +134,7 @@ subtest author => sub {
 # Date was showing 04 Jun 2008 in the clone
 # "Other Releases" was showing with an empty selector, even though there are no other releases
 subtest dist_arrat_unique => sub {
-	plan tests => 7;
+	plan tests => 11;
 
 	test_psgi $app, sub {
 		my $cb   = shift;
@@ -153,8 +153,11 @@ subtest dist_arrat_unique => sub {
 			qr{<select name="url">\s*</select>},
 			'no empty selector'
 		);
+		like( $html, qr{PASS \(\d+\)},    'PASS' );
+		like( $html, qr{FAIL \(\d+\)},    'FAIL' );
+		like( $html, qr{NA \(\d+\)},      'NA' );
+		like( $html, qr{UNKNOWN \(\d+\)}, 'UNKNOWN' );
 	};
-
 };
 
 subtest dist_local_tie => sub {
@@ -203,7 +206,7 @@ subtest dist_local_tie => sub {
 };
 
 subtest dist_text_mediawiki => sub {
-	plan tests => 12;
+	plan tests => 13;
 
 	test_psgi $app, sub {
 		my $cb = shift;
@@ -213,8 +216,12 @@ subtest dist_text_mediawiki => sub {
 		html_tidy_ok( $tidy, $html );
 		unlike $html, qr/ARRAY/;
 
-# TODO
-#contains( $html, q{<font color=red><b>** UNAUTHORIZED RELEASE **</b></font>}, 'UNAUTHORIZED' );
+	TODO: {
+			local $TODO = 'UNAUTHORIZED release not makred yet';
+			contains( $html,
+				q{<font color=red><b>** UNAUTHORIZED RELEASE **</b></font>},
+				'UNAUTHORIZED' );
+		}
 		contains( $html, q{<small>14 Sep 2014</small>}, 'date' );
 		contains( $html,
 			q{<a href="/src/SZABGAB/Text-MediawikiFormat-1.01/ARTISTIC">ARTISTIC</a><br>}
@@ -295,8 +302,8 @@ subtest recent => sub {
 	};
 };
 
-# TODO /uploads.rdf
-# http://localhost:5000/~babkin/triceps-2.0.0/  (missing Other releases, CPAN Testers, missing bug count, date is incorrect, missing other files)
+# TODO: /uploads.rdf
+# TODO: http://localhost:5000/~babkin/triceps-2.0.0/  (missing Other releases, CPAN Testers, missing bug count, date is incorrect, missing other files)
 
 sub contains {
 	my ( $str, $expected, $name ) = @_;
