@@ -7,7 +7,7 @@
 
  <div class="box">
   <h1 class="t1"><% dist.this_name %></h1>
-<a href="http://hexten.net/cpan-faces/"><img src="<% author.gravatar_url %>" width=80 height=80 alt="<% author.name %>" style="float:right" /></a>
+<a href="http://hexten.net/cpan-faces/"><img src="<% author.gravatar_url %>" width="80" height="80" alt="<% author.name %>" style="float:right" /></a>
 
   <table>
    <tr>
@@ -28,7 +28,7 @@
          <option value="/~<% r.author FILTER lower %>/<% r.name %>/"><% r.name %>&nbsp;&nbsp;--&nbsp;&nbsp;<% date.format(r.date, '%d  %b %Y') %></option>
        <% END %>
       </select>
-      <input type=submit value="Goto">
+      <input type="submit" value="Goto">
      </form></td></tr>
 
 

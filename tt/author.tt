@@ -1,6 +1,6 @@
 <div class="box">
   <div class="t1"><% author.name %></div>
-<a href="http://hexten.net/cpan-faces/"><img src="<% author.gravatar_url %>" alt="<% author.name %>" width=80 height=80 style="float:right"
+<a href="http://hexten.net/cpan-faces/"><img src="<% author.gravatar_url %>" alt="<% author.name %>" width="80" height="80" style="float:right"
 /></a>
 
   <table style="min-height: 80px">
@@ -38,8 +38,8 @@
   <h2 class="t2">Releases</h2>
   <table width="100%">
    <tr>
-    <th colspan=3><a href="?D=D">Distribution
-     <img src="http://st.pimg.net/tucs/img/sort_descending.gif" border=0 alt="">
+    <th colspan="3"><a href="?D=D">Distribution
+     <img src="http://st.pimg.net/tucs/img/sort_descending.gif" border="0" alt="">
       </a></th>
     <th><a href="?R=D">Released
       </a></th>

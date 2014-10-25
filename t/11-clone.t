@@ -275,7 +275,9 @@ sub html_check {
 	my @rows = split /\r?\n/, $html;
 	my @fails;
 	foreach my $i ( 0 .. @rows - 1 ) {
-		if ( $rows[$i] =~ /class=(?!")/ ) {
+
+		#if ( $rows[$i] =~ /class=(?!")/ ) {
+		if ( $rows[$i] =~ m{<\w+(\s+\w+="[^"]*")*\s+\w+=\w} ) {
 			push @fails, "row $i   $rows[$i]";
 		}
 	}
