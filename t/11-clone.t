@@ -448,5 +448,3 @@ subtest dist_html_template => sub {
 	};
 };
 
-exit;
-
