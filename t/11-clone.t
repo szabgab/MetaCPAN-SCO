@@ -7,7 +7,7 @@ use HTTP::Request::Common qw(GET);
 use Test::HTML::Tidy;
 use HTML::Tidy;
 
-plan tests => 12;
+plan tests => 13;
 
 use MetaCPAN::SCO;
 
@@ -445,6 +445,28 @@ subtest manifest => sub {
 #		like( $html, qr{UNKNOWN \(\d+\)}, 'UNKNOWN' );
 #	};
 #};
+
+subtest dist_html_template => sub {
+	plan tests => 10;
+
+	test_psgi $app, sub {
+		my $cb   = shift;
+		my $html = $cb->( GET '/dist/HTML-Template/' )->content;
+		html_check($html);
+		html_tidy_ok( $tidy, $html );
+		unlike $html, qr/ARRAY/;
+		contains( $html,
+			q{<a href="lib/HTML/Template.pm">HTML::Template</a>} );
+		contains( $html,
+			q{<a href="lib/HTML/Template/FAQ.pm">HTML::Template::FAQ</a>} );
+		unlike( $html, qr{Documentation} );
+		unlike( $html,
+			qr{<a href="t/testlib/IO/Capture.pm">IO::Capture</a>} );
+		unlike( $html, qr{<a href="t/testlib/_Auxiliary.pm">_Auxiliary</a>} );
+		unlike( $html, qr{Other Files} );
+		unlike( $html, qr{bench/new\.pl} );
+	};
+};
 
 exit;
 
