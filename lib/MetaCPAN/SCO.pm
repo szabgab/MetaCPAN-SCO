@@ -451,6 +451,7 @@ sub search {
 
 	# 'all' is the default behaviour:
 
+	return template('no_matches');
 }
 
 sub get_distros_by_pauseid {
