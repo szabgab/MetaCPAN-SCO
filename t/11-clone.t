@@ -7,6 +7,8 @@ use HTTP::Request::Common qw(GET);
 use Test::HTML::Tidy;
 use HTML::Tidy;
 
+use t::lib::Test;
+
 plan tests => 13;
 
 use MetaCPAN::SCO;
@@ -469,37 +471,4 @@ subtest dist_html_template => sub {
 };
 
 exit;
-
-sub contains {
-	my ( $str, $expected, $name ) = @_;
-	$name //= '';
-	local $Test::Builder::Level = $Test::Builder::Level + 1;
-	my $res = ok 0 < index( $str, $expected ), $name;
-	if ( not $res ) {
-		diag $str;
-		diag "\nDoes not contain:\n\n";
-		diag "'$expected'";
-	}
-	return $res;
-}
-
-sub html_check {
-	my ( $html, $name ) = @_;
-	$name //= 'html_check';
-	local $Test::Builder::Level = $Test::Builder::Level + 1;
-
-	my @rows = split /\r?\n/, $html;
-	my @fails;
-	foreach my $i ( 0 .. @rows - 1 ) {
-
-		#if ( $rows[$i] =~ /class=(?!")/ ) {
-		if ( $rows[$i] =~ m{<\w+(\s+\w+="[^"]*")*\s+\w+=\w} ) {
-			push @fails, "row $i   $rows[$i]";
-		}
-	}
-	ok( @fails == 0, $name );
-	foreach my $f (@fails) {
-		diag $f;
-	}
-}
 
