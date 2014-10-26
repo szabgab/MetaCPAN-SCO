@@ -1,8 +1,6 @@
 <% USE page = Page(authors.size, page_size, current_page) %>
 
-<br><div class="t4">
-<small>
-Results <b><% page.first %></b> - <b><% page.last %></b> of <b><% page.total_entries %></b> Found</small></div>
+<% INCLUDE 'incl/top_pager.tt' %>
 
 <!-- start pager -->
 <div class="pages">

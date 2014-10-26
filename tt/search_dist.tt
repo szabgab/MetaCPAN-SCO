@@ -1,20 +1,18 @@
 <% USE date %>
 <% USE HTML %>
+<% USE page = Page(authors.size, page_size, current_page) %>
 
-<br><div class=t4>
-<small>
-Results <b>1</b> - <b>6</b> of
-<b>6</b> Found</small></div>
+<% INCLUDE 'incl/top_pager.tt' %>
 
 <!--results-->
 <% FOR dist IN dists %>
   <!--item-->
-    <p><h2 class=sr><a href="/~<% dist.author FILTER lower %>/<% dist.name %>/"><b><% dist.distribution %></b></a></h2>
+   <div class="sr"><a href="/~<% dist.author FILTER lower %>/<% dist.name %>/"><b><% dist.distribution %></b></a></div>
   <% IF dist.abstract %>
   <small><% HTML.escape(dist.abstract) %></small><br/>
   <% END %>
   <small>   <a href="/~<% dist.author FILTER lower %>/<% dist.name %>/"><% dist.name %></a> -
-     <span class=date><% date.format(dist.date, '%d  %b %Y') %></span> -
+     <span class="date"><% date.format(dist.date, '%d  %b %Y') %></span> -
      <a href="/~<% dist.author FILTER lower %>/"><% dist.author %></a>
   </small>
   <!--end item-->

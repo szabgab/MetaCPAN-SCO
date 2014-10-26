@@ -459,6 +459,7 @@ sub search {
 			my $err = $@ // 'Unknown error';
 			die $err if $err;
 		};
+		return template('no_matches') if not @releases;
 		return template( 'search_dist', { dists => \@releases } );
 	}
 

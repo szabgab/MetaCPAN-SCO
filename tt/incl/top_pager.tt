@@ -1,0 +1,4 @@
+<br><div class="t4">
+<small>
+Results <b><% page.first %></b> - <b><% page.last %></b> of <b><% page.total_entries %></b> Found</small></div>
+
