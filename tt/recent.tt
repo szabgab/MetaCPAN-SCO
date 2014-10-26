@@ -1,4 +1,6 @@
 <% USE date %>
+<% USE HTML %>
+
 <br><div class="t4"> Uploads <a title="RSS 1.0" href="/uploads.rdf"><img src="http://st.pimg.net/tucs/img/rss-10.gif" align="right" alt=""></a></div>
 
 <% FOR day IN recent.days %>
@@ -24,7 +26,7 @@
     <% FOR dist IN day.dists %>
       <li><a href="/~<% dist.author FILTER lower %>/<% dist.name %>/"><% dist.name %></a>
         <% IF dist.abstract %>
-          <small> -- <% dist.abstract %> </small>
+          <small> -- <% HTML.escape(dist.abstract) %> </small>
         <% END %>
       </li>
     <% END %>

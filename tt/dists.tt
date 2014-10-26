@@ -1,4 +1,6 @@
 <% USE date %>
+<% USE HTML %>
+
 <br><div class=t4>
 <small>
 Results <b>1</b> - <b>6</b> of
@@ -9,7 +11,7 @@ Results <b>1</b> - <b>6</b> of
   <!--item-->
     <p><h2 class=sr><a href="/~<% dist.author FILTER lower %>/<% dist.name %>/"><b><% dist.distribution %></b></a></h2>
   <% IF dist.abstract %>
-  <small><% dist.abstract %></small><br/>
+  <small><% HTML.escape(dist.abstract) %></small><br/>
   <% END %>
   <small>   <a href="/~<% dist.author FILTER lower %>/<% dist.name %>/"><% dist.name %></a> -
      <span class=date><% date.format(dist.date, '%d  %b %Y') %></span> -

@@ -1,4 +1,5 @@
 <% USE date %>
+<% USE HTML %>
 
 <div class="path">
    <div id="permalink" class="noprint"><a href="/dist/<% dist.metadata.name %>/">permalink</a></div>
@@ -131,7 +132,7 @@
          <% END %>
         </td>
         <td width="99%">
-         <small><% module.abstract %> &nbsp;</small>
+         <small><% HTML.escape(module.abstract) %> &nbsp;</small>
         </td>
         <td>&nbsp;</td>
         <td class="version"><% module.version %></td>
@@ -148,7 +149,7 @@
     <% FOR doc IN documentation %>
       <tr class="<% IF loop.index % 2 %>s<% ELSE %>r<% END %>">
         <td><a href="<% doc.path %>"><% doc.documentation %></a></td>
-        <td width="99%"><small><% doc.abstract %></small></td>
+        <td width="99%"><small><% HTML.escape(doc.abstract) %></small></td>
       </tr>
     <% END %>
   </table>
