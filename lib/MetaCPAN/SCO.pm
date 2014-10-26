@@ -433,7 +433,7 @@ sub search {
 		return template('no_matches') if not @authors;
 
 		return template(
-			'search_authors',
+			'search_author',
 			{
 				authors      => \@authors,
 				page_size    => $page_size,
@@ -459,7 +459,7 @@ sub search {
 			my $err = $@ // 'Unknown error';
 			die $err if $err;
 		};
-		return template( 'dists', { dists => \@releases } );
+		return template( 'search_dist', { dists => \@releases } );
 	}
 
 	if ( $mode eq 'module' ) {
