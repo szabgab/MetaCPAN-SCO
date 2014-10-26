@@ -188,8 +188,21 @@ sub run {
 		}
 
 		if ( $path_info eq '/search' ) {
-			return search( $request->param('query'),
-				$request->param('mode') );
+
+# I found out that the pager on sco uses the paramters q,m,s,n
+# and there is actually a strange issue. The pager links on the search result page show numbers 1,2,3,4 (the page numbers)
+# but the links underneath use s=<the number of the first hit on that page>
+# the user can supply other values to s=, not only the onese that are the starting points of "real" pages. for example s=13
+# In that case the new page will show the correct number of results starting from result #13 but the links will stull say
+# pages 1,2,3 ...
+# It might be better to just use p= page number to send to the server
+			my $query = $request->param('query') || $request->param('q');
+			my $mode  = $request->param('mode')  || $request->param('m');
+
+			#my $start = $request->param('s') || 1;
+			my $page = $request->param('p') || 1;
+			my $size = $request->param('n') || 10;
+			return search( $query, $mode, $page, $size );
 		}
 
 		my $reply = template('404');
@@ -401,7 +414,7 @@ sub recent {
 }
 
 sub search {
-	my ( $query, $mode ) = @_;
+	my ( $query, $mode, $page, $page_size ) = @_;
 
 	if ( $mode eq 'author' ) {
 		my @authors = [];
@@ -422,9 +435,11 @@ sub search {
 		return template(
 			'search_authors',
 			{
-				letters         => [ 'A' .. 'Z' ],
-				authors         => \@authors,
-				selected_letter => 'X'
+				authors      => \@authors,
+				page_size    => $page_size,
+				current_page => $page,
+				mode         => $mode,
+				query        => $query,
 			}
 		);
 	}
@@ -559,8 +574,8 @@ sub template {
 	};
 
 	my $request = Plack::Request->new($env);
-	$vars->{query} = $request->param('query');
-	$vars->{mode}  = $request->param('mode');
+	$vars->{query} //= $request->param('query');
+	$vars->{mode}  //= $request->param('mode');
 
 	my $tt = Template->new(
 		INCLUDE_PATH => "$root/tt",

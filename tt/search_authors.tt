@@ -1,7 +1,38 @@
+<% USE page = Page(authors.size, page_size, current_page) %>
+
 <br><div class="t4">
 <small>
-Results <b>1</b> - <b><% authors.size %></b> of <b><% authors.size %></b> Found</small></div>
+Results <b><% page.first %></b> - <b><% page.last %></b> of <b><% page.total_entries %></b> Found</small></div>
 
-<% FOR a IN authors %>
+<!-- start pager -->
+<div class="pages">
+<table width="100%">
+<tr>
+  <td>
+    <small> 
+      <% INCLUDE 'incl/pager.tt' %>
+    </small>
+  </td>
+  <td align="right">
+    <small><b>Page Size</b>: 
+      <% FOR n IN [10, 20 50] %>
+        <a href="/search?m=<% mode %>&amp;q=<% query %>&amp;p=1&amp;n=<% n %>"><% n %></a>&nbsp;
+      <% END %>
+    </small>
+  </td>
+</tr>
+</table>
+</div>
+<!-- end pager -->
+
+
+<% FOR a IN page.splice(authors) %>
    <div class="sr" style="padding-top: 10px;"><a href="/~<% a.pauseid FILTER lower %>/"><b><% a.name %><% IF a.asciiname %> (<% a.asciiname %>)<% END %></b></a></div><small><% a.pauseid FILTER upper %></small>
 <% END %>
+
+
+<!-- start pager -->
+<center>
+  <% INCLUDE 'incl/pager.tt' %>
+</center>
+<!-- end pager -->

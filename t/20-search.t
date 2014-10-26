@@ -44,7 +44,7 @@ subtest author => sub {
 
 	test_psgi $app, sub {
 		my $cb   = shift;
-		my $html = $cb->( GET '/search?query=sz&mode=author' )->content;
+		my $html = $cb->( GET '/search?query=sz&mode=author&n=100' )->content;
 		html_check($html);
 		html_tidy_ok( $tidy, $html );
 		unlike $html, qr/ARRAY/;
