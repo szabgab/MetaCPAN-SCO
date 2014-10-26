@@ -2,3 +2,25 @@
 <small>
 Results <b><% page.first %></b> - <b><% page.last %></b> of <b><% page.total_entries %></b> Found</small></div>
 
+<!-- start pager -->
+<div class="pages">
+<table width="100%">
+<tr>
+  <td>
+    <small> 
+      <% INCLUDE 'incl/pager.tt' %>
+    </small>
+  </td>
+  <td align="right">
+    <small><b>Page Size</b>: 
+      <% FOR n IN [10, 20 50] %>
+        <a href="/search?m=<% mode %>&amp;q=<% query %>&amp;p=1&amp;n=<% n %>"><% n %></a>&nbsp;
+      <% END %>
+    </small>
+  </td>
+</tr>
+</table>
+</div>
+<!-- end pager -->
+
+
