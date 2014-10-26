@@ -5,7 +5,6 @@ use Test::More;
 use Plack::Test;
 use HTTP::Request::Common qw(GET);
 use Test::HTML::Tidy;
-use HTML::Tidy;
 
 use t::lib::Test;
 
@@ -13,28 +12,7 @@ plan tests => 13;
 
 use MetaCPAN::SCO;
 
-my $tidy = HTML::Tidy->new;
-
-# HTML 4: <script src="/jquery.js" type="text/javascript"></script>
-# HTML 5: <script src="/jquery.js"></script>
-$tidy->ignore( text => qr{<script> inserting "type" attribute} );
-
-# HTML 4: <link rel="stylesheet" href="/style.css" type="text/css" />
-# HTML 5: <link rel="stylesheet" href="/style.css" />
-$tidy->ignore( text => qr{<link> inserting "type" attribute} );
-
-# HTML 4.01    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-# HTML 5       <meta charset="utf-8" />
-$tidy->ignore( text => qr{<meta> proprietary attribute "charset"} );
-$tidy->ignore( text => qr{<meta> lacks "content" attribute} );
-
-# AFAIK HTML 5 does not support the "summary" attribute
-$tidy->ignore( text => qr{<table> lacks "summary" attribute} );
-
-# We should probably replace & in gravatar URLS by &amp; instead of hiding the warning:
-#$tidy->ignore( text => qr{unescaped & or unknown entity "&d"} );
-
-#$tidy->ignore( text => qr{inserting} ); #: <script> inserting "type" attribute} );
+my $tidy = html_tidy();
 
 my $app = MetaCPAN::SCO->run;
 is( ref $app, 'CODE', 'Got app' );
