@@ -1,0 +1,7 @@
+<br><div class="t4">
+<small>
+Results <b>1</b> - <b><% authors.size %></b> of <b><% authors.size %></b> Found</small></div>
+
+<% FOR a IN authors %>
+   <div class="sr" style="padding-top: 10px;"><a href="/~<% a.pauseid FILTER lower %>/"><b><% a.name %><% IF a.asciiname %> (<% a.asciiname %>)<% END %></b></a></div><small><% a.pauseid FILTER upper %></small>
+<% END %>

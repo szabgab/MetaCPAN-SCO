@@ -408,18 +408,19 @@ sub search {
 		eval {
 			my $json
 				= get
-				"http://api.metacpan.org/v0/author/_search?q=author.name:*$query*&size=5000&fields=name";
+				"http://api.metacpan.org/v0/author/_search?q=author.name:*$query*&size=5000&fields=name,asciiname,pauseid";
 			my $data = from_json $json;
-			@authors = sort { $a->{id} cmp $b->{id} }
-				map { { id => $_->{_id}, name => $_->{fields}{name} } }
-				@{ $data->{hits}{hits} };
+			@authors = sort { $a->{pauseid} cmp $b->{pauseid} }
+				map { $_->{fields} } @{ $data->{hits}{hits} };
 			1;
 		} or do {
 			my $err = $@ // 'Unknown error';
 			warn $err if $err;
 		};
+		return template('no_matches') if not @authors;
+
 		return template(
-			'authors',
+			'search_authors',
 			{
 				letters         => [ 'A' .. 'Z' ],
 				authors         => \@authors,
