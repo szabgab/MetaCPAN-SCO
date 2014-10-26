@@ -1,4 +1,4 @@
-<% USE page = Page(authors.size, page_size, current_page) %>
+<% USE page = Page(dists.size, page_size, current_page) %>
 
 <% INCLUDE 'incl/top_pager.tt' %>
 
@@ -16,4 +16,6 @@
   <!--end item-->
 <% END %>
 <!--end results-->
-<br>
+
+<% INCLUDE 'incl/bottom_pager.tt' %>
+

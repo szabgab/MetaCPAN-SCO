@@ -460,7 +460,16 @@ sub search {
 			die $err if $err;
 		};
 		return template('no_matches') if not @releases;
-		return template( 'search_dist', { dists => \@releases } );
+		return template(
+			'search_dist',
+			{
+				dists        => \@releases,
+				page_size    => $page_size,
+				current_page => $page,
+				mode         => $mode,
+				query        => $query,
+			}
+		);
 	}
 
 	if ( $mode eq 'module' ) {
