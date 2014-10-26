@@ -1,6 +1,3 @@
-<% USE date %>
-<% USE HTML %>
-
 <div class="path">
    <div id="permalink" class="noprint"><a href="/dist/<% dist.metadata.name %>/">permalink</a></div>
   <a href="/~<% author.pauseid FILTER lower %>/"><% author.name %></a> &gt; <% dist.this_name %>

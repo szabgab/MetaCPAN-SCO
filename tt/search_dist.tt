@@ -1,5 +1,3 @@
-<% USE date %>
-<% USE HTML %>
 <% USE page = Page(authors.size, page_size, current_page) %>
 
 <% INCLUDE 'incl/top_pager.tt' %>

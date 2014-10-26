@@ -1,6 +1,3 @@
-<% USE date %>
-<% USE HTML %>
-
 <br><div class="t4"> Uploads <a title="RSS 1.0" href="/uploads.rdf"><img src="http://st.pimg.net/tucs/img/rss-10.gif" align="right" alt=""></a></div>
 
 <% FOR day IN recent.days %>

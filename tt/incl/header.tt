@@ -1,3 +1,6 @@
+<% USE date %>
+<% USE HTML %>
+
 <!DOCTYPE html>
 <html>
 <head>
