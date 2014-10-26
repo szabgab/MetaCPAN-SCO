@@ -1,7 +1,14 @@
 
-<div class="footer"><div class="cpanstats">
-<% totals.distribution %> Distributions, <% totals.module %> Modules, <% totals.author %> Authors 
-</div></div>
+<div class="footer">
+  <div class="cpanstats">
+    <% totals.distribution %> Distributions, <% totals.module %> Modules, <% totals.author %> Authors
+  </div>
+
+  <div class="sponsor">
+    hosted by <a href="http://perlmaven.com">Perl Maven</a>
+    <a href="http://perlmaven.com"><img alt="Perl Maven" src="http://perlmaven.com/img/perl_maven_150x212.png" height="50"></a>
+  </div>
+</div>
 
  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.js"></script>
 
