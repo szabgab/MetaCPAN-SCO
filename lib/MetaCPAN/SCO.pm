@@ -107,7 +107,6 @@ sub run {
 			if ( not $file ) {
 				my $data = get_dist_data( $pauseid, $dist_name );
 
-				#die Dumper $data;
 				return template( 'dist', $data );
 			}
 
@@ -182,7 +181,7 @@ sub run {
 	#http://api.metacpan.org/source/DDUMONT/Config-Model-Itself-1.241/Build.PL
 
 # meta information about a file:
-# http://api.metacpan.org/v0/file/_search?q=path:Build.PL%20AND%20release:Config-Model-Itself-1.241&limit=1
+# http://api.metacpan.org/v0/file/_search?q=path:Build.PL%20AND%20release:Config-Model-Itself-1.241&size=1
 			$res->redirect( "http://api.metacpan.org/source/$1", 301 );
 			return $res->finalize;
 		}
@@ -229,7 +228,7 @@ sub get_releases {
 	my ($dist_name) = @_;
 
 	my $json = get
-		"http://api.metacpan.org/v0/release/_search?q=distribution:$dist_name&limit=30&fields=author,name,date,status,abstract";
+		"http://api.metacpan.org/v0/release/_search?q=distribution:$dist_name&size=30&fields=author,name,date,status,abstract";
 	my $data = from_json $json;
 	my @releases = reverse sort { $a->{date} cmp $b->{date} }
 		grep { $_->{status} eq 'cpan' }
@@ -459,6 +458,7 @@ sub search {
 			my $err = $@ // 'Unknown error';
 			die $err if $err;
 		};
+
 		return template('no_matches') if not @releases;
 		return template(
 			'search_dist',
