@@ -265,8 +265,8 @@ sub get_dist_data {
 	my @releases = get_releases( $dist->{metadata}{name} );
 
 	my %SPECIAL = map { $_ => 1 } qw(
-		Changes CHANGES Changelog
-		LICENSE MANIFEST README
+		Changes CHANGES Changelog ChangeLog
+		LICENSE MANIFEST README COPYING
 		INSTALL
 		Makefile.PL Build.PL META.yml META.json
 		ARTISTIC SIGNATURE
