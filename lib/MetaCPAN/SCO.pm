@@ -591,7 +591,7 @@ sub template {
 		INCLUDE_PATH => "$root/tt",
 		INTERPOLATE  => 0,
 		POST_CHOMP   => 1,
-		EVAL_PERL    => 1,
+		EVAL_PERL    => 0,
 		START_TAG    => '<%',
 		END_TAG      => '%>',
 		PRE_PROCESS  => 'incl/header.tt',
