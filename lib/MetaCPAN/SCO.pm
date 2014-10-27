@@ -106,6 +106,7 @@ sub run {
 			my ( $pauseid, $dist_name, $file ) = ( uc($1), $2, $3 );
 			if ( not $file ) {
 				my $data = get_dist_data( $pauseid, $dist_name );
+
 				#die Dumper $data;
 
 				return template( 'dist', $data );
@@ -269,7 +270,8 @@ sub get_dist_data {
 		my $err = $@ // 'Unknown error';
 		warn $err if $err;
 	};
-	my @releases = get_releases( $dist->{metadata}{name} );
+	my @releases = grep { $_->{name} ne $dist_name_ver }
+		get_releases( $dist->{metadata}{name} );
 
 	my %SPECIAL = map { $_ => 1 } qw(
 		Changes CHANGES Changelog ChangeLog
@@ -339,6 +341,7 @@ sub get_dist_data {
 		my $total = 0;
 		$total += $_->{rating} for @ratings;
 		$rating = sprintf '%.1f', int( 2 * ( $total / scalar @ratings ) ) / 2;
+
 # needs to be a number with one value after the decimal point which should be either 0 or 5:
 # e.g.  4.0 or 3.5
 	}
