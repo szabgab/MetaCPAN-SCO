@@ -473,6 +473,37 @@ sub search {
 	}
 
 	if ( $mode eq 'module' ) {
+		my @modules;
+
+#die	get
+#		"http://api.metacpan.org/v0/module/_search?q=name:*$query*";
+#"http://api.metacpan.org/v0/module/_search?q=name:*$query*&size=500&fields=date,name,author,abstract,distribution,release";
+
+		eval {
+			my $json
+				= get
+				"http://api.metacpan.org/v0/module/_search?q=name:*$query*&size=500&fields=date,name,author,abstract,distribution,release,path";
+			my $data = from_json $json;
+			@modules = sort { $a->{name} cmp $b->{name} }
+				map { $_->{fields} } @{ $data->{hits}{hits} };
+			1;
+		} or do {
+			my $err = $@ // 'Unknown error';
+			die $err if $err;
+		};
+
+		#die Dumper \@modules;
+		return template('no_matches') if not @modules;
+		return template(
+			'search_dist',
+			{
+				dists        => \@modules,
+				page_size    => $page_size,
+				current_page => $page,
+				mode         => $mode,
+				query        => $query,
+			}
+		);
 	}
 
 	# 'all' is the default behaviour:

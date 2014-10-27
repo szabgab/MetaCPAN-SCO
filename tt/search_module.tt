@@ -1,0 +1,24 @@
+<% USE page = Page(dists.size, page_size, current_page) %>
+
+<% INCLUDE 'incl/top_pager.tt' %>
+
+<!--results-->
+<% FOR dist IN page.splice(dists) %>
+  <!--item-->
+   <div class="sr"><a href="/~<% dist.author FILTER lower %>/<% dist.name %>/<% dist.path %>"><b><% dist.distribution %></b></a></div>
+  <% IF dist.abstract %>
+  <small><% HTML.escape(dist.abstract) %></small><br/>
+  <% END %>
+  <small>   <a href="/~<% dist.author FILTER lower %>/<% dist.name %>/"><% dist.name %></a> -
+     <span class="date"><% date.format(dist.date, '%d  %b %Y') %></span> -
+     <a href="/~<% dist.author FILTER lower %>/"><% dist.author %></a>
+  </small>
+  <!--end item-->
+<% END %>
+<!--end results-->
+
+<% INCLUDE 'incl/bottom_pager.tt' %>
+
+<!--
+  <div class="sr"><a href="/~anaghakk/Statistics-CalinskiHarabasz-0.01/lib/Statistics/CalinskiHarabasz.pm"><b>Statistics::CalinskiHarabasz</b></a></h2>
+-->
