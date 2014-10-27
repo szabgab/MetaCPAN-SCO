@@ -72,8 +72,12 @@
    <tr>
     <td class="label">Rating</td>
     <td class="cell" colspan="3" nowrap><small>
-<img src="http://st.pimg.net/tucs/img/stars-0.0.gif" alt="">
-     (0 Reviews)
+<img src="http://st.pimg.net/tucs/img/stars-<% rating %>.gif" alt="">
+     <% IF reviews %>
+       ( <a href="http://cpanratings.perl.org/d/<% dist.metadata.name %>"><% reviews %> Reviews</a>)
+     <% ELSE %>
+       ( <% reviews %> Reviews)
+     <% END %>
      [&nbsp;<a href="http://cpanratings.perl.org/rate/?distribution=<% dist.metadata.name %>">Rate&nbsp;this&nbsp;distribution</a>&nbsp;]
     </small></td></tr>
 

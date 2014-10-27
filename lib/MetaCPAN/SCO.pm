@@ -245,6 +245,7 @@ sub get_dist_data {
 	my $dist;
 	my $release;
 	my @files;
+	my @ratings;
 
 	eval {
 		my $json1
@@ -256,6 +257,11 @@ sub get_dist_data {
 			"http://api.metacpan.org/v0/file/_search?q=release:$dist_name_ver&size=1000&fields=release,path,module.name,abstract,module.version,documentation,directory";
 		my $data2 = from_json $json2;
 		@files = map { $_->{fields} } @{ $data2->{hits}{hits} };
+
+		my $json3 = get
+			"http://api.metacpan.org/v0/rating/_search?q=distribution:$dist->{distribution}&size=1000";
+		my $data3 = from_json $json3;
+		@ratings = map { $_->{_source} } @{ $data3->{hits}{hits} };
 
 		1;
 	} or do {
@@ -326,6 +332,16 @@ sub get_dist_data {
 		= sort { lc $a->{path} cmp lc $b->{path} } values %special;
 	$dist->{this_name} = $dist->{name};
 	my $author = get_author_info($pauseid);
+
+	my $rating = 0;
+	if (@ratings) {
+		my $total = 0;
+		$total += $_->{rating} for @ratings;
+		$rating = sprintf '%.1f', int( 2 * ( $total / scalar @ratings ) ) / 2;
+
+# needs to be a number with one value after the decimal point which should be either 0 or 5:
+# e.g.  4.0 or 3.5
+	}
 	return {
 		dist          => $dist,
 		author        => $author,
@@ -335,6 +351,9 @@ sub get_dist_data {
 		releases      => \@releases,
 		other_files   => \@other_files,
 		title         => "$author->{name} / $dist->{name} - search.cpan.org",
+		reviews       => scalar @ratings,
+		rating        => $rating,
+
 	};
 }
 
