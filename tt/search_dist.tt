@@ -3,7 +3,7 @@
 <% INCLUDE 'incl/top_pager.tt' %>
 
 <!--results-->
-<% FOR dist IN dists %>
+<% FOR dist IN page.splice(dists) %>
   <!--item-->
    <div class="sr"><a href="/~<% dist.author FILTER lower %>/<% dist.name %>/"><b><% dist.distribution %></b></a></div>
   <% IF dist.abstract %>

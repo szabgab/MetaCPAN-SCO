@@ -1,6 +1,9 @@
+<% IF page.last_page > 1 %>
+
 <!-- start pager -->
 <center>
   <% INCLUDE 'incl/pager.tt' %>
 </center>
 <!-- end pager -->
 
+<% END %>
