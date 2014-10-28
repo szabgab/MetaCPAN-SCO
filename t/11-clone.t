@@ -66,7 +66,7 @@ subtest dist_szabgab_array_unique => sub {
 # TODO: Other releases should not list the current release (and the swithching has not been tested yet either)
 # 'Other Files' were listed on SCO
 subtest dist_tlinden_apid => sub {
-	plan tests => 9;
+	plan tests => 7;
 
 	test_psgi $app, sub {
 		my $cb   = shift;
@@ -79,33 +79,44 @@ subtest dist_tlinden_apid => sub {
 		contains( $html,
 			q{<title>T. Linden / apid-0.04 - search.cpan.org</title>},
 			'title' );
-		unlike( $html, qr{Website}, 'No Website' );
-		unlike( $html, qr{<a href="">Website</a>}, 'No empty website link' );
 		unlike( $html, qr{<h2 class="t2">Modules</h2>}, 'No Modules' );
 		}
 };
 
-subtest dist_perlancar_local_tie => sub {
-	plan tests => 7;
+subtest dist_cpan_test_dummy_sco_lacks => sub {
+	my @specials = qw(
+		Makefile.PL META.yml
+	);
+
+	plan tests => 10 + @specials;
 
 	test_psgi $app, sub {
-		my $cb   = shift;
-		my $html = $cb->( GET '/~perlancar/Locale-Tie-0.03/' )->content;
+		my $cb = shift;
+		my $html
+			= $cb->( GET '/~szabgab/CPAN-Test-Dummy-SCO-Lacks-0.01/' )
+			->content;
 		html_check($html);
 		html_tidy_ok( $tidy, $html );
 		unlike $html, qr/ARRAY/;
-		contains( $html, q{Locale-Tie-0.03}, 'dist-ver name' );
-		contains( $html, q{23 Oct 2014},     'date' );
+		contains( $html, q{<small>28 Oct 2014</small>}, 'date' );
+
 		contains(
 			$html,
-			q{<div id="permalink" class="noprint"><a href="/dist/Locale-Tie/">permalink</a></div>},
-			'permalink'
-		);
-		contains(
-			$html,
-			' git://github.com/perlancar/perl-Locale-Tie.git ',
+			' git://github.com/szabgab/CPAN-Test-Dummy-SCO.git ',
 			'github url but not a link'
 		);
+		contains( $html, q{<a href="MANIFEST">MANIFEST</a>}, 'MANIFEST' );
+		foreach my $f (@specials) {
+			contains( $html,
+				qq{<a href="/src/SZABGAB/CPAN-Test-Dummy-SCO-Lacks-0.01/$f">$f</a><br>}
+			);
+		}
+		unlike $html, qr{META.json}, 'No META.json in this distro';
+		contains( $html, 'Unknown', 'no license' );
+
+		unlike( $html, qr{Website}, 'No Website' );
+		unlike( $html, qr{<a href="">Website</a>}, 'No empty website link' );
+
 	};
 };
 
@@ -148,7 +159,7 @@ subtest dist_cpan_test_dummy_sco_special => sub {
 		README
 		SIGNATURE
 	);
-	plan tests => 31 + @specials;
+	plan tests => 32 + @specials;
 
 	test_psgi $app, sub {
 		my $cb = shift;
@@ -180,6 +191,12 @@ subtest dist_cpan_test_dummy_sco_special => sub {
 			$html,
 			q{<a href="http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt">The GNU Lesser General Public License, Version 2.1, February 1999</a>},
 			'license'
+		);
+
+		contains(
+			$html,
+			q{<div id="permalink" class="noprint"><a href="/dist/CPAN-Test-Dummy-SCO-Special/">permalink</a></div>},
+			'permalink'
 		);
 
 		contains( $html, q{<h2 class="t2">Modules</h2>}, 'Modules' );
