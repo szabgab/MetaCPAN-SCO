@@ -17,7 +17,7 @@ my $tidy = html_tidy();
 my $app = MetaCPAN::SCO->run;
 
 subtest manifest => sub {
-	plan tests => 13;
+	plan tests => 14;
 
 	test_psgi $app, sub {
 		my $cb = shift;
@@ -73,6 +73,10 @@ subtest manifest => sub {
 			q{<a href="http://www.annocpan.org/~SZABGAB/CPAN-Test-Dummy-SCO-Special-0.02/MANIFEST">Annotate this POD</a>},
 			'link to annocpan'
 		);
+
+		# TODO do we really want to have a permalink to /perldoc ?
+		contains( $html, q{<a href="/perldoc?MANIFEST">permalink</a>},
+			'permalink' );
 
 	};
 
