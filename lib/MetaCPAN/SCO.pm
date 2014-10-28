@@ -240,20 +240,25 @@ sub get_releases {
 
 sub get_files {
 	my ($dist_name_ver) = @_;
+	return get_api(
+		"http://api.metacpan.org/v0/file/_search?q=release:$dist_name_ver&size=1000&fields=release,path,module.name,abstract,module.version,documentation,directory"
+	);
+}
 
-	my @files;
+sub get_api {
+	my ($url) = @_;
+
+	my @results;
 	eval {
-		my $json
-			= get
-			"http://api.metacpan.org/v0/file/_search?q=release:$dist_name_ver&size=1000&fields=release,path,module.name,abstract,module.version,documentation,directory";
+		my $json = get $url;
 		my $data = from_json $json;
-		@files = map { $_->{fields} } @{ $data->{hits}{hits} };
+		@results = map { $_->{fields} } @{ $data->{hits}{hits} };
 		1;
 	} or do {
 		my $err = $@ // 'Unknown error';
 		warn $err if $err;
 	};
-	return @files;
+	return @results;
 }
 
 sub get_dist_data {
