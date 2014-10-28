@@ -58,27 +58,22 @@ sub run {
 		}
 		if ( $path_info =~ m{^/author/?$} ) {
 			my $query_string = $request->query_string;
+			my $authors      = [];
+			my $lead         = '';
+			if ($query_string) {
+				$lead = substr $query_string, 0, 1;
+				$authors = authors_starting_by( uc $lead );
+			}
+
 			return template(
 				'authors',
 				{
-					letters => [ 'A' .. 'Z' ],
-					authors => [],
-					title   => 'The CPAN Search Site - search.cpan.org',
+					letters         => [ 'A' .. 'Z' ],
+					authors         => $authors,
+					selected_letter => uc($lead),
+					title => 'The CPAN Search Site - search.cpan.org',
 				}
-			) if not $query_string;
-			my $lead = substr $query_string, 0, 1;
-			my $authors = authors_starting_by( uc $lead );
-			if (@$authors) {
-				return template(
-					'authors',
-					{
-						letters         => [ 'A' .. 'Z' ],
-						authors         => $authors,
-						selected_letter => uc($lead),
-						title => 'The CPAN Search Site - search.cpan.org',
-					}
-				);
-			}
+			);
 		}
 
 		if ( $path_info =~ m{^/~([a-z]+)$} ) {
@@ -190,7 +185,7 @@ sub run {
 			return template( 'dist', $data );
 		}
 
-		#if ($path_info =~ m{^/src/([^/]+)/([^/]+)/(.*)}) {
+		#if ($path_info =~ m{^/src/([^/]+)/([^/]+)/(.*)})
 		if ( $path_info =~ m{^/src/(.*)} ) {
 			my $res = Plack::Response->new();
 

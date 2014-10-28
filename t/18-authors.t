@@ -8,7 +8,7 @@ use Test::HTML::Tidy;
 
 use t::lib::Test;
 
-plan tests => 2;
+plan tests => 3;
 
 use MetaCPAN::SCO;
 
@@ -32,7 +32,7 @@ subtest authors => sub {
 };
 
 subtest authors_q => sub {
-	plan tests => 5;
+	plan tests => 6;
 
 	test_psgi $app, sub {
 		my $cb   = shift;
@@ -40,12 +40,26 @@ subtest authors_q => sub {
 		html_check($html);
 		html_tidy_ok( $tidy, $html );
 		like( $html, qr{<td>\s*Q\s*</td>}, 'Q without link' );
-		unlike( $html, qr{<td>Q</td>}, 'no link to Q' );
+		unlike( $html, qr{<a href="\?Q"}, 'no link to Q' );
+		contains( $html, q{<br><div class="t4">Author</div><br>}, 'Author' );
 		contains(
 			$html,
 			q{<a href="/~qantins/"><b>QANTINS</b></a><br/><small>Marc Qantins</small>},
 			'QANTINS'
 		);
+	};
+};
+
+subtest authors_1 => sub {
+	plan tests => 4;
+
+	test_psgi $app, sub {
+		my $cb   = shift;
+		my $html = $cb->( GET '/author/?1' )->content;
+		html_check($html);
+		html_tidy_ok( $tidy, $html );
+		contains( $html, q{<br><div class="t4">Author</div><br>}, 'Author' );
+		contains( $html, q{<a href="?Q"> Q </a>}, 'link to Q' );
 	};
 };
 
