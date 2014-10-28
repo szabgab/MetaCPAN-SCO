@@ -8,7 +8,7 @@ use Test::HTML::Tidy;
 
 use t::lib::Test;
 
-plan tests => 12;
+plan tests => 11;
 
 use MetaCPAN::SCO;
 
@@ -308,22 +308,6 @@ subtest dist_wonko_html_template => sub {
 	};
 };
 
-subtest recent => sub {
-	plan tests => 4;
-
-	test_psgi $app, sub {
-		my $cb   = shift;
-		my $html = $cb->( GET '/recent' )->content;
-		html_check($html);
-		html_tidy_ok( $tidy, $html );
-		unlike $html, qr/ARRAY/;
-		contains( $html,
-			q{<div class="t4"> Uploads <a title="RSS 1.0" href="/uploads.rdf">}
-		);
-	};
-};
-
-# TODO: /uploads.rdf
 # TODO: http://localhost:5000/~babkin/triceps-2.0.0/  (missing Other releases, CPAN Testers, missing bug count, date is incorrect, missing other files)
 # TODO: http://search.cpan.org/~szabgab/Array-Unique-0.08/lib/Array/Unique.pm
 # TODO: http://search.cpan.org/dist/Array-Unique/
