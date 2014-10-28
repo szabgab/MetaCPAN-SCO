@@ -74,9 +74,12 @@ subtest manifest => sub {
 			'link to annocpan'
 		);
 
-		# TODO do we really want to have a permalink to /perldoc ?
-		contains( $html, q{<a href="/perldoc?MANIFEST">permalink</a>},
-			'permalink' );
+	 # search.cpan.org links to /perldoc?MANIFEST but that link does not work.
+		contains(
+			$html,
+			q{<a href="/dist/CPAN-Test-Dummy-SCO-Special/MANIFEST">permalink</a>},
+			'permalink'
+		);
 
 	};
 

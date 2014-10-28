@@ -1,6 +1,6 @@
 <a name="_top"></a>
   <div class="path">
-<div id="permalink" class="noprint"><a href="/perldoc?MANIFEST">permalink</a></div>
+<div id="permalink" class="noprint"><a href="/dist/<% dist_name %>/MANIFEST">permalink</a></div>
   <a href="/~<% username %>/"><% author.name %></a> &gt;
   <a href="/~<% username %>/<% dist_name_ver %>/"><% dist_name_ver %></a> &gt;
   MANIFEST
