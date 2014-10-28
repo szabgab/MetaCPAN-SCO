@@ -8,7 +8,7 @@ use Test::HTML::Tidy;
 
 use t::lib::Test;
 
-plan tests => 11;
+plan tests => 10;
 
 use MetaCPAN::SCO;
 
@@ -66,7 +66,7 @@ subtest dist_szabgab_array_unique => sub {
 # TODO: Other releases should not list the current release (and the swithching has not been tested yet either)
 # 'Other Files' were listed on SCO
 subtest dist_tlinden_apid => sub {
-	plan tests => 14;
+	plan tests => 9;
 
 	test_psgi $app, sub {
 		my $cb   = shift;
@@ -82,27 +82,7 @@ subtest dist_tlinden_apid => sub {
 		unlike( $html, qr{Website}, 'No Website' );
 		unlike( $html, qr{<a href="">Website</a>}, 'No empty website link' );
 		unlike( $html, qr{<h2 class="t2">Modules</h2>}, 'No Modules' );
-		unlike(
-			$html,
-			qr{<option value="/~tlinden/apid-0.04/">},
-			'exclude current distro from other releases'
-		);
-
-		contains( $html, q{<h2 class="t2">Other Files</h2>}, 'Other Files' );
-		contains( $html,
-			q{<a href="/src/TLINDEN/apid-0.04/README.md">README.md</a>},
-			'README.md' );
-		contains(
-			$html,
-			q{<a href="/src/TLINDEN/apid-0.04/sample/README">sample/README</a>},
-			'sample/README'
-		);
-		contains(
-			$html,
-			q{<a href="/src/TLINDEN/apid-0.04/sample/index.html">sample/index.html</a>},
-			'sample/index.html'
-		);
-	};
+		}
 };
 
 subtest dist_perlancar_local_tie => sub {
@@ -165,16 +145,17 @@ subtest dist_cpan_test_dummy_sco_special => sub {
 		INSTALL
 		LICENSE
 		Makefile.PL
+		Build.PL
 		META.json
 		README
 		SIGNATURE
 	);
-	plan tests => 15 + @specials;
+	plan tests => 21 + @specials;
 
 	test_psgi $app, sub {
 		my $cb = shift;
 		my $html
-			= $cb->( GET '~szabgab/CPAN-Test-Dummy-SCO-Special-0.02/' )
+			= $cb->( GET '~szabgab/CPAN-Test-Dummy-SCO-Special-0.03/' )
 			->content;
 		html_check($html);
 		html_tidy_ok( $tidy, $html );
@@ -192,7 +173,7 @@ subtest dist_cpan_test_dummy_sco_special => sub {
 
 		foreach my $f (@specials) {
 			contains( $html,
-				qq{<a href="/src/SZABGAB/CPAN-Test-Dummy-SCO-Special-0.02/$f">$f</a><br>}
+				qq{<a href="/src/SZABGAB/CPAN-Test-Dummy-SCO-Special-0.03/$f">$f</a><br>}
 			);
 		}
 		contains( $html, q{<a href="MANIFEST">MANIFEST</a>}, 'MANIFEST' );
@@ -227,25 +208,34 @@ subtest dist_cpan_test_dummy_sco_special => sub {
 			q{<option value="/~szabgab/CPAN-Test-Dummy-SCO-Special-0.01/">CPAN-Test-Dummy-SCO-Special-0.01&nbsp;&nbsp;--&nbsp;&nbsp;27 Oct 2014</option>},
 			'link to other'
 		);
-	};
-};
+		contains(
+			$html,
+			q{<option value="/~szabgab/CPAN-Test-Dummy-SCO-Special-0.02/">CPAN-Test-Dummy-SCO-Special-0.02&nbsp;&nbsp;--&nbsp;&nbsp;28 Oct 2014</option>},
+			'link to other'
+		);
+		unlike(
+			$html,
+			qr{<option value="/~szabgab/CPAN-Test-Dummy-SCO-Special-0.03/">CPAN-Test-Dummy-SCO-Special-0.03&nbsp;&nbsp;--&nbsp;&nbsp;28 Oct 2014</option>},
+			'exclude current release from other releases'
+		);
 
-subtest dist_szabgab_text_mediawiki => sub {
-	plan tests => 4;
-
-	test_psgi $app, sub {
-		my $cb = shift;
-		my $html
-			= $cb->( GET '/~szabgab/Text-MediawikiFormat-1.01/' )->content;
-		html_check($html);
-		html_tidy_ok( $tidy, $html );
-		unlike $html, qr/ARRAY/;
-
-		contains( $html,
-			q{<a href="/src/SZABGAB/Text-MediawikiFormat-1.01/Build.PL">Build.PL</a><br>}
+		contains( $html, q{<h2 class="t2">Other Files</h2>}, 'Other Files' );
+		contains(
+			$html,
+			q{<a href="/src/SZABGAB/CPAN-Test-Dummy-SCO-Special-0.03/README.md">README.md</a>},
+			'README.md'
+		);
+		contains(
+			$html,
+			q{<a href="/src/SZABGAB/CPAN-Test-Dummy-SCO-Special-0.03/sample/README">sample/README</a>},
+			'sample/README'
+		);
+		contains(
+			$html,
+			q{<a href="/src/SZABGAB/CPAN-Test-Dummy-SCO-Special-0.03/sample/index.html">sample/index.html</a>},
+			'sample/index.html'
 		);
 	};
-
 };
 
 subtest dist_ddumont_text_mediawiki => sub {
