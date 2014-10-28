@@ -123,7 +123,6 @@ sub run {
 						text => $text,
 					);
 
-					#if ( $file =~ /\.(pod|pm)$/ ) {
 					if ( $files{$file}{documentation} ) {
 						$e{pod} = $file;
 					}

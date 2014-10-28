@@ -8,7 +8,7 @@ use Test::HTML::Tidy;
 
 use t::lib::Test;
 
-plan tests => 11;
+plan tests => 10;
 
 use MetaCPAN::SCO;
 
@@ -148,7 +148,7 @@ subtest dist_cpan_test_dummy_sco_special => sub {
 		README
 		SIGNATURE
 	);
-	plan tests => 24 + @specials;
+	plan tests => 29 + @specials;
 
 	test_psgi $app, sub {
 		my $cb = shift;
@@ -242,7 +242,25 @@ subtest dist_cpan_test_dummy_sco_special => sub {
 		);
 		unlike $html, qr{META.yml},
 			'if there is META.json then META.yml is hidden';
+
+		contains(
+			$html,
+			q{<a href="lib/CPAN/Test/Dummy/SCO/Onlydoc.pod">CPAN::Test::Dummy::SCO::Onlydoc</a>},
+			'.pod file'
+		);
+		contains( $html, q{only documentation, no module},
+			'abstract of pod' );
+		contains(
+			$html,
+			q{<a href="cpan-test-dummy-sco-special">cpan-test-dummy-sco-special</a>},
+			'documentation in script'
+		);
+		contains( $html, q{command line tool}, 'abstract from script' );
+		contains( $html, q{<h2 class="t2">Documentation</h2>},
+			'documentation' );
+
 	};
+
 };
 
 subtest dist_cpan_test_dummy_sco_special_0_03 => sub {
@@ -286,29 +304,6 @@ subtest dist_cpan_test_dummy_sco_special_0_03 => sub {
 #	q{<option value="/~szabgab/CPAN-Test-Dummy-SCO-Special-0.04/">CPAN-Test-Dummy-SCO-Special-0.04&nbsp;&nbsp;--&nbsp;&nbsp;28 Oct 2014</option>},
 #	'exclude current release from other releases'
 #);
-	};
-};
-
-subtest dist_ddumont_text_mediawiki => sub {
-	plan tests => 6;
-
-	test_psgi $app, sub {
-		my $cb = shift;
-		my $html
-			= $cb->( GET '/~ddumont/Config-Model-Itself-1.241/' )->content;
-		html_check($html);
-		html_tidy_ok( $tidy, $html );
-		unlike $html, qr/ARRAY/;
-
-		contains( $html, q{<h2 class="t2">Documentation</h2>},
-			'documentation' );
-		contains(
-			$html,
-			q{<a href="lib/Config/Model/models/Itself/Class.pod">Config::Model::models::Itself::Class</a>},
-			'link to pod'
-		);
-		contains( $html,
-			q{<a href="config-model-edit">config-model-edit</a>} );
 	};
 };
 
