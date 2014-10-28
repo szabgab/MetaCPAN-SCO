@@ -8,7 +8,7 @@ use Test::HTML::Tidy;
 
 use t::lib::Test;
 
-plan tests => 1;
+plan tests => 2;
 
 use MetaCPAN::SCO;
 
@@ -38,8 +38,6 @@ subtest manifest => sub {
 			q{Latest&nbsp;Release:&nbsp;<a href="/~szabgab/CPAN-Test-Dummy-SCO-Special/MANIFEST">CPAN-Test-Dummy-SCO-Special-0.04</a>},
 			'link to latest'
 		);
-
-# TODO minor issue: check and implement that when viewing the MANIFEST of the lates, there is no link to the latest.
 
 		contains(
 			$html,
@@ -78,5 +76,34 @@ subtest manifest => sub {
 
 	};
 
+};
+
+subtest manifest_latest => sub {
+	plan tests => 9;
+
+	test_psgi $app, sub {
+		my $cb = shift;
+		my $html
+			= $cb->( GET
+				'http://localhost:5000/~szabgab/CPAN-Test-Dummy-SCO-Special-0.04/MANIFEST'
+			)->content;
+		html_check($html);
+		html_tidy_ok( $tidy, $html );
+		unlike $html, qr/ARRAY/;
+		unlike $html, qr/Latest/;
+		contains( $html, q{<a href="cpan-test-dummy-sco-special">pod</a>},
+			'pod' );
+		contains( $html,
+			q{<a href="lib/CPAN/Test/Dummy/SCO/Special.pm">pod</a>},
+			'pod of pm' );
+		contains( $html,
+			q{<a href="lib/CPAN/Test/Dummy/SCO/Onlydoc.pod">pod</a>}, 'pod' );
+		contains( $html,
+			q{<a href="lib/CPAN/Test/Dummy/SCO/Separate.pod">pod</a>},
+			'pod' );
+		unlike( $html,
+			qr{<a href="lib/CPAN/Test/Dummy/SCO/Separate.pm">pod</a>},
+			'pod' );
+	};
 };
 
