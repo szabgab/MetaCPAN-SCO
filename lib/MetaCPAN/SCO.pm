@@ -220,49 +220,51 @@ sub run {
 
 sub get_latest_release {
 	my ($dist_name) = @_;
-
-	my $json = get "http://api.metacpan.org/v0/release/$dist_name";
-	my $data = from_json $json;
-	return $data;
+	return get_api("http://api.metacpan.org/v0/release/$dist_name");
 }
 
 sub get_releases {
 	my ($dist_name) = @_;
 	return reverse sort { $a->{date} cmp $b->{date} }
 		grep            { $_->{status} eq 'cpan' }
-		get_api(
+		get_api_fields(
 		"http://api.metacpan.org/v0/release/_search?q=distribution:$dist_name&size=30&fields=author,name,date,status,abstract"
 		);
 }
 
 sub get_files {
 	my ($dist_name_ver) = @_;
-	return get_api(
+	return get_api_fields(
 		"http://api.metacpan.org/v0/file/_search?q=release:$dist_name_ver&size=1000&fields=release,path,module.name,abstract,module.version,documentation,directory"
 	);
 }
 
 sub get_ratings {
 	my ($distribution) = @_;
-	return get_api(
+	return get_api_fields(
 		"http://api.metacpan.org/v0/rating/_search?q=distribution:$distribution&size=1000&fields=rating"
 	);
+}
+
+sub get_api_fields {
+	my ($url) = @_;
+	my $data = get_api($url);
+	return map { $_->{fields} } @{ $data->{hits}{hits} };
 }
 
 sub get_api {
 	my ($url) = @_;
 
-	my @results;
+	my $data;
 	eval {
 		my $json = get $url;
-		my $data = from_json $json;
-		@results = map { $_->{fields} } @{ $data->{hits}{hits} };
+		$data = from_json $json;
 		1;
 	} or do {
 		my $err = $@ // 'Unknown error';
 		warn $err if $err;
 	};
-	return @results;
+	return $data;
 }
 
 sub get_dist_data {
