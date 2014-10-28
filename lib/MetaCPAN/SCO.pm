@@ -107,11 +107,12 @@ sub run {
 				return template( 'dist', $data );
 			}
 
+			my %files
+				= map { $_->{path} => $_ } get_files($dist_name_ver);
+
 			if ( $file eq 'MANIFEST' ) {
 				my $manifest = get
 					"http://api.metacpan.org/source/$pauseid/$dist_name_ver/$file";
-				my %files
-					= map { $_->{path} => $_ } get_files($dist_name_ver);
 				my @rows = split /\r?\n/, $manifest;
 				my @entries;
 				foreach my $row (@rows) {
@@ -123,7 +124,7 @@ sub run {
 						text => $text,
 					);
 
-					if ( $files{$file}{documentation} ) {
+					if ( $files{$file} and $files{$file}{documentation} ) {
 						$e{pod} = $file;
 					}
 					push @entries, \%e;
@@ -151,7 +152,7 @@ sub run {
 				return template( 'manifest', \%data );
 			}
 
-			if ( $file =~ /\.(pod|pm)$/ ) {
+			if ( $files{$file} and $files{$file}{documentation} ) {
 				my $source = get
 					"http://api.metacpan.org/source/$pauseid/$dist_name_ver/$file";
 
@@ -166,6 +167,21 @@ sub run {
 		   # fetch info about the distribution to show on the right-hand side.
 
 				return template( 'pod', { pod => $pod } );
+			}
+
+# TODO it seems some of the cases this redirect to the source of the file
+# http://search.cpan.org/~szabgab/CPAN-Test-Dummy-SCO-Special-0.04/README
+# in other cases it redirects to he page of the distribution
+# http://search.cpan.org/~szabgab/CPAN-Test-Dummy-SCO-Special-0.04/lib/CPAN/Test/Dummy/SCO/Separate.pm
+# if the file does not exist, it shows "Not found"
+# for now if the file exsts we redirect to the source - and let it run on 404 if the file does not exist.
+			if ( $files{$file} ) {
+				my $res = Plack::Response->new();
+				$res->redirect(
+					"http://api.metacpan.org/source/$pauseid/$dist_name_ver/$file",
+					301
+				);
+				return $res->finalize;
 			}
 
 		}
