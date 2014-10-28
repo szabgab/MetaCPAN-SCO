@@ -427,7 +427,7 @@ subtest recent => sub {
 # TODO: http://localhost:5000/~babkin/triceps-2.0.0/  (missing Other releases, CPAN Testers, missing bug count, date is incorrect, missing other files)
 
 subtest manifest => sub {
-	plan tests => 8;
+	plan tests => 9;
 
 	test_psgi $app, sub {
 		my $cb = shift;
@@ -462,7 +462,8 @@ subtest manifest => sub {
 			'src of lib/CPAN/Test/Dummy/SCO/Nodoc.pm'
 		);
 
-#TODO unlike( $html, qr{[<a href="lib/CPAN/Test/Dummy/SCO/Nodoc.pm">pod</a>]}, 'no pod link' );
+		unlike( $html, qr{<a href="lib/CPAN/Test/Dummy/SCO/Nodoc.pm">pod</a>},
+			'no pod link' );
 	};
 
 };

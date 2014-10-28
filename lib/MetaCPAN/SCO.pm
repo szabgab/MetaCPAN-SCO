@@ -103,9 +103,9 @@ sub run {
 
 		# ~ealleniii/Config-Options-0.08/
 		if ( $path_info =~ m{^/~([a-z]+)/([^/]+)/(.*)?$} ) {
-			my ( $pauseid, $dist_name, $file ) = ( uc($1), $2, $3 );
+			my ( $pauseid, $dist_name_ver, $file ) = ( uc($1), $2, $3 );
 			if ( not $file ) {
-				my $data = get_dist_data( $pauseid, $dist_name );
+				my $data = get_dist_data( $pauseid, $dist_name_ver );
 
 				#die Dumper $data;
 
@@ -114,7 +114,9 @@ sub run {
 
 			if ( $file eq 'MANIFEST' ) {
 				my $manifest = get
-					"http://api.metacpan.org/source/$pauseid/$dist_name/$file";
+					"http://api.metacpan.org/source/$pauseid/$dist_name_ver/$file";
+				my %files
+					= map { $_->{path} => $_ } get_files($dist_name_ver);
 				my @rows = split /\r?\n/, $manifest;
 				my @entries;
 				foreach my $row (@rows) {
@@ -125,7 +127,9 @@ sub run {
 						file => $file,
 						text => $text,
 					);
-					if ( $file =~ /\.(pod|pm)$/ ) {
+
+					#if ( $file =~ /\.(pod|pm)$/ ) {
+					if ( $files{$file}{documentation} ) {
 						$e{pod} = $file;
 					}
 					push @entries, \%e;
@@ -136,7 +140,7 @@ sub run {
 					{
 						manifest  => \@entries,
 						pauseid   => $pauseid,
-						dist_name => $dist_name,
+						dist_name => $dist_name_ver,
 						author    => $author,
 						username  => lc($pauseid)
 					}
@@ -145,7 +149,7 @@ sub run {
 
 			if ( $file =~ /\.(pod|pm)$/ ) {
 				my $source = get
-					"http://api.metacpan.org/source/$pauseid/$dist_name/$file";
+					"http://api.metacpan.org/source/$pauseid/$dist_name_ver/$file";
 
 				my $p = Pod::Simple::HTML->new;
 				$p->output_string( \my $pod );
