@@ -8,7 +8,7 @@ use Test::HTML::Tidy;
 
 use t::lib::Test;
 
-plan tests => 14;
+plan tests => 13;
 
 use MetaCPAN::SCO;
 
@@ -31,35 +31,6 @@ subtest home => sub {
 		contains( $html, q{<a href="/author/">Authors</a>}, 'authors link' );
 		contains( $html, q{<a href="http://log.perl.org/">News</a>},
 			'news link' );    # link differs in sco
-	};
-};
-
-subtest authors => sub {
-	plan tests => 6 + 5;
-
-	test_psgi $app, sub {
-		my $cb   = shift;
-		my $html = $cb->( GET '/author/' )->content;
-		html_check($html);
-		html_tidy_ok( $tidy, $html );
-		contains( $html, q{<br><div class="t4">Author</div><br>}, 'Author' );
-		contains( $html, q{<a href="?A"> A </a>}, 'link to A' );
-		contains( $html, q{<a href="?M"> M </a>}, 'link to M' );
-		contains( $html, q{<a href="?Q"> Q </a>}, 'link to Q' );
-	};
-
-	test_psgi $app, sub {
-		my $cb   = shift;
-		my $html = $cb->( GET '/author/?Q' )->content;
-		html_check($html);
-		html_tidy_ok( $tidy, $html );
-		like( $html, qr{<td>\s*Q\s*</td>}, 'Q without link' );
-		unlike( $html, qr{<td>Q</td>}, 'no link to Q' );
-		contains(
-			$html,
-			q{<a href="/~qantins/"><b>QANTINS</b></a><br/><small>Marc Qantins</small>},
-			'QANTINS'
-		);
 	};
 };
 
