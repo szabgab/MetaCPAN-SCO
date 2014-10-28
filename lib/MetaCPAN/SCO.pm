@@ -555,19 +555,11 @@ sub get_author_info {
  # The source of the data on SCO is this xml file:
  # http://www.cpan.org/authors/00whois.xml
 
-	my $data;
-	eval {
-		my $json
-			= get 'http://api.metacpan.org/v0/author/_search?q=author._id:'
-			. $pause_id
-			. '&size=1';
-		my $raw = from_json $json;
-		$data = $raw->{hits}{hits}[0]{_source};
-		1;
-	} or do {
-		my $err = $@ // 'Unknown error';
-		warn $err if $err;
-	};
+	my $raw
+		= get_api(
+		"http://api.metacpan.org/v0/author/_search?q=author._id:$pause_id&size=1"
+		);
+	my $data = $raw->{hits}{hits}[0]{_source};
 	$data->{gravatar_url} =~ s{&}{&amp;}g;
 	return $data;
 }
