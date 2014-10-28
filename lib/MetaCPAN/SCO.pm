@@ -228,14 +228,11 @@ sub get_latest_release {
 
 sub get_releases {
 	my ($dist_name) = @_;
-
-	my $json = get
-		"http://api.metacpan.org/v0/release/_search?q=distribution:$dist_name&size=30&fields=author,name,date,status,abstract";
-	my $data = from_json $json;
-	my @releases = reverse sort { $a->{date} cmp $b->{date} }
-		grep { $_->{status} eq 'cpan' }
-		map  { $_->{fields} } @{ $data->{hits}{hits} };
-	return @releases;
+	return reverse sort { $a->{date} cmp $b->{date} }
+		grep            { $_->{status} eq 'cpan' }
+		get_api(
+		"http://api.metacpan.org/v0/release/_search?q=distribution:$dist_name&size=30&fields=author,name,date,status,abstract"
+		);
 }
 
 sub get_files {
