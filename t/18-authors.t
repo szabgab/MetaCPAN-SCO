@@ -8,7 +8,7 @@ use Test::HTML::Tidy;
 
 use t::lib::Test;
 
-plan tests => 1;
+plan tests => 2;
 
 use MetaCPAN::SCO;
 
@@ -17,7 +17,7 @@ my $tidy = html_tidy();
 my $app = MetaCPAN::SCO->run;
 
 subtest authors => sub {
-	plan tests => 6 + 5;
+	plan tests => 6;
 
 	test_psgi $app, sub {
 		my $cb   = shift;
@@ -29,6 +29,10 @@ subtest authors => sub {
 		contains( $html, q{<a href="?M"> M </a>}, 'link to M' );
 		contains( $html, q{<a href="?Q"> Q </a>}, 'link to Q' );
 	};
+};
+
+subtest authors_q => sub {
+	plan tests => 5;
 
 	test_psgi $app, sub {
 		my $cb   = shift;
