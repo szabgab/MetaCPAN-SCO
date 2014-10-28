@@ -8,7 +8,7 @@ use Test::HTML::Tidy;
 
 use t::lib::Test;
 
-plan tests => 14;
+plan tests => 15;
 
 use MetaCPAN::SCO;
 
@@ -166,7 +166,7 @@ subtest dist_szabgab_array_unique => sub {
 # TODO: Other releases should not list the current release (and the swithching has not been tested yet either)
 # 'Other Files' were listed on SCO
 subtest dist_tlinden_apid => sub {
-	plan tests => 16;
+	plan tests => 14;
 
 	test_psgi $app, sub {
 		my $cb   = shift;
@@ -188,22 +188,6 @@ subtest dist_tlinden_apid => sub {
 			'exclude current distro from other releases'
 		);
 
-		#contains(
-		#	$html,
-		#	q{<option value="/~tlinden/apid-0.03/">},
-		#	'other releases'
-		#);
-		#contains(
-		#	$html,
-		#	q{<option value="/~tlinden/apid-0.02/">},
-		#	'other releases'
-		#);
-		contains( $html,
-			q{<a href="/src/TLINDEN/apid-0.04/Changelog">Changelog</a>},
-			'Changelog' );
-		contains( $html,
-			q{<a href="/src/TLINDEN/apid-0.04/INSTALL">INSTALL</a>},
-			'INSTALL' );
 		contains( $html, q{<h2 class="t2">Other Files</h2>}, 'Other Files' );
 		contains( $html,
 			q{<a href="/src/TLINDEN/apid-0.04/README.md">README.md</a>},
@@ -222,7 +206,7 @@ subtest dist_tlinden_apid => sub {
 };
 
 subtest dist_perlancar_local_tie => sub {
-	plan tests => 15;
+	plan tests => 9;
 
 	test_psgi $app, sub {
 		my $cb   = shift;
@@ -237,32 +221,38 @@ subtest dist_perlancar_local_tie => sub {
 			q{<div id="permalink" class="noprint"><a href="/dist/Locale-Tie/">permalink</a></div>},
 			'permalink'
 		);
-		contains( $html,
-			q{<a href="/src/PERLANCAR/Locale-Tie-0.03/Changes">Changes</a>},
-			'Changes' );
-		contains( $html, q{<a href="MANIFEST">MANIFEST</a>}, 'MANIFEST' );
 		contains(
 			$html,
-			q{<a href="http://dev.perl.org/licenses/">The Perl 5 License (Artistic 1 &amp; GPL 1)</a>},
-			'license'
-		);
-		contains( $html, ' git://github.com/perlancar/perl-Locale-Tie.git ',
-			'github url' );
-		contains( $html,
-			'<a href="https://metacpan.org/release/Locale-Tie">Website</a>',
-			'Website' );
-		contains(
-			$html,
-			'<a href="lib/Locale/Tie.pm">Locale::Tie</a>',
-			'link to module'
-		);
-		contains(
-			$html,
-			'<small>Get/set locale via (localizeable) variables &nbsp;</small>',
-			'abstract'
+			' git://github.com/perlancar/perl-Locale-Tie.git ',
+			'github url but not a link'
 		);
 		contains( $html, 'META.json', 'META.json' );
 		unlike $html, qr{META.yml}, 'no META.yml';
+	};
+};
+
+subtest dist_cpan_test_dummy_sco_pirated => sub {
+	plan tests => 6;
+
+	test_psgi $app, sub {
+		my $cb = shift;
+		my $html
+			= $cb->( GET '~szabgab/CPAN-Test-Dummy-SCO-Pirated-1.03/' )
+			->content;
+		html_check($html);
+		html_tidy_ok( $tidy, $html );
+		unlike $html, qr/ARRAY/;
+		contains( $html, q{<small>27 Oct 2014</small>}, 'date' );
+
+		unlike( $html, qr{Other Releases}, 'no Other Releases' );
+
+	TODO: {
+			local $TODO = 'UNAUTHORIZED release not makred yet';
+			contains( $html,
+				q{<font color=red><b>** UNAUTHORIZED RELEASE **</b></font>},
+				'UNAUTHORIZED' );
+		}
+
 	};
 };
 
@@ -279,7 +269,7 @@ subtest dist_cpan_test_dummy_sco_special => sub {
 		README
 		SIGNATURE
 	);
-	plan tests => 6 + @specials;
+	plan tests => 15 + @specials;
 
 	test_psgi $app, sub {
 		my $cb = shift;
@@ -290,6 +280,16 @@ subtest dist_cpan_test_dummy_sco_special => sub {
 		html_tidy_ok( $tidy, $html );
 		unlike $html, qr/ARRAY/;
 		contains( $html, q{<small>28 Oct 2014</small>}, 'date' );
+		contains( $html, q{<a href="http://perlmaven.com/">Website</a>},
+			'website 1' );
+		contains(
+			$html,
+			q{<a href="http://github.com/szabgab/CPAN-Test-Dummy-SCO">Website</a>},
+			'Git website'
+		);
+
+#contains($html, q{<a href="http://github.com/szabgab/CPAN-Test-Dummy-SCO.git">http://github.com/szabgab/CPAN-Test-Dummy-SCO.git</a>}, 'Github link');
+
 		foreach my $f (@specials) {
 			contains( $html,
 				qq{<a href="/src/SZABGAB/CPAN-Test-Dummy-SCO-Special-0.02/$f">$f</a><br>}
@@ -297,12 +297,41 @@ subtest dist_cpan_test_dummy_sco_special => sub {
 		}
 		contains( $html, q{<a href="MANIFEST">MANIFEST</a>}, 'MANIFEST' );
 		unlike( $html, qr{SomeOther}, 'SomeOther.txt is not listed' );
+		contains(
+			$html,
+			q{<a href="http://dev.perl.org/licenses/">The Perl 5 License (Artistic 1 &amp; GPL 1)</a>},
+			'license'
+		);
+		contains(
+			$html,
+			q{<a href="lib/CPAN/Test/Dummy/SCO/Special.pm">CPAN::Test::Dummy::SCO::Special</a>},
+			'link to module'
+		);
+		contains(
+			$html,
+			q{CPAN::Test::Dummy::SCO::Nodoc},
+			'name of pm file without pod'
+		);
+		unlike(
+			$html,
+			qr{<a href="lib/CPAN/Test/Dummy/SCO/Nodoc.pm">CPAN::Test::Dummy::SCO::Nodoc</a>},
+			'no link to module without pod'
+		);
+		contains( $html,
+			'<small>package to test the SCO clone &nbsp;</small>',
+			'abstract' );
 
+		contains( $html, q{Other Releases}, 'Other Releases' );
+		contains(
+			$html,
+			q{<option value="/~szabgab/CPAN-Test-Dummy-SCO-Special-0.01/">CPAN-Test-Dummy-SCO-Special-0.01&nbsp;&nbsp;--&nbsp;&nbsp;27 Oct 2014</option>},
+			'link to other'
+		);
 	};
 };
 
 subtest dist_szabgab_text_mediawiki => sub {
-	plan tests => 5;
+	plan tests => 4;
 
 	test_psgi $app, sub {
 		my $cb = shift;
@@ -312,12 +341,6 @@ subtest dist_szabgab_text_mediawiki => sub {
 		html_tidy_ok( $tidy, $html );
 		unlike $html, qr/ARRAY/;
 
-	TODO: {
-			local $TODO = 'UNAUTHORIZED release not makred yet';
-			contains( $html,
-				q{<font color=red><b>** UNAUTHORIZED RELEASE **</b></font>},
-				'UNAUTHORIZED' );
-		}
 		contains( $html,
 			q{<a href="/src/SZABGAB/Text-MediawikiFormat-1.01/Build.PL">Build.PL</a><br>}
 		);
