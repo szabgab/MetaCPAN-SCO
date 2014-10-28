@@ -273,23 +273,10 @@ sub get_dist_data {
 	# curl 'http://api.metacpan.org/v0/release/AADLER/Games-LogicPuzzle-0.20'
 	# curl 'http://api.metacpan.org/v0/release/Games-LogicPuzzle'
 	# from https://github.com/CPAN-API/cpan-api/wiki/API-docs
-	my $dist;
-	my $release;
-	my @files = get_files($dist_name_ver);
-
-	eval {
-		my $json1
-			= get 'http://api.metacpan.org/v0/release/'
-			. $pauseid . '/'
-			. $dist_name_ver;
-		$dist = from_json $json1;
-
-		1;
-	} or do {
-		my $err = $@ // 'Unknown error';
-		warn $err if $err;
-	};
-	my @ratings = get_ratings( $dist->{distribution} );
+	my $dist = get_api(
+		"http://api.metacpan.org/v0/release/$pauseid/$dist_name_ver");
+	my @files    = get_files($dist_name_ver);
+	my @ratings  = get_ratings( $dist->{distribution} );
 	my @releases = grep { $_->{name} ne $dist_name_ver }
 		get_releases( $dist->{metadata}{name} );
 
