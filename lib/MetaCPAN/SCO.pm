@@ -238,6 +238,24 @@ sub get_releases {
 	return @releases;
 }
 
+sub get_files {
+	my ($dist_name_ver) = @_;
+
+	my @files;
+	eval {
+		my $json2
+			= get
+			"http://api.metacpan.org/v0/file/_search?q=release:$dist_name_ver&size=1000&fields=release,path,module.name,abstract,module.version,documentation,directory";
+		my $data2 = from_json $json2;
+		@files = map { $_->{fields} } @{ $data2->{hits}{hits} };
+		1;
+	} or do {
+		my $err = $@ // 'Unknown error';
+		warn $err if $err;
+	};
+	return @files;
+}
+
 sub get_dist_data {
 	my ( $pauseid, $dist_name_ver ) = @_;
 
@@ -254,11 +272,8 @@ sub get_dist_data {
 			= get 'http://api.metacpan.org/v0/release/'
 			. $pauseid . '/'
 			. $dist_name_ver;
-		$dist = from_json $json1;
-		my $json2 = get
-			"http://api.metacpan.org/v0/file/_search?q=release:$dist_name_ver&size=1000&fields=release,path,module.name,abstract,module.version,documentation,directory";
-		my $data2 = from_json $json2;
-		@files = map { $_->{fields} } @{ $data2->{hits}{hits} };
+		$dist  = from_json $json1;
+		@files = get_files($dist_name_ver);
 
 		my $json3 = get
 			"http://api.metacpan.org/v0/rating/_search?q=distribution:$dist->{distribution}&size=1000";
