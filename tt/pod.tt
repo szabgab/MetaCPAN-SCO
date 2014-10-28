@@ -1,42 +1,5 @@
-<!--
- <a name="_top"></a>
-  <div class=path>
-<div id=permalink class="noprint"><a href="/perldoc?<% dist.metadata.name %>">permalink</a></div>
-  <a href="/~<% username %>/"><% author.name %></a> &gt;
-  <a href="/~<% username %>/<% release %>/"><% release %></a> &gt;
-  <% dist.metadata.name %>
- </div>
+<% INCLUDE 'incl/pod.tt' %>
 
-<div class="noprint" style="float:right;align:left;width:19ex">
-<a href="http://hexten.net/cpan-faces/"><img src="http://www.gravatar.com/avatar/751f7128a6159d47f8d1ecbbbf595269?r=g&s=80&d=http%3A%2F%2Fst.pimg.net%2Ftucs%2Fimg%2Fwho.png" width="80" height="80" 
-style="float:right"
-/></a>
-<br style="clear:both"/>
-<p style="text-align:right">Download:<br/> <a href="/CPAN/authors/id/D/DD/DDUMONT/Config-Model-Itself-1.241.tar.gz">Config-Model-Itself-1.241.tar.gz</a></p>
-<p style="text-align:right"><a href="http://deps.cpantesters.org/?module=Config%3A%3AModel%3A%3AItself;perl=latest">Dependencies</a></p>
-<p style="text-align:right"><a href="http://www.annocpan.org/~DDUMONT/Config-Model-Itself-1.241/lib/Config/Model/Itself.pm">Annotate this POD
-</a></p>
-     <p style="text-align:right"><a href="https://github.com/dod38fr/config-model/wiki">Website</a></p>
-
-<div style="float:right">
-<div class=box style='width:150px'>
-<h1 class=t5>CPAN RT</h1>
-<div style="margin:2px">
-<table style="margin-left:auto;margin-right:auto">
-<tr><td>Open&nbsp;</td><td style="text-align:right"> 0</td></tr>
-</table>
-<a href="http://rt.cpan.org/NoAuth/Bugs.html?Dist=Config-Model-Itself">View/Report Bugs</a><br/>
-</div>
-</div>
-
-</div>
-</div>
-  Module Version:  1.241 &nbsp;
-<span class="noprint">
-  <a href="/src/DDUMONT/Config-Model-Itself-1.241/lib/Config/Model/Itself.pm">Source</a> &nbsp;
-</span>
-
--->
 
 <% pod %>
 

@@ -110,25 +110,9 @@ sub run {
 			my %files
 				= map { $_->{path} => $_ } get_files($dist_name_ver);
 
-			if ( $file eq 'MANIFEST' ) {
-				my $manifest = get
-					"http://api.metacpan.org/source/$pauseid/$dist_name_ver/$file";
-				my @rows = split /\r?\n/, $manifest;
-				my @entries;
-				foreach my $row (@rows) {
-					next if $row =~ /^\s*$/;
-					$row =~ s/^\s+|\s+$//g;
-					my ( $file, $text ) = split /\s+/, $row, 2;
-					my %e = (
-						file => $file,
-						text => $text,
-					);
-
-					if ( $files{$file} and $files{$file}{documentation} ) {
-						$e{pod} = $file;
-					}
-					push @entries, \%e;
-				}
+			if ( $file eq 'MANIFEST'
+				or ( $files{$file} and $files{$file}{documentation} ) )
+			{
 				my $dist = get_dist_info( $pauseid, $dist_name_ver );
 
 				#die Dumper $dist;
@@ -136,7 +120,6 @@ sub run {
 				my $latest_release = get_latest_release($dist_name);
 				my $author         = get_author_info($pauseid);
 				my %data           = (
-					manifest      => \@entries,
 					pauseid       => $pauseid,
 					dist_name_ver => $dist_name_ver,
 					dist_name     => $dist_name,
@@ -149,24 +132,46 @@ sub run {
 				if ( $latest_release->{name} ne $dist_name_ver ) {
 					$data{latest_name_ver} = $latest_release->{name};
 				}
-				return template( 'manifest', \%data );
-			}
 
-			if ( $files{$file} and $files{$file}{documentation} ) {
-				my $source = get
-					"http://api.metacpan.org/source/$pauseid/$dist_name_ver/$file";
+				if ( $file eq 'MANIFEST' ) {
+					my $manifest = get
+						"http://api.metacpan.org/source/$pauseid/$dist_name_ver/$file";
+					my @rows = split /\r?\n/, $manifest;
+					my @entries;
+					foreach my $row (@rows) {
+						next if $row =~ /^\s*$/;
+						$row =~ s/^\s+|\s+$//g;
+						my ( $file, $text ) = split /\s+/, $row, 2;
+						my %e = (
+							file => $file,
+							text => $text,
+						);
 
-				my $p = Pod::Simple::HTML->new;
-				$p->output_string( \my $pod );
-				$p->index(1);
-				$p->html_header_before_title('');
-				$p->html_header_after_title('');
-				$p->html_footer('');
-				$p->parse_string_document($source);
+						if ( $files{$file} and $files{$file}{documentation} )
+						{
+							$e{pod} = $file;
+						}
+						push @entries, \%e;
+					}
+					$data{manifest} = \@entries;
+					return template( 'manifest', \%data );
+				}
+				else {
 
-		   # fetch info about the distribution to show on the right-hand side.
+					my $source = get
+						"http://api.metacpan.org/source/$pauseid/$dist_name_ver/$file";
 
-				return template( 'pod', { pod => $pod } );
+					my $p = Pod::Simple::HTML->new;
+					$p->output_string( \my $pod );
+					$p->index(1);
+					$p->html_header_before_title('');
+					$p->html_header_after_title('');
+					$p->html_footer('');
+					$p->parse_string_document($source);
+					$data{pod} = $pod;
+
+					return template( 'pod', \%data );
+				}
 			}
 
 # TODO it seems some of the cases this redirect to the source of the file
