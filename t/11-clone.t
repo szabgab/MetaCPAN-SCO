@@ -8,7 +8,7 @@ use Test::HTML::Tidy;
 
 use t::lib::Test;
 
-plan tests => 13;
+plan tests => 14;
 
 use MetaCPAN::SCO;
 
@@ -266,8 +266,42 @@ subtest dist_perlancar_local_tie => sub {
 	};
 };
 
+subtest dist_cpan_test_dummy_sco_special => sub {
+	my @specials = qw(
+		ARTISTIC
+		Changelog
+		Changes
+		COPYING
+		INSTALL
+		LICENSE
+		Makefile.PL
+		META.json
+		README
+		SIGNATURE
+	);
+	plan tests => 5 + @specials;
+
+	test_psgi $app, sub {
+		my $cb = shift;
+		my $html
+			= $cb->( GET '~szabgab/CPAN-Test-Dummy-SCO-Special-0.01/' )
+			->content;
+		html_check($html);
+		html_tidy_ok( $tidy, $html );
+		unlike $html, qr/ARRAY/;
+		contains( $html, q{<small>27 Oct 2014</small>}, 'date' );
+		foreach my $f (@specials) {
+			contains( $html,
+				qq{<a href="/src/SZABGAB/CPAN-Test-Dummy-SCO-Special-0.01/$f">$f</a><br>}
+			);
+		}
+		contains( $html, q{<a href="MANIFEST">MANIFEST</a>}, 'MANIFEST' );
+
+	};
+};
+
 subtest dist_szabgab_text_mediawiki => sub {
-	plan tests => 13;
+	plan tests => 5;
 
 	test_psgi $app, sub {
 		my $cb = shift;
@@ -283,28 +317,8 @@ subtest dist_szabgab_text_mediawiki => sub {
 				q{<font color=red><b>** UNAUTHORIZED RELEASE **</b></font>},
 				'UNAUTHORIZED' );
 		}
-		contains( $html, q{<small>14 Sep 2014</small>}, 'date' );
-		contains( $html,
-			q{<a href="/src/SZABGAB/Text-MediawikiFormat-1.01/ARTISTIC">ARTISTIC</a><br>}
-		);
 		contains( $html,
 			q{<a href="/src/SZABGAB/Text-MediawikiFormat-1.01/Build.PL">Build.PL</a><br>}
-		);
-		contains( $html,
-			q{<a href="/src/SZABGAB/Text-MediawikiFormat-1.01/Changes">Changes</a><br>}
-		);
-		contains( $html,
-			q{<a href="/src/SZABGAB/Text-MediawikiFormat-1.01/Makefile.PL">Makefile.PL</a><br>}
-		);
-		contains( $html, q{<a href="MANIFEST">MANIFEST</a><br>} );
-		contains( $html,
-			q{<a href="/src/SZABGAB/Text-MediawikiFormat-1.01/META.json">META.json</a><br>}
-		);
-		contains( $html,
-			q{<a href="/src/SZABGAB/Text-MediawikiFormat-1.01/README">README</a><br>}
-		);
-		contains( $html,
-			q{<a href="/src/SZABGAB/Text-MediawikiFormat-1.01/SIGNATURE">SIGNATURE</a><br>}
 		);
 	};
 
