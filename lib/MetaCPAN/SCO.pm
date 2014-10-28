@@ -565,21 +565,15 @@ sub authors_starting_by {
 # or maybe use fetch to download and keep the full list locally:
 # http://api.metacpan.org/v0/author/_search?pretty=true&q=*&size=100000 (from https://github.com/CPAN-API/cpan-api/wiki/API-docs )
 
-	my @authors = [];
+	my @authors;
 	if ( $char =~ /[A-Z]/ ) {
-		eval {
-			my $json
-				= get
-				"http://api.metacpan.org/v0/author/_search?q=author._id:$char*&size=5000&fields=name";
-			my $data = from_json $json;
-			@authors = sort { $a->{id} cmp $b->{id} }
-				map { { id => $_->{_id}, name => $_->{fields}{name} } }
-				@{ $data->{hits}{hits} };
-			1;
-		} or do {
-			my $err = $@ // 'Unknown error';
-			warn $err if $err;
-		};
+		my $data
+			= get_api(
+			"http://api.metacpan.org/v0/author/_search?q=author._id:$char*&size=5000&fields=name"
+			);
+		@authors = sort { $a->{id} cmp $b->{id} }
+			map { { id => $_->{_id}, name => $_->{fields}{name} } }
+			@{ $data->{hits}{hits} };
 	}
 	return \@authors;
 }
