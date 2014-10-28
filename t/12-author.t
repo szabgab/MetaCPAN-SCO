@@ -8,7 +8,7 @@ use Test::HTML::Tidy;
 
 use t::lib::Test;
 
-plan tests => 1;
+plan tests => 2;
 
 use MetaCPAN::SCO;
 
@@ -17,7 +17,7 @@ my $tidy = html_tidy();
 my $app = MetaCPAN::SCO->run;
 
 subtest author => sub {
-	plan tests => 15;
+	plan tests => 10;
 
 	test_psgi $app, sub {
 		my $cb   = shift;
@@ -65,6 +65,10 @@ subtest author => sub {
 			q{<a href="http://perlmaven.com/" rel="me">http://perlmaven.com/</a>}
 		);
 	};
+};
+
+subtest author => sub {
+	plan tests => 5;
 
 	test_psgi $app, sub {
 		my $cb   = shift;
