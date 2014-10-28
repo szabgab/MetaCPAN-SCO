@@ -14,6 +14,9 @@
     <td><small>&nbsp;[<a href="<% dist.download_url %>">Download</a>]
     [<a href="/src/<% author.pauseid FILTER upper %>/<% dist.name %>/">Browse</a>]&nbsp;</small></td>
     <td><small><% date.format(dist.date, '%d %b %Y') %></small>
+    <% UNLESS dist.authorized %>
+        <font color="red"><b>** UNAUTHORIZED RELEASE **</b></font>
+    <% END %>
     </td>
    </tr>
 
@@ -133,7 +136,11 @@
         <td width="99%">
          <small><% HTML.escape(module.abstract) %> &nbsp;</small>
         </td>
-        <td>&nbsp;</td>
+        <% IF module.authorized == "true" %>
+           <td>&nbsp;</td>
+        <% ELSE %>
+           <td><font color="red"><b>UNAUTHORIZED</b></font></td>
+        <% END %>
         <td class="version"><% module.version %></td>
       </tr>
     <% END %>

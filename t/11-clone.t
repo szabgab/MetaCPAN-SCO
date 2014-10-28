@@ -112,12 +112,12 @@ subtest dist_perlancar_local_tie => sub {
 };
 
 subtest dist_cpan_test_dummy_sco_pirated => sub {
-	plan tests => 6;
+	plan tests => 7;
 
 	test_psgi $app, sub {
 		my $cb = shift;
 		my $html
-			= $cb->( GET '~szabgab/CPAN-Test-Dummy-SCO-Pirated-1.03/' )
+			= $cb->( GET '/~szabgab/CPAN-Test-Dummy-SCO-Pirated-1.03/' )
 			->content;
 		html_check($html);
 		html_tidy_ok( $tidy, $html );
@@ -126,12 +126,12 @@ subtest dist_cpan_test_dummy_sco_pirated => sub {
 
 		unlike( $html, qr{Other Releases}, 'no Other Releases' );
 
-	TODO: {
-			local $TODO = 'UNAUTHORIZED release not makred yet';
-			contains( $html,
-				q{<font color=red><b>** UNAUTHORIZED RELEASE **</b></font>},
-				'UNAUTHORIZED' );
-		}
+		contains( $html,
+			q{<font color="red"><b>** UNAUTHORIZED RELEASE **</b></font>},
+			'UNAUTHORIZED' );
+		contains( $html,
+			q{<td><font color="red"><b>UNAUTHORIZED</b></font></td>},
+			'UNAUTHORIZED' )
 
 	};
 };
@@ -169,7 +169,7 @@ subtest dist_cpan_test_dummy_sco_special => sub {
 			'Git website'
 		);
 
-#contains($html, q{<a href="http://github.com/szabgab/CPAN-Test-Dummy-SCO.git">http://github.com/szabgab/CPAN-Test-Dummy-SCO.git</a>}, 'Github link');
+#TODO: contains($html, q{<a href="http://github.com/szabgab/CPAN-Test-Dummy-SCO.git">http://github.com/szabgab/CPAN-Test-Dummy-SCO.git</a>}, 'Github link');
 
 		foreach my $f (@specials) {
 			contains( $html,

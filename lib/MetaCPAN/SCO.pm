@@ -239,7 +239,7 @@ sub get_releases {
 sub get_files {
 	my ($dist_name_ver) = @_;
 	return get_api_fields(
-		"http://api.metacpan.org/v0/file/_search?q=release:$dist_name_ver&size=1000&fields=release,path,module.name,abstract,module.version,documentation,directory"
+		"http://api.metacpan.org/v0/file/_search?q=release:$dist_name_ver&size=1000&fields=release,path,module.name,abstract,module.version,documentation,directory,authorized"
 	);
 }
 
