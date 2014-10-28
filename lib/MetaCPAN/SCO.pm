@@ -242,6 +242,13 @@ sub get_files {
 	);
 }
 
+sub get_ratings {
+	my ($distribution) = @_;
+	return get_api(
+		"http://api.metacpan.org/v0/rating/_search?q=distribution:$distribution&size=1000&fields=rating"
+	);
+}
+
 sub get_api {
 	my ($url) = @_;
 
@@ -267,7 +274,6 @@ sub get_dist_data {
 	my $dist;
 	my $release;
 	my @files = get_files($dist_name_ver);
-	my @ratings;
 
 	eval {
 		my $json1
@@ -276,16 +282,12 @@ sub get_dist_data {
 			. $dist_name_ver;
 		$dist = from_json $json1;
 
-		my $json3 = get
-			"http://api.metacpan.org/v0/rating/_search?q=distribution:$dist->{distribution}&size=1000";
-		my $data3 = from_json $json3;
-		@ratings = map { $_->{_source} } @{ $data3->{hits}{hits} };
-
 		1;
 	} or do {
 		my $err = $@ // 'Unknown error';
 		warn $err if $err;
 	};
+	my @ratings = get_ratings( $dist->{distribution} );
 	my @releases = grep { $_->{name} ne $dist_name_ver }
 		get_releases( $dist->{metadata}{name} );
 
