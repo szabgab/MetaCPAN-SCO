@@ -445,19 +445,11 @@ sub search {
 	my ( $query, $mode, $page, $page_size ) = @_;
 
 	if ( $mode eq 'author' ) {
-		my @authors = [];
-		eval {
-			my $json
-				= get
-				"http://api.metacpan.org/v0/author/_search?q=author.name:*$query*&size=5000&fields=name,asciiname,pauseid";
-			my $data = from_json $json;
-			@authors = sort { $a->{pauseid} cmp $b->{pauseid} }
-				map { $_->{fields} } @{ $data->{hits}{hits} };
-			1;
-		} or do {
-			my $err = $@ // 'Unknown error';
-			warn $err if $err;
-		};
+		my @authors
+			= sort { $a->{pauseid} cmp $b->{pauseid} }
+			get_api_fields(
+			"http://api.metacpan.org/v0/author/_search?q=author.name:*$query*&size=5000&fields=name,asciiname,pauseid"
+			);
 		return template('no_matches') if not @authors;
 
 		return template(
@@ -473,20 +465,11 @@ sub search {
 	}
 
 	if ( $mode eq 'dist' ) {
-		my @releases = [];
-		eval {
-			my $json
-				= get
-				"http://api.metacpan.org/v0/release/_search?q=name:*$query*&size=500&fields=date,name,author,abstract,distribution";
-			my $data = from_json $json;
-			@releases = sort { $a->{name} cmp $b->{name} }
-				map { $_->{fields} } @{ $data->{hits}{hits} };
-
-			1;
-		} or do {
-			my $err = $@ // 'Unknown error';
-			die $err if $err;
-		};
+		my @releases
+			= sort { $a->{name} cmp $b->{name} }
+			get_api_fields(
+			"http://api.metacpan.org/v0/release/_search?q=name:*$query*&size=500&fields=date,name,author,abstract,distribution"
+			);
 
 		return template('no_matches') if not @releases;
 		return template(
@@ -502,24 +485,16 @@ sub search {
 	}
 
 	if ( $mode eq 'module' ) {
-		my @modules;
 
 #die	get
 #		"http://api.metacpan.org/v0/module/_search?q=name:*$query*";
 #"http://api.metacpan.org/v0/module/_search?q=name:*$query*&size=500&fields=date,name,author,abstract,distribution,release";
 
-		eval {
-			my $json
-				= get
-				"http://api.metacpan.org/v0/module/_search?q=name:*$query*&size=500&fields=date,name,author,abstract,distribution,release,path";
-			my $data = from_json $json;
-			@modules = sort { $a->{name} cmp $b->{name} }
-				map { $_->{fields} } @{ $data->{hits}{hits} };
-			1;
-		} or do {
-			my $err = $@ // 'Unknown error';
-			die $err if $err;
-		};
+		my @modules
+			= sort { $a->{name} cmp $b->{name} }
+			get_api_fields(
+			"http://api.metacpan.org/v0/module/_search?q=name:*$query*&size=500&fields=date,name,author,abstract,distribution,release,path"
+			);
 
 		#die Dumper \@modules;
 		return template('no_matches') if not @modules;
