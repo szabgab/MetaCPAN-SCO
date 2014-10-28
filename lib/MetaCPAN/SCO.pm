@@ -128,6 +128,8 @@ sub run {
 					download_url  => $dist->{download_url},
 					website       => $dist->{resources}{homepage},
 					archive       => $dist->{archive},
+					documentation =>
+						( $files{$file}{documentation} || 'MANIFEST' ),
 				);
 				if ( $latest_release->{name} ne $dist_name_ver ) {
 					$data{latest_name_ver} = $latest_release->{name};
@@ -154,6 +156,7 @@ sub run {
 						push @entries, \%e;
 					}
 					$data{manifest} = \@entries;
+					$data{filename} = 'MANIFEST';
 					return template( 'manifest', \%data );
 				}
 				else {
@@ -168,8 +171,8 @@ sub run {
 					$p->html_header_after_title('');
 					$p->html_footer('');
 					$p->parse_string_document($source);
-					$data{pod} = $pod;
-
+					$data{pod}      = $pod;
+					$data{filename} = $file;
 					return template( 'pod', \%data );
 				}
 			}

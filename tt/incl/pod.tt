@@ -1,9 +1,9 @@
 <a name="_top"></a>
   <div class="path">
-<div id="permalink" class="noprint"><a href="/dist/<% dist_name %>/MANIFEST">permalink</a></div>
+<div id="permalink" class="noprint"><a href="/dist/<% dist_name %>/<% filename %>">permalink</a></div>
   <a href="/~<% username %>/"><% author.name %></a> &gt;
   <a href="/~<% username %>/<% dist_name_ver %>/"><% dist_name_ver %></a> &gt;
-  MANIFEST
+  <% documentation %>
 </div>
 
 
@@ -13,7 +13,7 @@
    </a>
    <br style="clear:both"/>
    <p style="text-align:right">Download:<br/> <a href="<% download_url %>"><% archive %></a></p>
-   <p style="text-align:right"><a href="http://www.annocpan.org/~<% pauseid %>/<% dist_name_ver %>/MANIFEST">Annotate this POD</a></p>
+   <p style="text-align:right"><a href="http://www.annocpan.org/~<% pauseid %>/<% dist_name_ver %>/<% filename %>">Annotate this POD</a></p>
 <% IF website %>
    <p style="text-align:right"><a href="<% website %>">Website</a></p>
 <% END %>
@@ -25,9 +25,9 @@
 
 
 <span class="noprint">
-  <a href="/src/<% pauseid %>/<% dist_name_ver %>/MANIFEST">Source</a> &nbsp;
+  <a href="/src/<% pauseid %>/<% dist_name_ver %>/<% filename %>">Source</a> &nbsp;
   <% IF latest_name_ver %>
-  Latest&nbsp;Release:&nbsp;<a href="/~<% username %>/<% dist_name %>/MANIFEST"><% latest_name_ver %></a>
+  Latest&nbsp;Release:&nbsp;<a href="/~<% username %>/<% dist_name %>/<% filename %>"><% latest_name_ver %></a>
   <% END %>
 </span>
 
