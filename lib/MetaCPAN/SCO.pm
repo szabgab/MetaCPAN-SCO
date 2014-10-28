@@ -521,29 +521,20 @@ sub get_distros_by_pauseid {
  # curl 'http://api.metacpan.org/v0/release/_search?q=author:SZABGAB&size=500'
  # TODO the status:latest filter should be on the query not in the grep
 
-	my @data;
-	eval {
-		my $json
-			= get 'http://api.metacpan.org/v0/release/_search?q=author:'
-			. $pause_id
-			. '&size=500';
-		my $raw = from_json $json;
-		@data = sort { $a->{name} cmp $b->{name} }
-			map {
-			{
-				name         => $_->{_source}{name},
-				abstract     => $_->{_source}{abstract},
-				date         => $_->{_source}{date},
-				download_url => $_->{_source}{download_url},
-			}
-			}
-			grep { $_->{_source}{status} eq 'latest' }
-			@{ $raw->{hits}{hits} };
-		1;
-	} or do {
-		my $err = $@ // 'Unknown error';
-		warn $err if $err;
-	};
+	my $raw
+		= get_api(
+		"http://api.metacpan.org/v0/release/_search?q=author:$pause_id&size=500"
+		);
+	my @data = sort { $a->{name} cmp $b->{name} }
+		map {
+		{
+			name         => $_->{_source}{name},
+			abstract     => $_->{_source}{abstract},
+			date         => $_->{_source}{date},
+			download_url => $_->{_source}{download_url},
+		}
+		}
+		grep { $_->{_source}{status} eq 'latest' } @{ $raw->{hits}{hits} };
 	return \@data;
 }
 
