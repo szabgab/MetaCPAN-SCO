@@ -8,7 +8,7 @@ use Test::HTML::Tidy;
 
 use t::lib::Test;
 
-plan tests => 10;
+plan tests => 8;
 
 use MetaCPAN::SCO;
 
@@ -148,7 +148,7 @@ subtest dist_cpan_test_dummy_sco_special => sub {
 		README
 		SIGNATURE
 	);
-	plan tests => 29 + @specials;
+	plan tests => 31 + @specials;
 
 	test_psgi $app, sub {
 		my $cb = shift;
@@ -259,12 +259,14 @@ subtest dist_cpan_test_dummy_sco_special => sub {
 		contains( $html, q{<h2 class="t2">Documentation</h2>},
 			'documentation' );
 
+		unlike( $html, qr{ps\.conf} );
+		unlike( $html, qr{ps\.map} );
 	};
 
 };
 
 subtest dist_cpan_test_dummy_sco_special_0_03 => sub {
-	plan tests => 8;
+	plan tests => 9;
 
 	test_psgi $app, sub {
 		my $cb = shift;
@@ -297,6 +299,8 @@ subtest dist_cpan_test_dummy_sco_special_0_03 => sub {
 			'link to other'
 		);
 
+		unlike( $html, qr{Documentation} );
+
 # TODO search.cpan.org only shows the older releases so the next test should not pass
 # but I think it should show both the older and newer releases
 #contains(
@@ -307,80 +311,9 @@ subtest dist_cpan_test_dummy_sco_special_0_03 => sub {
 	};
 };
 
-subtest dist_wonko_html_template => sub {
-	plan tests => 10;
-
-	test_psgi $app, sub {
-		my $cb   = shift;
-		my $html = $cb->( GET '/~wonko/HTML-Template-2.95/' )->content;
-		html_check($html);
-		html_tidy_ok( $tidy, $html );
-		unlike $html, qr/ARRAY/;
-		contains( $html,
-			q{<a href="lib/HTML/Template.pm">HTML::Template</a>} );
-		contains( $html,
-			q{<a href="lib/HTML/Template/FAQ.pm">HTML::Template::FAQ</a>} );
-		unlike( $html, qr{Documentation} );
-		unlike( $html,
-			qr{<a href="t/testlib/IO/Capture.pm">IO::Capture</a>} );
-		unlike( $html, qr{<a href="t/testlib/_Auxiliary.pm">_Auxiliary</a>} );
-		unlike( $html, qr{Other Files} );
-		unlike( $html, qr{bench/new\.pl} );
-	};
-};
-
 # TODO: http://localhost:5000/~babkin/triceps-2.0.0/  (missing Other releases, CPAN Testers, missing bug count, date is incorrect, missing other files)
 # TODO: http://search.cpan.org/~szabgab/Array-Unique-0.08/lib/Array/Unique.pm
 # TODO: http://search.cpan.org/dist/Array-Unique/
 # TODO: http://search.cpan.org/dist/Array-Unique/lib/Array/Unique.pm
 # TODO: search!
-
-#subtest dist_array_unique => sub {
-#	plan tests => 11;
-#
-#	test_psgi $app, sub {
-#		my $cb   = shift;
-#		my $html = $cb->( GET '/dist/Array-Unique/' )->content;
-#		html_check($html);
-#		html_tidy_ok( $tidy, $html );
-#		unlike $html, qr/ARRAY/;
-#		contains( $html, q{Array-Unique-0.08}, 'dist-ver name' );
-#	TODO: {
-#			local $TODO = 'Some slight inacccuracy in the date';
-#			contains( $html, q{03 Jun 2008}, 'date' );
-#		}
-#		unlike( $html, qr{Other Releases}, 'no Other Releases' );
-#		unlike(
-#			$html,
-#			qr{<select name="url">\s*</select>},
-#			'no empty selector'
-#		);
-#		like( $html, qr{PASS \(\d+\)},    'PASS' );
-#		like( $html, qr{FAIL \(\d+\)},    'FAIL' );
-#		like( $html, qr{NA \(\d+\)},      'NA' );
-#		like( $html, qr{UNKNOWN \(\d+\)}, 'UNKNOWN' );
-#	};
-#};
-
-subtest dist_html_template => sub {
-	plan tests => 10;
-
-	test_psgi $app, sub {
-		my $cb   = shift;
-		my $html = $cb->( GET '/dist/HTML-Template/' )->content;
-		html_check($html);
-		html_tidy_ok( $tidy, $html );
-		unlike $html, qr/ARRAY/;
-		contains( $html,
-			q{<a href="lib/HTML/Template.pm">HTML::Template</a>} );
-		contains( $html,
-			q{<a href="lib/HTML/Template/FAQ.pm">HTML::Template::FAQ</a>} );
-		unlike( $html, qr{Documentation} );
-		unlike( $html,
-			qr{<a href="t/testlib/IO/Capture.pm">IO::Capture</a>} );
-		unlike( $html, qr{<a href="t/testlib/_Auxiliary.pm">_Auxiliary</a>} );
-		unlike( $html, qr{Other Files} );
-		unlike( $html, qr{bench/new\.pl} );
-	};
-};
 
