@@ -64,7 +64,7 @@ subtest authors => sub {
 };
 
 subtest author => sub {
-	plan tests => 11;
+	plan tests => 15;
 
 	test_psgi $app, sub {
 		my $cb   = shift;
@@ -73,8 +73,29 @@ subtest author => sub {
 		html_tidy_ok( $tidy, $html ) or diag $html;
 		contains(
 			$html,
-			q{<a href="Dwimmer-0.32/">Dwimmer-0.32</a>},
-			'link to a release'
+			q{<a href="CPAN-Test-Dummy-SCO-Pirated-1.03/">CPAN-Test-Dummy-SCO-Pirated-1.03</a>},
+			'link to release'
+		);
+		contains(
+			$html,
+			q{package to test the SCO clone},
+			'abstract of a distribution'
+		);
+
+# Original in search.cpan.org was:
+#q{<a href="/CPAN/authors/id/S/SZ/SZABGAB/CPAN-Test-Dummy-SCO-Pirated-1.03.tar.gz">Download</a>},
+# The https here might be a bug see https://github.com/CPAN-API/cpan-api/issues/355
+		contains(
+			$html,
+			q{<a href="https://cpan.metacpan.org/authors/id/S/SZ/SZABGAB/CPAN-Test-Dummy-SCO-Pirated-1.03.tar.gz">Download</a>},
+			'download link'
+		);
+		contains( $html, q{27 Oct 2014},
+			'release date of CPAN-Test-Dummy-SCO-Pirated-1.03' );
+		contains(
+			$html,
+			q{<a href="/src/SZABGAB/CPAN-Test-Dummy-SCO-Pirated-1.03/">Browse</a>},
+			'link to source'
 		);
 		contains(
 			$html,

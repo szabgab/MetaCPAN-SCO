@@ -47,9 +47,11 @@
      <tr class="<% IF loop.index % 2 %>s<% ELSE %>r<% END %>">
        <td><a href="<% d.name %>/"><% d.name %></a></td>
        <td><% HTML.escape(d.abstract) %></td>
-       <td><small>[<a href="<% d.download_url %>">Download</a>]&nbsp;[<a
-          href="/src/AADLER/Games-LogicPuzzle-0.20/">Browse</a>]</small></td>
-       <td nowrap><% date.format(d.date, '%d  %b %Y') %></td>
+       <td><small>
+            [<a href="<% d.download_url %>">Download</a>]&nbsp;
+            [<a href="/src/<% author.pauseid FILTER upper %>/<% d.name %>/">Browse</a>]
+          </small></td>
+       <td nowrap><% date.format(d.date, '%d %b %Y') %></td>
      </tr>
    <% END %>
   </table>
