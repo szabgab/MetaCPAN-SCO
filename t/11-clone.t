@@ -8,7 +8,7 @@ use Test::HTML::Tidy;
 
 use t::lib::Test;
 
-plan tests => 15;
+plan tests => 14;
 
 use MetaCPAN::SCO;
 
@@ -425,49 +425,6 @@ subtest recent => sub {
 
 # TODO: /uploads.rdf
 # TODO: http://localhost:5000/~babkin/triceps-2.0.0/  (missing Other releases, CPAN Testers, missing bug count, date is incorrect, missing other files)
-
-subtest manifest => sub {
-	plan tests => 9;
-
-	test_psgi $app, sub {
-		my $cb = shift;
-		my $html
-			= $cb->( GET
-				'http://localhost:5000/~szabgab/CPAN-Test-Dummy-SCO-Special-0.02/MANIFEST'
-			)->content;
-		html_check($html);
-		html_tidy_ok( $tidy, $html );
-		unlike $html, qr/ARRAY/;
-		contains(
-			$html,
-			q{<a href="/src/SZABGAB/CPAN-Test-Dummy-SCO-Special-0.02/MANIFEST">Source</a>},
-			'source'
-		);
-		contains(
-			$html,
-			q{<a href="/src/SZABGAB/CPAN-Test-Dummy-SCO-Special-0.02/MANIFEST">MANIFEST</a>},
-			'MANIFEST'
-		);
-		contains(
-			$html,
-			q{<a href="/src/SZABGAB/CPAN-Test-Dummy-SCO-Special-0.02/lib/CPAN/Test/Dummy/SCO/Special.pm">lib/CPAN/Test/Dummy/SCO/Special.pm</a>},
-			'src of lib/CPAN/Test/Dummy/SCO/Special.pm'
-		);
-		contains( $html,
-			q{[<a href="lib/CPAN/Test/Dummy/SCO/Special.pm">pod</a>]},
-			'pod' );
-		contains(
-			$html,
-			q{<a href="/src/SZABGAB/CPAN-Test-Dummy-SCO-Special-0.02/lib/CPAN/Test/Dummy/SCO/Nodoc.pm">lib/CPAN/Test/Dummy/SCO/Nodoc.pm</a>},
-			'src of lib/CPAN/Test/Dummy/SCO/Nodoc.pm'
-		);
-
-		unlike( $html, qr{<a href="lib/CPAN/Test/Dummy/SCO/Nodoc.pm">pod</a>},
-			'no pod link' );
-	};
-
-};
-
 # TODO: http://search.cpan.org/~szabgab/Array-Unique-0.08/lib/Array/Unique.pm
 # TODO: http://search.cpan.org/dist/Array-Unique/
 # TODO: http://search.cpan.org/dist/Array-Unique/lib/Array/Unique.pm
