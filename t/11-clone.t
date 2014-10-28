@@ -8,7 +8,7 @@ use Test::HTML::Tidy;
 
 use t::lib::Test;
 
-plan tests => 10;
+plan tests => 11;
 
 use MetaCPAN::SCO;
 
@@ -86,7 +86,7 @@ subtest dist_tlinden_apid => sub {
 };
 
 subtest dist_perlancar_local_tie => sub {
-	plan tests => 9;
+	plan tests => 7;
 
 	test_psgi $app, sub {
 		my $cb   = shift;
@@ -106,8 +106,6 @@ subtest dist_perlancar_local_tie => sub {
 			' git://github.com/perlancar/perl-Locale-Tie.git ',
 			'github url but not a link'
 		);
-		contains( $html, 'META.json', 'META.json' );
-		unlike $html, qr{META.yml}, 'no META.yml';
 	};
 };
 
@@ -150,12 +148,12 @@ subtest dist_cpan_test_dummy_sco_special => sub {
 		README
 		SIGNATURE
 	);
-	plan tests => 21 + @specials;
+	plan tests => 24 + @specials;
 
 	test_psgi $app, sub {
 		my $cb = shift;
 		my $html
-			= $cb->( GET '~szabgab/CPAN-Test-Dummy-SCO-Special-0.03/' )
+			= $cb->( GET '~szabgab/CPAN-Test-Dummy-SCO-Special-0.04/' )
 			->content;
 		html_check($html);
 		html_tidy_ok( $tidy, $html );
@@ -173,16 +171,18 @@ subtest dist_cpan_test_dummy_sco_special => sub {
 
 		foreach my $f (@specials) {
 			contains( $html,
-				qq{<a href="/src/SZABGAB/CPAN-Test-Dummy-SCO-Special-0.03/$f">$f</a><br>}
+				qq{<a href="/src/SZABGAB/CPAN-Test-Dummy-SCO-Special-0.04/$f">$f</a><br>}
 			);
 		}
 		contains( $html, q{<a href="MANIFEST">MANIFEST</a>}, 'MANIFEST' );
 		unlike( $html, qr{SomeOther}, 'SomeOther.txt is not listed' );
 		contains(
 			$html,
-			q{<a href="http://dev.perl.org/licenses/">The Perl 5 License (Artistic 1 &amp; GPL 1)</a>},
+			q{<a href="http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt">The GNU Lesser General Public License, Version 2.1, February 1999</a>},
 			'license'
 		);
+
+		contains( $html, q{<h2 class="t2">Modules</h2>}, 'Modules' );
 		contains(
 			$html,
 			q{<a href="lib/CPAN/Test/Dummy/SCO/Special.pm">CPAN::Test::Dummy::SCO::Special</a>},
@@ -213,33 +213,84 @@ subtest dist_cpan_test_dummy_sco_special => sub {
 			q{<option value="/~szabgab/CPAN-Test-Dummy-SCO-Special-0.02/">CPAN-Test-Dummy-SCO-Special-0.02&nbsp;&nbsp;--&nbsp;&nbsp;28 Oct 2014</option>},
 			'link to other'
 		);
+		contains(
+			$html,
+			q{<option value="/~szabgab/CPAN-Test-Dummy-SCO-Special-0.03/">CPAN-Test-Dummy-SCO-Special-0.03&nbsp;&nbsp;--&nbsp;&nbsp;28 Oct 2014</option>},
+			'link to other'
+		);
 		unlike(
 			$html,
-			qr{<option value="/~szabgab/CPAN-Test-Dummy-SCO-Special-0.03/">CPAN-Test-Dummy-SCO-Special-0.03&nbsp;&nbsp;--&nbsp;&nbsp;28 Oct 2014</option>},
+			qr{<option value="/~szabgab/CPAN-Test-Dummy-SCO-Special-0.04/">CPAN-Test-Dummy-SCO-Special-0.04&nbsp;&nbsp;--&nbsp;&nbsp;28 Oct 2014</option>},
 			'exclude current release from other releases'
 		);
 
 		contains( $html, q{<h2 class="t2">Other Files</h2>}, 'Other Files' );
 		contains(
 			$html,
-			q{<a href="/src/SZABGAB/CPAN-Test-Dummy-SCO-Special-0.03/README.md">README.md</a>},
+			q{<a href="/src/SZABGAB/CPAN-Test-Dummy-SCO-Special-0.04/README.md">README.md</a>},
 			'README.md'
 		);
 		contains(
 			$html,
-			q{<a href="/src/SZABGAB/CPAN-Test-Dummy-SCO-Special-0.03/sample/README">sample/README</a>},
+			q{<a href="/src/SZABGAB/CPAN-Test-Dummy-SCO-Special-0.04/sample/README">sample/README</a>},
 			'sample/README'
 		);
 		contains(
 			$html,
-			q{<a href="/src/SZABGAB/CPAN-Test-Dummy-SCO-Special-0.03/sample/index.html">sample/index.html</a>},
+			q{<a href="/src/SZABGAB/CPAN-Test-Dummy-SCO-Special-0.04/sample/index.html">sample/index.html</a>},
 			'sample/index.html'
 		);
+		unlike $html, qr{META.yml},
+			'if there is META.json then META.yml is hidden';
+	};
+};
+
+subtest dist_cpan_test_dummy_sco_special_0_03 => sub {
+	plan tests => 8;
+
+	test_psgi $app, sub {
+		my $cb = shift;
+		my $html
+			= $cb->( GET '~szabgab/CPAN-Test-Dummy-SCO-Special-0.03/' )
+			->content;
+		html_check($html);
+		html_tidy_ok( $tidy, $html );
+		unlike $html, qr/ARRAY/;
+		contains( $html, q{<small>28 Oct 2014</small>}, 'date' );
+
+		contains(
+			$html,
+			q{<a href="http://dev.perl.org/licenses/">The Perl 5 License (Artistic 1 &amp; GPL 1)</a>},
+		);
+
+		contains(
+			$html,
+			q{<option value="/~szabgab/CPAN-Test-Dummy-SCO-Special-0.01/">CPAN-Test-Dummy-SCO-Special-0.01&nbsp;&nbsp;--&nbsp;&nbsp;27 Oct 2014</option>},
+			'link to other'
+		);
+		contains(
+			$html,
+			q{<option value="/~szabgab/CPAN-Test-Dummy-SCO-Special-0.02/">CPAN-Test-Dummy-SCO-Special-0.02&nbsp;&nbsp;--&nbsp;&nbsp;28 Oct 2014</option>},
+			'link to other'
+		);
+		unlike(
+			$html,
+			qr{<option value="/~szabgab/CPAN-Test-Dummy-SCO-Special-0.03/">CPAN-Test-Dummy-SCO-Special-0.03&nbsp;&nbsp;--&nbsp;&nbsp;28 Oct 2014</option>},
+			'link to other'
+		);
+
+# TODO search.cpan.org only shows the older releases so the next test should not pass
+# but I think it should show both the older and newer releases
+#contains(
+#	$html,
+#	q{<option value="/~szabgab/CPAN-Test-Dummy-SCO-Special-0.04/">CPAN-Test-Dummy-SCO-Special-0.04&nbsp;&nbsp;--&nbsp;&nbsp;28 Oct 2014</option>},
+#	'exclude current release from other releases'
+#);
 	};
 };
 
 subtest dist_ddumont_text_mediawiki => sub {
-	plan tests => 13;
+	plan tests => 6;
 
 	test_psgi $app, sub {
 		my $cb = shift;
@@ -248,19 +299,7 @@ subtest dist_ddumont_text_mediawiki => sub {
 		html_check($html);
 		html_tidy_ok( $tidy, $html );
 		unlike $html, qr/ARRAY/;
-		contains( $html,
-			q{<a href="/src/DDUMONT/Config-Model-Itself-1.241/LICENSE">LICENSE</a><br>}
-		);
-		contains( $html,
-			q{<a href="lib/Config/Model/Itself.pm">Config::Model::Itself</a>}
-		);
-		contains( $html,
-			q{<a href="lib/Config/Model/Itself/BackendDetector.pm">Config::Model::Itself::BackendDetector</a>}
-		);
-		contains( $html, q{Config::Model::Itself::TkEditUI} );
-		unlike( $html, qr{\QConfig/Model/Itself/TkEditUI}, 'no link' );
 
-		contains( $html, q{<h2 class="t2">Modules</h2>}, 'Modules' );
 		contains( $html, q{<h2 class="t2">Documentation</h2>},
 			'documentation' );
 		contains(
@@ -270,9 +309,6 @@ subtest dist_ddumont_text_mediawiki => sub {
 		);
 		contains( $html,
 			q{<a href="config-model-edit">config-model-edit</a>} );
-		contains( $html,
-			q{<a href="http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt">The GNU Lesser General Public License, Version 2.1, February 1999</a>}
-		);
 	};
 };
 
