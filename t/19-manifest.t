@@ -17,7 +17,7 @@ my $tidy = html_tidy();
 my $app = MetaCPAN::SCO->run;
 
 subtest manifest => sub {
-	plan tests => 9;
+	plan tests => 13;
 
 	test_psgi $app, sub {
 		my $cb = shift;
@@ -33,6 +33,14 @@ subtest manifest => sub {
 			q{<a href="/src/SZABGAB/CPAN-Test-Dummy-SCO-Special-0.02/MANIFEST">Source</a>},
 			'source'
 		);
+		contains(
+			$html,
+			q{Latest&nbsp;Release:&nbsp;<a href="/~szabgab/CPAN-Test-Dummy-SCO-Special/MANIFEST">CPAN-Test-Dummy-SCO-Special-0.04</a>},
+			'link to latest'
+		);
+
+# TODO minor issue: check and implement that when viewing the MANIFEST of the lates, there is no link to the latest.
+
 		contains(
 			$html,
 			q{<a href="/src/SZABGAB/CPAN-Test-Dummy-SCO-Special-0.02/MANIFEST">MANIFEST</a>},
@@ -54,6 +62,20 @@ subtest manifest => sub {
 
 		unlike( $html, qr{<a href="lib/CPAN/Test/Dummy/SCO/Nodoc.pm">pod</a>},
 			'no pod link' );
+
+		contains( $html, q{Download:}, 'Download:' );
+
+		contains(
+			$html,
+			q{<a href="https://cpan.metacpan.org/authors/id/S/SZ/SZABGAB/CPAN-Test-Dummy-SCO-Special-0.02.tar.gz">CPAN-Test-Dummy-SCO-Special-0.02.tar.gz</a>},
+			'download link'
+		);
+		contains(
+			$html,
+			q{<a href="http://www.annocpan.org/~SZABGAB/CPAN-Test-Dummy-SCO-Special-0.02/MANIFEST">Annotate this POD</a>},
+			'link to annocpan'
+		);
+
 	};
 
 };

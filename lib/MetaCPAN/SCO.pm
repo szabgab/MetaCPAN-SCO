@@ -134,17 +134,27 @@ sub run {
 					}
 					push @entries, \%e;
 				}
-				my $author = get_author_info($pauseid);
-				return template(
-					'manifest',
-					{
-						manifest  => \@entries,
-						pauseid   => $pauseid,
-						dist_name => $dist_name_ver,
-						author    => $author,
-						username  => lc($pauseid)
-					}
+				my $dist = get_dist_info( $pauseid, $dist_name_ver );
+
+				#die Dumper $dist;
+				my $dist_name      = $dist->{distribution};
+				my $latest_release = get_latest_release($dist_name);
+				my $author         = get_author_info($pauseid);
+				my %data           = (
+					manifest      => \@entries,
+					pauseid       => $pauseid,
+					dist_name_ver => $dist_name_ver,
+					dist_name     => $dist_name,
+					author        => $author,
+					username      => lc($pauseid),
+					download_url  => $dist->{download_url},
+					website       => $dist->{resources}{homepage},
+					archive       => $dist->{archive},
 				);
+				if ( $latest_release->{name} ne $dist_name_ver ) {
+					$data{latest_name_ver} = $latest_release->{name};
+				}
+				return template( 'manifest', \%data );
 			}
 
 			if ( $file =~ /\.(pod|pm)$/ ) {
@@ -222,6 +232,12 @@ sub run {
 	};
 }
 
+sub get_dist_info {
+	my ( $pauseid, $dist_name_ver ) = @_;
+	return get_api(
+		"http://api.metacpan.org/v0/release/$pauseid/$dist_name_ver");
+}
+
 sub get_latest_release {
 	my ($dist_name) = @_;
 	return get_api("http://api.metacpan.org/v0/release/$dist_name");
@@ -277,8 +293,7 @@ sub get_dist_data {
 	# curl 'http://api.metacpan.org/v0/release/AADLER/Games-LogicPuzzle-0.20'
 	# curl 'http://api.metacpan.org/v0/release/Games-LogicPuzzle'
 	# from https://github.com/CPAN-API/cpan-api/wiki/API-docs
-	my $dist = get_api(
-		"http://api.metacpan.org/v0/release/$pauseid/$dist_name_ver");
+	my $dist     = get_dist_info( $pauseid, $dist_name_ver );
 	my @files    = get_files($dist_name_ver);
 	my @ratings  = get_ratings( $dist->{distribution} );
 	my @releases = grep { $_->{name} ne $dist_name_ver }
