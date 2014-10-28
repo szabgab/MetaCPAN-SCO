@@ -279,23 +279,24 @@ subtest dist_cpan_test_dummy_sco_special => sub {
 		README
 		SIGNATURE
 	);
-	plan tests => 5 + @specials;
+	plan tests => 6 + @specials;
 
 	test_psgi $app, sub {
 		my $cb = shift;
 		my $html
-			= $cb->( GET '~szabgab/CPAN-Test-Dummy-SCO-Special-0.01/' )
+			= $cb->( GET '~szabgab/CPAN-Test-Dummy-SCO-Special-0.02/' )
 			->content;
 		html_check($html);
 		html_tidy_ok( $tidy, $html );
 		unlike $html, qr/ARRAY/;
-		contains( $html, q{<small>27 Oct 2014</small>}, 'date' );
+		contains( $html, q{<small>28 Oct 2014</small>}, 'date' );
 		foreach my $f (@specials) {
 			contains( $html,
-				qq{<a href="/src/SZABGAB/CPAN-Test-Dummy-SCO-Special-0.01/$f">$f</a><br>}
+				qq{<a href="/src/SZABGAB/CPAN-Test-Dummy-SCO-Special-0.02/$f">$f</a><br>}
 			);
 		}
 		contains( $html, q{<a href="MANIFEST">MANIFEST</a>}, 'MANIFEST' );
+		unlike( $html, qr{SomeOther}, 'SomeOther.txt is not listed' );
 
 	};
 };
