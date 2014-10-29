@@ -8,21 +8,31 @@
 
 
 <div class="noprint" style="float:right;align:left;width:19ex">
-   <a href="http://hexten.net/cpan-faces/">
-     <img src="<% author.gravatar_url %>" width="80" height="80" style="float:right" alt="" />
-   </a>
-   <br style="clear:both"/>
-   <p style="text-align:right">Download:<br/> <a href="<% download_url %>"><% archive %></a></p>
-   <p style="text-align:right"><a href="http://www.annocpan.org/~<% pauseid %>/<% dist_name_ver %>/<% filename %>">Annotate this POD</a></p>
+    <a href="http://hexten.net/cpan-faces/">
+        <img src="<% author.gravatar_url %>" width="80" height="80" style="float:right" alt="" />
+    </a>
+    <br style="clear:both"/>
+    <p style="text-align:right">Download:<br/> <a href="<% download_url %>"><% archive %></a></p>
+    <p style="text-align:right"><a href="http://www.annocpan.org/~<% pauseid %>/<% dist_name_ver %>/<% filename %>">Annotate this POD</a></p>
 <% IF website %>
-   <p style="text-align:right"><a href="<% website %>">Website</a></p>
+    <p style="text-align:right"><a href="<% website %>">Website</a></p>
 <% END %>
 
-   <div style="float:right">
-      <a href="https://rt.cpan.org/Public/Dist/Display.html?Name=<% dist_name %>">View/Report Bugs</a><br/>
-   </div>
-</div>
 
+    <div style="float:right">
+        <div class="box" style='width:150px'>
+            <h1 class="t5">CPAN RT</h1>
+            <div style="margin:2px">
+                <table style="margin-left:auto;margin-right:auto">
+                    <tr><td>New&nbsp;</td><td style="text-align:right"> <% rt.new %></td></tr>
+                    <tr><td>Open&nbsp;</td><td style="text-align:right"> <% rt.open %></td></tr>
+                </table>
+                <a href="https://rt.cpan.org/Public/Dist/Display.html?Name=<% dist_name %>">View/Report Bugs</a><br/>
+                <!-- <a href="http://rt.cpan.org/NoAuth/Bugs.html?Dist=<% dist_name %>">View/Report Bugs</a><br/> -->
+            </div>
+        </div>
+    </div>
+</div>
 
 <span class="noprint">
   <a href="/src/<% pauseid %>/<% dist_name_ver %>/<% filename %>">Source</a> &nbsp;
