@@ -206,6 +206,9 @@ sub show_pod {
 		release       => $release,
 		documentation => ( $files{$file}{documentation} || 'MANIFEST' ),
 		filename      => $file,
+		distribution  => get_api(
+			"http://api.metacpan.org/v0/distribution/$release->{distribution}"
+		),
 	);
 	my $latest_release = get_latest_release($dist_name);
 	if ( $latest_release->{name} ne $dist_name_ver ) {

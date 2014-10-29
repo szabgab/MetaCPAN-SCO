@@ -24,8 +24,8 @@
             <h1 class="t5">CPAN RT</h1>
             <div style="margin:2px">
                 <table style="margin-left:auto;margin-right:auto">
-                    <tr><td>New&nbsp;</td><td style="text-align:right"> <% rt.new %></td></tr>
-                    <tr><td>Open&nbsp;</td><td style="text-align:right"> <% rt.open %></td></tr>
+                    <tr><td>New&nbsp;</td><td style="text-align:right"> <% distribution.bugs.new %></td></tr>
+                    <tr><td>Open&nbsp;</td><td style="text-align:right"> <% distribution.bugs.open %></td></tr>
                 </table>
                 <a href="https://rt.cpan.org/Public/Dist/Display.html?Name=<% dist_name %>">View/Report Bugs</a><br/>
                 <!-- <a href="http://rt.cpan.org/NoAuth/Bugs.html?Dist=<% dist_name %>">View/Report Bugs</a><br/> -->
