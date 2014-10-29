@@ -1,7 +1,11 @@
       <% IF page.previous_page %>
          <a href="/search?m=<% mode %>&amp;q=<% query %>&amp;p=<% page.previous_page %>&amp;n=<% page_size %>">&lt;&lt; Previous</a> &middot;
       <% END %>
-      <% FOR p IN [page.first_page .. page.last_page] %>
+      <%
+          first_index =  page.current_page <= 5 ? page.first_page : page.current_page - 5
+          last_index   = page.last_page > page.current_page + 5 ? page.current_page + 5 : page.last_page
+      %>
+      <% FOR p IN [first_index .. last_index] %>
          <% IF page.current_page == p %>
             <b><% p %></b> &middot;
          <% ELSE %>
