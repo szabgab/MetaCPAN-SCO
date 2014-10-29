@@ -104,6 +104,9 @@ sub run {
 		if ( $path_info =~ m{^/dist/([^/]+)$} ) {
 			return redirect("$path_info/");
 		}
+		if ( $path_info =~ m{^/(~[a-z]+|dist)/[^/]+$} ) {
+			return redirect("$path_info/");
+		}
 
 		if ( $path_info =~ m{^/~([a-z]+)/([^/]+)/(.*)?$} ) {
 			my ( $pauseid, $dist_name_ver, $file ) = ( uc($1), $2, $3 );
