@@ -112,12 +112,12 @@ sub run {
 			my ( $pauseid, $dist_name_ver, $file ) = ( uc($1), $2, $3 );
 			if ( not $file ) {
 				my $data = get_dist_data( $pauseid, $dist_name_ver );
-
-		   # TODO Strangely ~wonko/HTML-Template-2.95/ is showing UNAUTHORIZED
-		   # files https://github.com/CPAN-API/cpan-api/issues/357
-		   #die Dumper $data;
-
-				return template( 'dist', $data );
+				if ($data) {
+					return template( 'dist', $data );
+				}
+				else {
+					return not_found();
+				}
 			}
 			my $ret = show_pod( $pauseid, $dist_name_ver, $file );
 			return $ret if $ret;
@@ -163,8 +163,7 @@ sub run {
 			return search( $query, $mode, $page, $size );
 		}
 
-		my $reply = template('404');
-		return [ '404', [ 'Content-Type' => 'text/html' ], $reply->[2], ];
+		return not_found();
 	};
 
 	builder {
@@ -173,6 +172,11 @@ sub run {
 			root => "$root/static/";
 		$app;
 	};
+}
+
+sub not_found {
+	my $reply = template('404');
+	return [ '404', [ 'Content-Type' => 'text/html' ], $reply->[2], ];
 }
 
 sub show_pod {
@@ -300,6 +304,7 @@ sub get_api {
 	my $data;
 	eval {
 		my $json = get $url;
+		return if not $json;
 		$data = from_json $json;
 		1;
 	} or do {
@@ -315,7 +320,8 @@ sub get_dist_data {
 	# curl 'http://api.metacpan.org/v0/release/AADLER/Games-LogicPuzzle-0.20'
 	# curl 'http://api.metacpan.org/v0/release/Games-LogicPuzzle'
 	# from https://github.com/CPAN-API/cpan-api/wiki/API-docs
-	my $release  = get_release_info( $pauseid, $dist_name_ver );
+	my $release = get_release_info( $pauseid, $dist_name_ver );
+	return if not $release;
 	my @files    = get_files($dist_name_ver);
 	my @ratings  = get_ratings( $release->{distribution} );
 	my @releases = grep { $_->{name} ne $dist_name_ver }
