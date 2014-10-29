@@ -8,7 +8,7 @@ use Test::HTML::Tidy;
 
 use t::lib::Test;
 
-plan tests => 8;
+plan tests => 9;
 
 use MetaCPAN::SCO;
 
@@ -37,7 +37,7 @@ subtest home => sub {
 # Date was showing 04 Jun 2008 in the clone
 # "Other Releases" was showing with an empty selector, even though there are no other releases
 subtest dist_szabgab_array_unique => sub {
-	plan tests => 11;
+	plan tests => 6;
 
 	test_psgi $app, sub {
 		my $cb   = shift;
@@ -50,16 +50,7 @@ subtest dist_szabgab_array_unique => sub {
 			local $TODO = 'Some slight inacccuracy in the date';
 			contains( $html, q{03 Jun 2008}, 'date' );
 		}
-		unlike( $html, qr{Other Releases}, 'no Other Releases' );
-		unlike(
-			$html,
-			qr{<select name="url">\s*</select>},
-			'no empty selector'
-		);
-		like( $html, qr{PASS \(\d+\)},    'PASS' );
-		like( $html, qr{FAIL \(\d+\)},    'FAIL' );
-		like( $html, qr{NA \(\d+\)},      'NA' );
-		like( $html, qr{UNKNOWN \(\d+\)}, 'UNKNOWN' );
+		like( $html, qr{NA \(\d+\)}, 'NA' );
 	};
 };
 
@@ -121,7 +112,7 @@ subtest dist_cpan_test_dummy_sco_lacks => sub {
 };
 
 subtest dist_cpan_test_dummy_sco_pirated => sub {
-	plan tests => 7;
+	plan tests => 8;
 
 	test_psgi $app, sub {
 		my $cb = shift;
@@ -134,6 +125,11 @@ subtest dist_cpan_test_dummy_sco_pirated => sub {
 		contains( $html, q{<small>27 Oct 2014</small>}, 'date' );
 
 		unlike( $html, qr{Other Releases}, 'no Other Releases' );
+		unlike(
+			$html,
+			qr{<select name="url">\s*</select>},
+			'no empty selector'
+		);
 
 		contains( $html,
 			q{<font color="red"><b>** UNAUTHORIZED RELEASE **</b></font>},
@@ -159,7 +155,7 @@ subtest dist_cpan_test_dummy_sco_special => sub {
 		README
 		SIGNATURE
 	);
-	plan tests => 32 + @specials;
+	plan tests => 33 + @specials;
 
 	test_psgi $app, sub {
 		my $cb = shift;
@@ -179,6 +175,7 @@ subtest dist_cpan_test_dummy_sco_special => sub {
 		);
 
 #TODO: contains($html, q{<a href="http://github.com/szabgab/CPAN-Test-Dummy-SCO.git">http://github.com/szabgab/CPAN-Test-Dummy-SCO.git</a>}, 'Github link');
+		like( $html, qr{UNKNOWN \(\d+\)}, 'UNKNOWN' );
 
 		foreach my $f (@specials) {
 			contains( $html,
@@ -333,4 +330,21 @@ subtest dist_cpan_test_dummy_sco_special_0_03 => sub {
 # TODO: http://search.cpan.org/dist/Array-Unique/
 # TODO: http://search.cpan.org/dist/Array-Unique/lib/Array/Unique.pm
 # TODO: search!
+
+subtest dist_cpan_test_dummy_sco_special_0_02 => sub {
+	plan tests => 6;
+
+	test_psgi $app, sub {
+		my $cb = shift;
+		my $html
+			= $cb->( GET '~szabgab/CPAN-Test-Dummy-SCO-Special-0.02/' )
+			->content;
+		html_check($html);
+		html_tidy_ok( $tidy, $html );
+		unlike $html, qr/ARRAY/;
+		contains( $html, q{<small>28 Oct 2014</small>}, 'date' );
+		like( $html, qr{PASS \(\d+\)}, 'PASS' );
+		like( $html, qr{FAIL \(\d+\)}, 'FAIL' );
+	};
+};
 
