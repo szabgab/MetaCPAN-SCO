@@ -401,7 +401,8 @@ sub get_dist_data {
 		title         => "$author->{name} / $dist->{name} - search.cpan.org",
 		reviews       => scalar @ratings,
 		rating        => $rating,
-
+		distribution  => get_api(
+			"http://api.metacpan.org/v0/distribution/$dist->{distribution}"),
 	};
 }
 

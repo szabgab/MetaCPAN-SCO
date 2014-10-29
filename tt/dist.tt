@@ -39,7 +39,7 @@
     <td class="label">Links</td>
     <td class="cell" colspan="3"><small>
      [&nbsp;<a href="http://metacpan.org/release/<% dist.metadata.name %>">MetaCPAN</a>&nbsp;]
-     [&nbsp;<a href="https://rt.cpan.org/Public/Dist/Display.html?Name=<% dist.metadata.name %>">View/Report&nbsp;Bugs</a>&nbsp;]
+     [&nbsp;<a href="https://rt.cpan.org/Public/Dist/Display.html?Name=<% dist.metadata.name %>">View/Report&nbsp;Bugs<% IF distribution.bugs.active %> (<% distribution.bugs.active %>)<% END %></a>&nbsp;]
      <% IF dist.resources.homepage %>
        [&nbsp;<a href="<% dist.resources.homepage %>">Website</a>&nbsp;]
      <% END %>
