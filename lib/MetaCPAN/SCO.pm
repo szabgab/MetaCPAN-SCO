@@ -383,7 +383,7 @@ sub get_dist_data {
 			and ( $_->{path} =~ /README/ or $_->{path} =~ m{\.html$} )
 		} @files;
 
-# TODO: the MANIFEST file gets special treatment here and instead of linking to src/ it is linked without
+# The MANIFEST file gets special treatment in the template. Instead of linking to src/ it is linked without
 # anything and then it is shown with links to the actual files.
 	my @special_files
 		= sort { lc $a->{path} cmp lc $b->{path} } values %special;
