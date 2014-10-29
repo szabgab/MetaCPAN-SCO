@@ -36,6 +36,7 @@ sub run {
 
 		my $request   = Plack::Request->new($env);
 		my $path_info = $request->path_info;
+
 		if ( $path_info eq '/' ) {
 			return template(
 				'index',
@@ -45,6 +46,12 @@ sub run {
 				}
 			);
 		}
+
+		if ( $path_info =~ m{//} ) {
+			$path_info =~ s{//+}{/}g;
+			return redirect($path_info);
+		}
+
 		if ( $path_info eq '/feedback' ) {
 			return template( 'feedback',
 				{ title => 'Site Feedback - search.cpan.org', } );
@@ -99,9 +106,10 @@ sub run {
 			my ( $pauseid, $dist_name_ver, $file ) = ( uc($1), $2, $3 );
 			if ( not $file ) {
 				my $data = get_dist_data( $pauseid, $dist_name_ver );
-				# TODO Strangely ~wonko/HTML-Template-2.95/ is showing UNAUTHORIZED
-				# files https://github.com/CPAN-API/cpan-api/issues/357
-				#die Dumper $data;
+
+		   # TODO Strangely ~wonko/HTML-Template-2.95/ is showing UNAUTHORIZED
+		   # files https://github.com/CPAN-API/cpan-api/issues/357
+		   #die Dumper $data;
 
 				return template( 'dist', $data );
 			}
