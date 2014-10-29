@@ -77,9 +77,7 @@ sub run {
 		}
 
 		if ( $path_info =~ m{^/~([a-z]+)$} ) {
-			my $res = Plack::Response->new();
-			$res->redirect( "$path_info/", 301 );
-			return $res->finalize;
+			return redirect("$path_info/");
 		}
 		if ( $path_info =~ m{^/~([a-z]+)/$} ) {
 			my $pauseid = uc $1;
@@ -111,9 +109,7 @@ sub run {
 		}
 
 		if ( $path_info =~ m{^/dist/([^/]+)$} ) {
-			my $res = Plack::Response->new();
-			$res->redirect( "$path_info/", 301 );
-			return $res->finalize;
+			return redirect("$path_info/");
 		}
 
 		if ( $path_info =~ m{^/dist/([^/]+)/$} ) {
@@ -126,14 +122,11 @@ sub run {
 
 		#if ($path_info =~ m{^/src/([^/]+)/([^/]+)/(.*)})
 		if ( $path_info =~ m{^/src/(.*)} ) {
-			my $res = Plack::Response->new();
 
-	#http://api.metacpan.org/source/DDUMONT/Config-Model-Itself-1.241/Build.PL
-
+# http://api.metacpan.org/source/DDUMONT/Config-Model-Itself-1.241/Build.PL
 # meta information about a file:
 # http://api.metacpan.org/v0/file/_search?q=path:Build.PL%20AND%20release:Config-Model-Itself-1.241&size=1
-			$res->redirect( "http://api.metacpan.org/source/$1", 301 );
-			return $res->finalize;
+			return redirect("http://api.metacpan.org/source/$1");
 		}
 
 		if ( $path_info eq '/search' ) {
@@ -180,11 +173,8 @@ sub show_pod {
 # if the file does not exist, it shows "Not found"
 # for now if the file exsts we redirect to the source - and let it run on 404 if the file does not exist.
 	if ( $file ne 'MANIFEST' and not $files{$file}{documentation} ) {
-		my $res = Plack::Response->new();
-		$res->redirect(
-			"http://api.metacpan.org/source/$pauseid/$dist_name_ver/$file",
-			301 );
-		return $res->finalize;
+		return redirect(
+			"http://api.metacpan.org/source/$pauseid/$dist_name_ver/$file");
 	}
 
 	my $dist = get_release_info( $pauseid, $dist_name_ver );
@@ -655,6 +645,13 @@ sub root {
 	my $dir = dirname( dirname( dirname( abs_path(__FILE__) ) ) );
 	$dir =~ s{blib/?$}{};
 	return $dir;
+}
+
+sub redirect {
+	my ($url) = @_;
+	my $res = Plack::Response->new();
+	$res->redirect( $url, 301 );
+	return $res->finalize;
 }
 
 1;
