@@ -177,23 +177,21 @@ sub show_pod {
 			"http://api.metacpan.org/source/$pauseid/$dist_name_ver/$file");
 	}
 
-	my $dist = get_release_info( $pauseid, $dist_name_ver );
+	my $release = get_release_info( $pauseid, $dist_name_ver );
 
-	#die Dumper $dist;
-	my $dist_name      = $dist->{distribution};
-	my $latest_release = get_latest_release($dist_name);
-	my $author         = get_author_info($pauseid);
-	my %data           = (
+	#die Dumper $release;
+	my $dist_name = $release->{distribution};
+	my %data      = (
 		pauseid       => $pauseid,
 		dist_name_ver => $dist_name_ver,
 		dist_name     => $dist_name,
-		author        => $author,
+		author        => get_author_info($pauseid),
 		username      => lc($pauseid),
-		download_url  => $dist->{download_url},
-		website       => $dist->{resources}{homepage},
-		archive       => $dist->{archive},
+		release       => $release,
 		documentation => ( $files{$file}{documentation} || 'MANIFEST' ),
+		filename      => $file,
 	);
+	my $latest_release = get_latest_release($dist_name);
 	if ( $latest_release->{name} ne $dist_name_ver ) {
 		$data{latest_name_ver} = $latest_release->{name};
 	}
@@ -219,7 +217,6 @@ sub show_pod {
 			push @entries, \%e;
 		}
 		$data{manifest} = \@entries;
-		$data{filename} = 'MANIFEST';
 		return template( 'manifest', \%data );
 	}
 	else {
@@ -230,8 +227,7 @@ sub show_pod {
 		$p->html_header_after_title('');
 		$p->html_footer('');
 		$p->parse_string_document($source);
-		$data{pod}      = $pod;
-		$data{filename} = $file;
+		$data{pod} = $pod;
 		return template( 'pod', \%data );
 	}
 	return;

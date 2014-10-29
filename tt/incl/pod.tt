@@ -12,10 +12,10 @@
         <img src="<% author.gravatar_url %>" width="80" height="80" style="float:right" alt="" />
     </a>
     <br style="clear:both"/>
-    <p style="text-align:right">Download:<br/> <a href="<% download_url %>"><% archive %></a></p>
+    <p style="text-align:right">Download:<br/> <a href="<% release.download_url %>"><% release.archive %></a></p>
     <p style="text-align:right"><a href="http://www.annocpan.org/~<% pauseid %>/<% dist_name_ver %>/<% filename %>">Annotate this POD</a></p>
-<% IF website %>
-    <p style="text-align:right"><a href="<% website %>">Website</a></p>
+<% IF release.resources.homepage %>
+    <p style="text-align:right"><a href="<% release.resources.homepage %>">Website</a></p>
 <% END %>
 
 
