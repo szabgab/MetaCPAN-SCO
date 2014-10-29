@@ -106,92 +106,8 @@ sub run {
 
 				return template( 'dist', $data );
 			}
-
-			my %files
-				= map { $_->{path} => $_ } get_files($dist_name_ver);
-
-			if ( $file eq 'MANIFEST'
-				or ( $files{$file} and $files{$file}{documentation} ) )
-			{
-				my $dist = get_release_info( $pauseid, $dist_name_ver );
-
-				#die Dumper $dist;
-				my $dist_name      = $dist->{distribution};
-				my $latest_release = get_latest_release($dist_name);
-				my $author         = get_author_info($pauseid);
-				my %data           = (
-					pauseid       => $pauseid,
-					dist_name_ver => $dist_name_ver,
-					dist_name     => $dist_name,
-					author        => $author,
-					username      => lc($pauseid),
-					download_url  => $dist->{download_url},
-					website       => $dist->{resources}{homepage},
-					archive       => $dist->{archive},
-					documentation =>
-						( $files{$file}{documentation} || 'MANIFEST' ),
-				);
-				if ( $latest_release->{name} ne $dist_name_ver ) {
-					$data{latest_name_ver} = $latest_release->{name};
-				}
-
-				if ( $file eq 'MANIFEST' ) {
-					my $manifest = get
-						"http://api.metacpan.org/source/$pauseid/$dist_name_ver/$file";
-					my @rows = split /\r?\n/, $manifest;
-					my @entries;
-					foreach my $row (@rows) {
-						next if $row =~ /^\s*$/;
-						$row =~ s/^\s+|\s+$//g;
-						my ( $file, $text ) = split /\s+/, $row, 2;
-						my %e = (
-							file => $file,
-							text => $text,
-						);
-
-						if ( $files{$file} and $files{$file}{documentation} )
-						{
-							$e{pod} = $file;
-						}
-						push @entries, \%e;
-					}
-					$data{manifest} = \@entries;
-					$data{filename} = 'MANIFEST';
-					return template( 'manifest', \%data );
-				}
-				else {
-
-					my $source = get
-						"http://api.metacpan.org/source/$pauseid/$dist_name_ver/$file";
-
-					my $p = Pod::Simple::HTML->new;
-					$p->output_string( \my $pod );
-					$p->index(1);
-					$p->html_header_before_title('');
-					$p->html_header_after_title('');
-					$p->html_footer('');
-					$p->parse_string_document($source);
-					$data{pod}      = $pod;
-					$data{filename} = $file;
-					return template( 'pod', \%data );
-				}
-			}
-
-# TODO it seems some of the cases this redirect to the source of the file
-# http://search.cpan.org/~szabgab/CPAN-Test-Dummy-SCO-Special-0.04/README
-# in other cases it redirects to he page of the distribution
-# http://search.cpan.org/~szabgab/CPAN-Test-Dummy-SCO-Special-0.04/lib/CPAN/Test/Dummy/SCO/Separate.pm
-# if the file does not exist, it shows "Not found"
-# for now if the file exsts we redirect to the source - and let it run on 404 if the file does not exist.
-			if ( $files{$file} ) {
-				my $res = Plack::Response->new();
-				$res->redirect(
-					"http://api.metacpan.org/source/$pauseid/$dist_name_ver/$file",
-					301
-				);
-				return $res->finalize;
-			}
-
+			my $ret = show_pod( $pauseid, $dist_name_ver, $file );
+			return $ret if $ret;
 		}
 
 		if ( $path_info =~ m{^/dist/([^/]+)$} ) {
@@ -248,6 +164,92 @@ sub run {
 			root => "$root/static/";
 		$app;
 	};
+}
+
+sub show_pod {
+	my ( $pauseid, $dist_name_ver, $file ) = @_;
+	my %files
+		= map { $_->{path} => $_ } get_files($dist_name_ver);
+
+	if ( $file eq 'MANIFEST'
+		or ( $files{$file} and $files{$file}{documentation} ) )
+	{
+		my $dist = get_release_info( $pauseid, $dist_name_ver );
+
+		#die Dumper $dist;
+		my $dist_name      = $dist->{distribution};
+		my $latest_release = get_latest_release($dist_name);
+		my $author         = get_author_info($pauseid);
+		my %data           = (
+			pauseid       => $pauseid,
+			dist_name_ver => $dist_name_ver,
+			dist_name     => $dist_name,
+			author        => $author,
+			username      => lc($pauseid),
+			download_url  => $dist->{download_url},
+			website       => $dist->{resources}{homepage},
+			archive       => $dist->{archive},
+			documentation => ( $files{$file}{documentation} || 'MANIFEST' ),
+		);
+		if ( $latest_release->{name} ne $dist_name_ver ) {
+			$data{latest_name_ver} = $latest_release->{name};
+		}
+
+		if ( $file eq 'MANIFEST' ) {
+			my $manifest = get
+				"http://api.metacpan.org/source/$pauseid/$dist_name_ver/$file";
+			my @rows = split /\r?\n/, $manifest;
+			my @entries;
+			foreach my $row (@rows) {
+				next if $row =~ /^\s*$/;
+				$row =~ s/^\s+|\s+$//g;
+				my ( $file, $text ) = split /\s+/, $row, 2;
+				my %e = (
+					file => $file,
+					text => $text,
+				);
+
+				if ( $files{$file} and $files{$file}{documentation} ) {
+					$e{pod} = $file;
+				}
+				push @entries, \%e;
+			}
+			$data{manifest} = \@entries;
+			$data{filename} = 'MANIFEST';
+			return template( 'manifest', \%data );
+		}
+		else {
+
+			my $source = get
+				"http://api.metacpan.org/source/$pauseid/$dist_name_ver/$file";
+
+			my $p = Pod::Simple::HTML->new;
+			$p->output_string( \my $pod );
+			$p->index(1);
+			$p->html_header_before_title('');
+			$p->html_header_after_title('');
+			$p->html_footer('');
+			$p->parse_string_document($source);
+			$data{pod}      = $pod;
+			$data{filename} = $file;
+			return template( 'pod', \%data );
+		}
+	}
+
+# TODO it seems some of the cases this redirect to the source of the file
+# http://search.cpan.org/~szabgab/CPAN-Test-Dummy-SCO-Special-0.04/README
+# in other cases it redirects to he page of the distribution
+# http://search.cpan.org/~szabgab/CPAN-Test-Dummy-SCO-Special-0.04/lib/CPAN/Test/Dummy/SCO/Separate.pm
+# if the file does not exist, it shows "Not found"
+# for now if the file exsts we redirect to the source - and let it run on 404 if the file does not exist.
+	if ( $files{$file} ) {
+		my $res = Plack::Response->new();
+		$res->redirect(
+			"http://api.metacpan.org/source/$pauseid/$dist_name_ver/$file",
+			301 );
+		return $res->finalize;
+	}
+	return;
 }
 
 # http://api.metacpan.org/v0/release/CGI-Simple
