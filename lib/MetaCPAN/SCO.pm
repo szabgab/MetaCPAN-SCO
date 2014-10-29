@@ -315,11 +315,11 @@ sub get_dist_data {
 	# curl 'http://api.metacpan.org/v0/release/AADLER/Games-LogicPuzzle-0.20'
 	# curl 'http://api.metacpan.org/v0/release/Games-LogicPuzzle'
 	# from https://github.com/CPAN-API/cpan-api/wiki/API-docs
-	my $dist     = get_release_info( $pauseid, $dist_name_ver );
+	my $release  = get_release_info( $pauseid, $dist_name_ver );
 	my @files    = get_files($dist_name_ver);
-	my @ratings  = get_ratings( $dist->{distribution} );
+	my @ratings  = get_ratings( $release->{distribution} );
 	my @releases = grep { $_->{name} ne $dist_name_ver }
-		get_releases( $dist->{metadata}{name} );
+		get_releases( $release->{metadata}{name} );
 
 	my %SPECIAL = map { $_ => 1 } qw(
 		Changes CHANGES Changelog ChangeLog
@@ -381,7 +381,7 @@ sub get_dist_data {
 # anything and then it is shown with links to the actual files.
 	my @special_files
 		= sort { lc $a->{path} cmp lc $b->{path} } values %special;
-	$dist->{this_name} = $dist->{name};
+	$release->{this_name} = $release->{name};
 	my $author = get_author_info($pauseid);
 
 	my $rating = '0.0';
@@ -394,18 +394,19 @@ sub get_dist_data {
 # e.g.  4.0 or 3.5
 	}
 	return {
-		dist          => $dist,
+		release       => $release,
 		author        => $author,
 		special_files => \@special_files,
 		modules       => \@modules,
 		documentation => \@documentation,
 		releases      => \@releases,
 		other_files   => \@other_files,
-		title         => "$author->{name} / $dist->{name} - search.cpan.org",
-		reviews       => scalar @ratings,
-		rating        => $rating,
-		distribution  => get_api(
-			"http://api.metacpan.org/v0/distribution/$dist->{distribution}"),
+		title   => "$author->{name} / $release->{name} - search.cpan.org",
+		reviews => scalar @ratings,
+		rating  => $rating,
+		distribution => get_api(
+			"http://api.metacpan.org/v0/distribution/$release->{distribution}"
+		),
 	};
 }
 
@@ -533,24 +534,25 @@ sub search {
 #		"http://api.metacpan.org/v0/module/_search?q=name:*$query*";
 #"http://api.metacpan.org/v0/module/_search?q=name:*$query*&size=500&fields=date,name,author,abstract,distribution,release";
 
-		my @modules
-			= sort { $a->{name} cmp $b->{name} }
-			get_api_fields(
-			"http://api.metacpan.org/v0/module/_search?q=name:*$query*&size=5000&fields=date,name,author,abstract,distribution,release,path"
-			);
-
-		#die Dumper \@modules;
-		return template('no_matches') if not @modules;
-		return template(
-			'search_dist',
-			{
-				dists        => \@modules,
-				page_size    => $page_size,
-				current_page => $page,
-				mode         => $mode,
-				query        => $query,
-			}
+	my @modules
+		= sort { $a->{name} cmp $b->{name} }
+		get_api_fields(
+		"http://api.metacpan.org/v0/module/_search?q=name:*$query*&size=5000&fields=date,name,author,abstract,distribution,release,path"
 		);
+
+	#die Dumper \@modules;
+	return template('no_matches') if not @modules;
+	return template(
+		'search_dist',
+		{
+			dists        => \@modules,
+			page_size    => $page_size,
+			current_page => $page,
+			mode         => $mode,
+			query        => $query,
+		}
+	);
+
 	#}
 
 	# 'all' is the default behaviour:

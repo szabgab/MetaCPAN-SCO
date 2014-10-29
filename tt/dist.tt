@@ -1,20 +1,20 @@
 <div class="path">
-   <div id="permalink" class="noprint"><a href="/dist/<% dist.metadata.name %>/">permalink</a></div>
-  <a href="/~<% author.pauseid FILTER lower %>/"><% author.name %></a> &gt; <% dist.this_name %>
+   <div id="permalink" class="noprint"><a href="/dist/<% release.metadata.name %>/">permalink</a></div>
+  <a href="/~<% author.pauseid FILTER lower %>/"><% author.name %></a> &gt; <% release.this_name %>
  </div>
 
  <div class="box">
-  <h1 class="t1"><% dist.this_name %></h1>
+  <h1 class="t1"><% release.this_name %></h1>
 <a href="http://hexten.net/cpan-faces/"><img src="<% author.gravatar_url %>" width="80" height="80" alt="<% author.name %>" style="float:right" /></a>
 
   <table>
    <tr>
     <td class="label">This Release</td>
-    <td class="cell"><% dist.name %></td>
-    <td><small>&nbsp;[<a href="<% dist.download_url %>">Download</a>]
-    [<a href="/src/<% author.pauseid FILTER upper %>/<% dist.name %>/">Browse</a>]&nbsp;</small></td>
-    <td><small><% date.format(dist.date, '%d %b %Y') %></small>
-    <% UNLESS dist.authorized %>
+    <td class="cell"><% release.name %></td>
+    <td><small>&nbsp;[<a href="<% release.download_url %>">Download</a>]
+    [<a href="/src/<% author.pauseid FILTER upper %>/<% release.name %>/">Browse</a>]&nbsp;</small></td>
+    <td><small><% date.format(release.date, '%d %b %Y') %></small>
+    <% UNLESS release.authorized %>
         <font color="red"><b>** UNAUTHORIZED RELEASE **</b></font>
     <% END %>
     </td>
@@ -38,34 +38,34 @@
    <tr>
     <td class="label">Links</td>
     <td class="cell" colspan="3"><small>
-     [&nbsp;<a href="http://metacpan.org/release/<% dist.metadata.name %>">MetaCPAN</a>&nbsp;]
-     [&nbsp;<a href="https://rt.cpan.org/Public/Dist/Display.html?Name=<% dist.metadata.name %>">View/Report&nbsp;Bugs<% IF distribution.bugs.active %> (<% distribution.bugs.active %>)<% END %></a>&nbsp;]
-     <% IF dist.resources.homepage %>
-       [&nbsp;<a href="<% dist.resources.homepage %>">Website</a>&nbsp;]
+     [&nbsp;<a href="http://metacpan.org/release/<% release.metadata.name %>">MetaCPAN</a>&nbsp;]
+     [&nbsp;<a href="https://rt.cpan.org/Public/Dist/Display.html?Name=<% release.metadata.name %>">View/Report&nbsp;Bugs<% IF distribution.bugs.active %> (<% distribution.bugs.active %>)<% END %></a>&nbsp;]
+     <% IF release.resources.homepage %>
+       [&nbsp;<a href="<% release.resources.homepage %>">Website</a>&nbsp;]
      <% END %>
-     [&nbsp;<a href="http://deps.cpantesters.org/?module=<% dist.metadata.name %>;perl=latest">Dependencies</a>&nbsp;]
-     [&nbsp;<a href="/tools/<% dist.name %>">Other&nbsp;Tools</a>&nbsp;]
+     [&nbsp;<a href="http://deps.cpantesters.org/?module=<% release.metadata.name %>;perl=latest">Dependencies</a>&nbsp;]
+     [&nbsp;<a href="/tools/<% release.name %>">Other&nbsp;Tools</a>&nbsp;]
     </small></td></tr>
 
-<% IF dist.resources.repository.url %>
+<% IF release.resources.repository.url %>
    <tr>
     <td class="label">Repository</td>
     <td class="cell" colspan="3">
-      <small> <% dist.resources.repository.url %> <% IF dist.resources.repository.web %>- <a href="<% dist.resources.repository.web %>">Website</a><% END %></small>
+      <small> <% release.resources.repository.url %> <% IF release.resources.repository.web %>- <a href="<% release.resources.repository.web %>">Website</a><% END %></small>
     </td></tr>
 <% END %>
 
 
-<% IF dist.tests.pass || dist.tests.pass || dist.tests.unknown || dist.tests.na %>
+<% IF release.tests.pass || release.tests.pass || release.tests.unknown || release.tests.na %>
     <tr>
         <td class="label">CPAN Testers</td>
         <td class="cell" colspan="3"><small>
-<% IF dist.tests.pass %>PASS (<% dist.tests.pass %>)&nbsp;&nbsp;<% END %>
-<% IF dist.tests.fail %>FAIL (<% dist.tests.fail %>)&nbsp;&nbsp;<% END %>
-<% IF dist.tests.unknown %>UNKNOWN (<% dist.tests.unknown %>)&nbsp;&nbsp;<% END %>
-<% IF dist.tests.na %>NA (<% dist.tests.na %>)&nbsp;&nbsp;<% END %>
-         [&nbsp;<a href="http://www.cpantesters.org/distro/<% dist.metadata.name.substr(0, 1) %>/<% dist.metadata.name %>.html#<% dist.name %>">View&nbsp;Reports</a>&nbsp;]
-         [&nbsp;<a href="http://matrix.cpantesters.org/?dist=<% dist.metadata.name %>+<% dist.metadata.version %>">Perl/Platform&nbsp;Version&nbsp;Matrix</a>&nbsp;]
+<% IF release.tests.pass %>PASS (<% release.tests.pass %>)&nbsp;&nbsp;<% END %>
+<% IF release.tests.fail %>FAIL (<% release.tests.fail %>)&nbsp;&nbsp;<% END %>
+<% IF release.tests.unknown %>UNKNOWN (<% release.tests.unknown %>)&nbsp;&nbsp;<% END %>
+<% IF release.tests.na %>NA (<% release.tests.na %>)&nbsp;&nbsp;<% END %>
+         [&nbsp;<a href="http://www.cpantesters.org/distro/<% release.metadata.name.substr(0, 1) %>/<% release.metadata.name %>.html#<% release.name %>">View&nbsp;Reports</a>&nbsp;]
+         [&nbsp;<a href="http://matrix.cpantesters.org/?dist=<% release.metadata.name %>+<% release.metadata.version %>">Perl/Platform&nbsp;Version&nbsp;Matrix</a>&nbsp;]
         </small></td></tr>
 <% END %>
 
@@ -75,23 +75,23 @@
     <td class="cell" colspan="3" nowrap><small>
 <img src="http://st.pimg.net/tucs/img/stars-<% rating %>.gif" alt="">
      <% IF reviews %>
-       ( <a href="http://cpanratings.perl.org/d/<% dist.metadata.name %>"><% reviews %> Reviews</a>)
+       ( <a href="http://cpanratings.perl.org/d/<% release.metadata.name %>"><% reviews %> Reviews</a>)
      <% ELSE %>
        ( <% reviews %> Reviews)
      <% END %>
-     [&nbsp;<a href="http://cpanratings.perl.org/rate/?distribution=<% dist.metadata.name %>">Rate&nbsp;this&nbsp;distribution</a>&nbsp;]
+     [&nbsp;<a href="http://cpanratings.perl.org/rate/?distribution=<% release.metadata.name %>">Rate&nbsp;this&nbsp;releaseribution</a>&nbsp;]
     </small></td></tr>
 
 
    <tr>
     <td class="label">License</td>
     <td class="cell" colspan="3">
-<% SWITCH dist.metadata.license.0 %>
+<% SWITCH release.metadata.license.0 %>
 <% CASE 'unknown' %>Unknown
 <% CASE 'perl_5' %><a href="http://dev.perl.org/licenses/">The Perl 5 License (Artistic 1 &amp; GPL 1)</a>
 <% CASE 'artistic_2' %><a href="http://www.perlfoundation.org/artistic_license_2_0">The Artistic License 2.0 (GPL Compatible)</a>
 <% CASE 'lgpl_2_1' %><a href="http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt">The GNU Lesser General Public License, Version 2.1, February 1999</a>
-<% CASE %> TODO <% dist.metadata.license.0 %>
+<% CASE %> TODO <% release.metadata.license.0 %>
 <% END %>
 </td>
    </tr>
@@ -107,7 +107,7 @@
                         <% IF file.path == 'MANIFEST' %>
                             <a href="<% file.path %>"><% file.path %></a><br>
                         <% ELSE %>
-                            <a href="/src/<% author.pauseid FILTER upper %>/<% dist.name %>/<% file.path %>"><% file.path %></a><br>
+                            <a href="/src/<% author.pauseid FILTER upper %>/<% release.name %>/<% file.path %>"><% file.path %></a><br>
                         <% END %>
                       <% END %>
                    </td>
@@ -171,7 +171,7 @@
       <% FOREACH col = table.cols %>
         <td class="column">
           <% FOREACH row IN col %>
-            <a href="/src/<% author.pauseid FILTER upper %>/<% dist.name %>/<% row.path %>"><% row.path %></a><br>
+            <a href="/src/<% author.pauseid FILTER upper %>/<% release.name %>/<% row.path %>"><% row.path %></a><br>
           <% END %>
         </td>
       <% END %>
