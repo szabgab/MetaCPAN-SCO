@@ -101,7 +101,10 @@ sub run {
 			);
 		}
 
-		# ~ealleniii/Config-Options-0.08/
+		if ( $path_info =~ m{^/dist/([^/]+)$} ) {
+			return redirect("$path_info/");
+		}
+
 		if ( $path_info =~ m{^/~([a-z]+)/([^/]+)/(.*)?$} ) {
 			my ( $pauseid, $dist_name_ver, $file ) = ( uc($1), $2, $3 );
 			if ( not $file ) {
@@ -117,19 +120,20 @@ sub run {
 			return $ret if $ret;
 		}
 
-		if ( $path_info =~ m{^/dist/([^/]+)$} ) {
-			return redirect("$path_info/");
-		}
-
-		if ( $path_info =~ m{^/dist/([^/]+)/$} ) {
-			my $dist_name      = $1;
+		if ( $path_info =~ m{^/dist/([^/]+)/(.*)?$} ) {
+			my ( $dist_name, $file ) = ( $1, $2 );
 			my $latest_release = get_latest_release($dist_name);
-			my $data           = get_dist_data( $latest_release->{author},
-				$latest_release->{name} );
-			return template( 'dist', $data );
+			my ( $pauseid, $dist_name_ver )
+				= ( $latest_release->{author}, $latest_release->{name} );
+
+			if ( not $file ) {
+				my $data = get_dist_data( $pauseid, $dist_name_ver );
+				return template( 'dist', $data );
+			}
+			my $ret = show_pod( $pauseid, $dist_name_ver, $file );
+			return $ret if $ret;
 		}
 
-		#if ($path_info =~ m{^/src/([^/]+)/([^/]+)/(.*)})
 		if ( $path_info =~ m{^/src/(.*)} ) {
 
 # http://api.metacpan.org/source/DDUMONT/Config-Model-Itself-1.241/Build.PL
