@@ -208,10 +208,11 @@ sub show_pod {
 		$data{latest_name_ver} = $latest_release->{name};
 	}
 
+	my $source
+		= get "http://api.metacpan.org/source/$pauseid/$dist_name_ver/$file";
+
 	if ( $file eq 'MANIFEST' ) {
-		my $manifest = get
-			"http://api.metacpan.org/source/$pauseid/$dist_name_ver/$file";
-		my @rows = split /\r?\n/, $manifest;
+		my @rows = split /\r?\n/, $source;
 		my @entries;
 		foreach my $row (@rows) {
 			next if $row =~ /^\s*$/;
@@ -232,10 +233,6 @@ sub show_pod {
 		return template( 'manifest', \%data );
 	}
 	else {
-
-		my $source = get
-			"http://api.metacpan.org/source/$pauseid/$dist_name_ver/$file";
-
 		my $p = Pod::Simple::HTML->new;
 		$p->output_string( \my $pod );
 		$p->index(1);
