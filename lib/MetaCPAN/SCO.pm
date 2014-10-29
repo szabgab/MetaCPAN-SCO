@@ -171,9 +171,9 @@ sub show_pod {
 	my %files
 		= map { $_->{path} => $_ } get_files($dist_name_ver);
 
-	if ( $file eq 'MANIFEST'
-		or ( $files{$file} and $files{$file}{documentation} ) )
-	{
+	return if not $files{$file};
+
+	if ( $file eq 'MANIFEST' or $files{$file}{documentation} ) {
 		my $dist = get_release_info( $pauseid, $dist_name_ver );
 
 		#die Dumper $dist;
