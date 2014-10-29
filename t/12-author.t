@@ -37,7 +37,8 @@ subtest author => sub {
 
 # Original in search.cpan.org was:
 #q{<a href="/CPAN/authors/id/S/SZ/SZABGAB/CPAN-Test-Dummy-SCO-Pirated-1.03.tar.gz">Download</a>},
-# The https here might be a bug see https://github.com/CPAN-API/cpan-api/issues/355
+# The https here is the new ways of serving downloads. see https://github.com/CPAN-API/cpan-api/issues/355
+# but old download links will have http://
 		contains(
 			$html,
 			q{<a href="https://cpan.metacpan.org/authors/id/S/SZ/SZABGAB/CPAN-Test-Dummy-SCO-Pirated-1.03.tar.gz">Download</a>},
