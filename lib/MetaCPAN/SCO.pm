@@ -526,8 +526,9 @@ sub search {
 		);
 	}
 
-	if ( $mode eq 'module' ) {
+	#if ( $mode eq 'module' ) {
 
+#TODO: For now searching for 'all' should return the same as searching for 'module'
 #die	get
 #		"http://api.metacpan.org/v0/module/_search?q=name:*$query*";
 #"http://api.metacpan.org/v0/module/_search?q=name:*$query*&size=500&fields=date,name,author,abstract,distribution,release";
@@ -535,7 +536,7 @@ sub search {
 		my @modules
 			= sort { $a->{name} cmp $b->{name} }
 			get_api_fields(
-			"http://api.metacpan.org/v0/module/_search?q=name:*$query*&size=500&fields=date,name,author,abstract,distribution,release,path"
+			"http://api.metacpan.org/v0/module/_search?q=name:*$query*&size=5000&fields=date,name,author,abstract,distribution,release,path"
 			);
 
 		#die Dumper \@modules;
@@ -550,7 +551,7 @@ sub search {
 				query        => $query,
 			}
 		);
-	}
+	#}
 
 	# 'all' is the default behaviour:
 
