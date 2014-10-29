@@ -113,7 +113,7 @@ sub run {
 			if ( $file eq 'MANIFEST'
 				or ( $files{$file} and $files{$file}{documentation} ) )
 			{
-				my $dist = get_dist_info( $pauseid, $dist_name_ver );
+				my $dist = get_release_info( $pauseid, $dist_name_ver );
 
 				#die Dumper $dist;
 				my $dist_name      = $dist->{distribution};
@@ -250,7 +250,9 @@ sub run {
 	};
 }
 
-sub get_dist_info {
+# http://api.metacpan.org/v0/release/CGI-Simple
+# http://api.metacpan.org/v0/release/SZABGAB/CGI-Simple-1.115
+sub get_release_info {
 	my ( $pauseid, $dist_name_ver ) = @_;
 	return get_api(
 		"http://api.metacpan.org/v0/release/$pauseid/$dist_name_ver");
@@ -311,7 +313,7 @@ sub get_dist_data {
 	# curl 'http://api.metacpan.org/v0/release/AADLER/Games-LogicPuzzle-0.20'
 	# curl 'http://api.metacpan.org/v0/release/Games-LogicPuzzle'
 	# from https://github.com/CPAN-API/cpan-api/wiki/API-docs
-	my $dist     = get_dist_info( $pauseid, $dist_name_ver );
+	my $dist     = get_release_info( $pauseid, $dist_name_ver );
 	my @files    = get_files($dist_name_ver);
 	my @ratings  = get_ratings( $dist->{distribution} );
 	my @releases = grep { $_->{name} ne $dist_name_ver }
