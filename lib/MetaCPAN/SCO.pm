@@ -145,6 +145,12 @@ sub run {
 			return redirect("http://api.metacpan.org/source/$1");
 		}
 
+		if ( $path_info eq '/redirect' ) {
+			my $url = $request->param('url');
+			return not_found() if not $url;
+			return redirect($url);
+		}
+
 		if ( $path_info eq '/search' ) {
 
 # I found out that the pager on sco uses the paramters q,m,s,n
