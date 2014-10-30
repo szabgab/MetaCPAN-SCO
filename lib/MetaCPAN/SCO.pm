@@ -126,6 +126,7 @@ sub run {
 		if ( $path_info =~ m{^/dist/([^/]+)/(.*)?$} ) {
 			my ( $dist_name, $file ) = ( $1, $2 );
 			my $latest_release = get_latest_release($dist_name);
+			return not_found() if not $latest_release;
 			my ( $pauseid, $dist_name_ver )
 				= ( $latest_release->{author}, $latest_release->{name} );
 
