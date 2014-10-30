@@ -181,11 +181,6 @@ sub run {
 	};
 }
 
-sub not_found {
-	my $reply = template('404');
-	return [ '404', [ 'Content-Type' => 'text/html' ], $reply->[2], ];
-}
-
 sub show_pod {
 	my ( $pauseid, $dist_name_ver, $file ) = @_;
 	my %files
@@ -688,6 +683,11 @@ sub redirect {
 	my $res = Plack::Response->new();
 	$res->redirect( $url, 301 );
 	return $res->finalize;
+}
+
+sub not_found {
+	my $reply = template('404');
+	return [ '404', [ 'Content-Type' => 'text/html' ], $reply->[2], ];
 }
 
 1;
