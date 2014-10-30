@@ -328,6 +328,9 @@ sub get_dist_data {
 	# from https://github.com/CPAN-API/cpan-api/wiki/API-docs
 	my $release = get_release_info( $pauseid, $dist_name_ver );
 	return if not $release;
+	my $latest_release = get_latest_release( $release->{distribution} );
+	return if not $latest_release;
+
 	my @files    = get_files($dist_name_ver);
 	my @ratings  = get_ratings( $release->{distribution} );
 	my @releases = grep { $_->{name} ne $dist_name_ver }
@@ -419,6 +422,7 @@ sub get_dist_data {
 		distribution => get_api(
 			"http://api.metacpan.org/v0/distribution/$release->{distribution}"
 		),
+		latest_release => $latest_release,
 	};
 }
 

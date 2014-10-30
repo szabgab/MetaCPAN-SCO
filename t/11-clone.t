@@ -8,7 +8,7 @@ use Test::HTML::Tidy;
 
 use t::lib::Test;
 
-plan tests => 9;
+plan tests => 8;
 
 use MetaCPAN::SCO;
 
@@ -54,25 +54,26 @@ subtest dist_szabgab_array_unique => sub {
 	};
 };
 
-# TODO: Other releases should not list the current release (and the swithching has not been tested yet either)
+# TODO: Other releases should not list the current release
 # 'Other Files' were listed on SCO
-subtest dist_tlinden_apid => sub {
-	plan tests => 7;
-
-	test_psgi $app, sub {
-		my $cb   = shift;
-		my $html = $cb->( GET '/~tlinden/apid-0.04/' )->content;
-		html_check($html);
-		html_tidy_ok( $tidy, $html );
-		unlike $html, qr/ARRAY/;
-		contains( $html, q{apid-0.04},   'dist-ver name' );
-		contains( $html, q{24 Oct 2014}, 'date' );
-		contains( $html,
-			q{<title>T. Linden / apid-0.04 - search.cpan.org</title>},
-			'title' );
-		unlike( $html, qr{<h2 class="t2">Modules</h2>}, 'No Modules' );
-		}
-};
+# this was removed from CPAN
+#subtest dist_tlinden_apid => sub {
+#	plan tests => 7;
+#
+#	test_psgi $app, sub {
+#		my $cb   = shift;
+#		my $html = $cb->( GET '/~tlinden/apid-0.04/' )->content;
+#		html_check($html);
+#		html_tidy_ok( $tidy, $html );
+#		unlike $html, qr/ARRAY/;
+#		contains( $html, q{apid-0.04},   'dist-ver name' );
+#		contains( $html, q{24 Oct 2014}, 'date' );
+#		contains( $html,
+#			q{<title>T. Linden / apid-0.04 - search.cpan.org</title>},
+#			'title' );
+#		unlike( $html, qr{<h2 class="t2">Modules</h2>}, 'No Modules' );
+#		}
+#};
 
 subtest dist_cpan_test_dummy_sco_lacks => sub {
 	my @specials = qw(
@@ -155,7 +156,7 @@ subtest dist_cpan_test_dummy_sco_special => sub {
 		README
 		SIGNATURE
 	);
-	plan tests => 33 + @specials;
+	plan tests => 35 + @specials;
 
 	test_psgi $app, sub {
 		my $cb = shift;
@@ -176,6 +177,13 @@ subtest dist_cpan_test_dummy_sco_special => sub {
 
 #TODO: contains($html, q{<a href="http://github.com/szabgab/CPAN-Test-Dummy-SCO.git">http://github.com/szabgab/CPAN-Test-Dummy-SCO.git</a>}, 'Github link');
 		like( $html, qr{UNKNOWN \(\d+\)}, 'UNKNOWN' );
+
+		unlike( $html, qr{Latest Release}, 'no Latest Release' );
+		unlike(
+			$html,
+			qr{<a href="/~szabgab/CPAN-Test-Dummy-SCO-Special-0.04/">CPAN-Test-Dummy-SCO-Special-0.04</a>},
+			'no latest release link'
+		);
 
 		foreach my $f (@specials) {
 			contains( $html,
@@ -280,7 +288,7 @@ subtest dist_cpan_test_dummy_sco_special => sub {
 };
 
 subtest dist_cpan_test_dummy_sco_special_0_03 => sub {
-	plan tests => 9;
+	plan tests => 11;
 
 	test_psgi $app, sub {
 		my $cb = shift;
@@ -314,6 +322,13 @@ subtest dist_cpan_test_dummy_sco_special_0_03 => sub {
 		);
 
 		unlike( $html, qr{Documentation} );
+
+		contains( $html, q{Latest Release}, 'Latest Release' );
+		contains(
+			$html,
+			q{<a href="/~szabgab/CPAN-Test-Dummy-SCO-Special-0.04/">CPAN-Test-Dummy-SCO-Special-0.04</a>},
+			'no latest release link'
+		);
 
 # TODO search.cpan.org only shows the older releases so the next test should not pass
 # but I think it should show both the older and newer releases

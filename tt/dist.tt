@@ -20,6 +20,16 @@
     </td>
    </tr>
 
+<% IF latest_release.name != release.name %>
+   <tr>
+    <td class="label">Latest Release</td>
+    <td class="cell"><a href="/~<% latest_release.author FILTER lower %>/<% latest_release.name %>/"><% latest_release.name %></a></td>
+    <td><small>&nbsp;[<a href="<% latest_release.download_url %>">Download</a>]
+     [<a href="/src/<% latest_release.author %>/<% latest_release.name %>/">Browse</a>]&nbsp;</small></td>
+    <td><small><% date.format(latest_release.date, '%d %b %Y') %></small></td>
+   </tr>
+<% END %>
+
 <% IF releases.size %>
    <tr>
     <td class="label">Other Releases</td>
