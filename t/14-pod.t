@@ -22,9 +22,8 @@ subtest not_found => sub {
 	test_psgi $app, sub {
 		my $cb = shift;
 		my $html
-			= $cb->( GET
-				'http://localhost:5000/~szabgab/CPAN-Test-Dummy-SCO-Special-0.02/abc'
-			)->content;
+			= $cb->( GET '/~szabgab/CPAN-Test-Dummy-SCO-Special-0.02/abc' )
+			->content;
 		html_check($html);
 		html_tidy_ok( $tidy, $html );
 		contains( $html, q{Not found}, 'not found' );
@@ -37,9 +36,8 @@ subtest readme => sub {
 	test_psgi $app, sub {
 		my $cb = shift;
 		my $res
-			= $cb->( GET
-				'http://localhost:5000/~szabgab/CPAN-Test-Dummy-SCO-Special-0.02/README'
-			);
+			= $cb->(
+			GET '/~szabgab/CPAN-Test-Dummy-SCO-Special-0.02/README' );
 		is $res->code, 301, 'code 301';
 		ok $res->is_redirect, 'redirect';
 
@@ -52,7 +50,7 @@ subtest readme => sub {
 		my $cb = shift;
 		my $res
 			= $cb->( GET
-				'http://localhost:5000/~szabgab/CPAN-Test-Dummy-SCO-Special-0.04/sample/index.html'
+				'/~szabgab/CPAN-Test-Dummy-SCO-Special-0.04/sample/index.html'
 			);
 		is $res->code, 301, 'code 301';
 		ok $res->is_redirect, 'redirect';
@@ -66,7 +64,7 @@ subtest readme => sub {
 		my $cb = shift;
 		my $res
 			= $cb->( GET
-				'http://localhost:5000/~szabgab/CPAN-Test-Dummy-SCO-Special-0.04/lib/CPAN/Test/Dummy/SCO/Separate.pm'
+				'/~szabgab/CPAN-Test-Dummy-SCO-Special-0.04/lib/CPAN/Test/Dummy/SCO/Separate.pm'
 			);
 		is $res->code, 301, 'code 301';
 		ok $res->is_redirect, 'redirect';

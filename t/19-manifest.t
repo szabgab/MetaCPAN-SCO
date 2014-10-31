@@ -22,9 +22,9 @@ subtest manifest => sub {
 	test_psgi $app, sub {
 		my $cb = shift;
 		my $html
-			= $cb->( GET
-				'http://localhost:5000/~szabgab/CPAN-Test-Dummy-SCO-Special-0.02/MANIFEST'
-			)->content;
+			= $cb->(
+			GET '/~szabgab/CPAN-Test-Dummy-SCO-Special-0.02/MANIFEST' )
+			->content;
 		html_check($html);
 		html_tidy_ok( $tidy, $html );
 		unlike $html, qr/ARRAY/;
@@ -91,9 +91,9 @@ subtest manifest_latest => sub {
 	test_psgi $app, sub {
 		my $cb = shift;
 		my $html
-			= $cb->( GET
-				'http://localhost:5000/~szabgab/CPAN-Test-Dummy-SCO-Special-0.04/MANIFEST'
-			)->content;
+			= $cb->(
+			GET '/~szabgab/CPAN-Test-Dummy-SCO-Special-0.04/MANIFEST' )
+			->content;
 		html_check($html);
 		html_tidy_ok( $tidy, $html );
 		unlike $html, qr/ARRAY/;
