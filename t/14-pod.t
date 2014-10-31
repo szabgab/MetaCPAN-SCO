@@ -8,27 +8,13 @@ use Test::HTML::Tidy;
 
 use t::lib::Test;
 
-plan tests => 4;
+plan tests => 3;
 
 use MetaCPAN::SCO;
 
 my $tidy = html_tidy();
 
 my $app = MetaCPAN::SCO->run;
-
-subtest not_found => sub {
-	plan tests => 3;
-
-	test_psgi $app, sub {
-		my $cb = shift;
-		my $html
-			= $cb->( GET '/~szabgab/CPAN-Test-Dummy-SCO-Special-0.02/abc' )
-			->content;
-		html_check($html);
-		html_tidy_ok( $tidy, $html );
-		contains( $html, q{Not found}, 'not found' );
-	};
-};
 
 subtest readme => sub {
 	plan tests => 9;

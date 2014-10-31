@@ -15,6 +15,7 @@ my $tidy = html_tidy();
 my $app = MetaCPAN::SCO->run;
 
 my @urls = qw(
+	/~szabgab/CPAN-Test-Dummy-SCO-Special-0.02/abc
 	/~szabgab/CPAN-Test-Dummy-SCO-Special-0.0/
 	/~szabgab/CPAN-Test-Dummy-SCO-Special-0/
 	/~tlinden/apid-0.04/
