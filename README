@@ -17,3 +17,30 @@ Development environment:
 * Run plackup -r
 * Borwse to http://localhost:5000/
 
+
+Enhancements
+--------------
+
+Various places where the clone differs from the real sco that can be considered enhancements.
+
+The permalink in the top-right corner of
+http://sco.perlmaven.com/~szabgab/CPAN-Test-Dummy-SCO-Special-0.04/lib/CPAN/Test/Dummy/SCO/Special.pm
+links directly to the permanent url and not to /perldoc?
+
+
+https://github.com/szabgab/MetaCPAN-SCO/issues/19
+https://github.com/szabgab/MetaCPAN-SCO/issues/18
+
+Canonical URLs
+All the version-specific files set the non-version specific file as the canonical URL.
+For example
+       http://search.cpan.org/~szabgab/CPAN-Test-Dummy-SCO-Special-0.04/lib/CPAN/Test/Dummy/SCO/Separate.pod
+  sets http://search.cpan.org/dist/CPAN-Test-Dummy-SCO-Special/lib/CPAN/Test/Dummy/SCO/Separate.pod
+
+       http://localhost:5000/~szabgab/CPAN-Test-Dummy-SCO-Special-0.04/
+  sets http://localhost:5000/dist/CPAN-Test-Dummy-SCO-Special/
+
+See https://support.google.com/webmasters/answer/139066?hl=en
+https://github.com/szabgab/MetaCPAN-SCO/issues/17
+
+

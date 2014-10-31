@@ -113,6 +113,8 @@ sub run {
 			if ( not $file ) {
 				my $data = get_dist_data( $pauseid, $dist_name_ver );
 				if ($data) {
+					$data->{canonical} = $request->base
+						. "dist/$data->{release}{metadata}{name}/";
 					return template( 'dist', $data );
 				}
 				else {

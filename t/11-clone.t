@@ -8,7 +8,7 @@ use Test::HTML::Tidy;
 
 use t::lib::Test;
 
-plan tests => 8;
+plan tests => 9;
 
 use MetaCPAN::SCO;
 
@@ -156,7 +156,7 @@ subtest dist_cpan_test_dummy_sco_special => sub {
 		README
 		SIGNATURE
 	);
-	plan tests => 35 + @specials;
+	plan tests => 36 + @specials;
 
 	test_psgi $app, sub {
 		my $cb = shift;
@@ -173,6 +173,12 @@ subtest dist_cpan_test_dummy_sco_special => sub {
 			$html,
 			q{<a href="http://github.com/szabgab/CPAN-Test-Dummy-SCO">Website</a>},
 			'Git website'
+		);
+
+		contains(
+			$html,
+			q{<link rel="canonical" href="http://localhost/dist/CPAN-Test-Dummy-SCO-Special/" />},
+			'canonical'
 		);
 
 #TODO: contains($html, q{<a href="http://github.com/szabgab/CPAN-Test-Dummy-SCO.git">http://github.com/szabgab/CPAN-Test-Dummy-SCO.git</a>}, 'Github link');
@@ -341,10 +347,6 @@ subtest dist_cpan_test_dummy_sco_special_0_03 => sub {
 };
 
 # TODO: http://localhost:5000/~babkin/triceps-2.0.0/  (missing Other releases, CPAN Testers, missing bug count, date is incorrect, missing other files)
-# TODO: http://search.cpan.org/~szabgab/Array-Unique-0.08/lib/Array/Unique.pm
-# TODO: http://search.cpan.org/dist/Array-Unique/
-# TODO: http://search.cpan.org/dist/Array-Unique/lib/Array/Unique.pm
-# TODO: search!
 
 subtest dist_cpan_test_dummy_sco_special_0_02 => sub {
 	plan tests => 6;
@@ -352,7 +354,7 @@ subtest dist_cpan_test_dummy_sco_special_0_02 => sub {
 	test_psgi $app, sub {
 		my $cb = shift;
 		my $html
-			= $cb->( GET '~szabgab/CPAN-Test-Dummy-SCO-Special-0.02/' )
+			= $cb->( GET '/~szabgab/CPAN-Test-Dummy-SCO-Special-0.02/' )
 			->content;
 		html_check($html);
 		html_tidy_ok( $tidy, $html );
@@ -363,3 +365,17 @@ subtest dist_cpan_test_dummy_sco_special_0_02 => sub {
 	};
 };
 
+subtest dosy_cpan_test_dummy_sco_special => sub {
+	plan tests => 5;
+
+	test_psgi $app, sub {
+		my $cb   = shift;
+		my $html = $cb->( GET '/dist/CPAN-Test-Dummy-SCO-Special/' )->content;
+		html_check($html);
+		html_tidy_ok( $tidy, $html );
+		unlike $html, qr/ARRAY/;
+		contains( $html, q{<small>28 Oct 2014</small>}, 'date' );
+		unlike( $html, qr{canonical} );
+	};
+
+};
