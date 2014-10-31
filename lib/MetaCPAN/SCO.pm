@@ -83,6 +83,7 @@ sub run {
 			);
 		}
 
+		# author
 		if ( $path_info =~ m{^/~([a-z]+)$} ) {
 			return redirect("$path_info/");
 		}
@@ -667,7 +668,7 @@ sub get_distros_by_pauseid {
 		= get_api(
 		"http://api.metacpan.org/v0/release/_search?q=author:$pause_id&size=500"
 		);
-	my @data = sort { $a->{name} cmp $b->{name} }
+	my @data = sort { lc $a->{name} cmp lc $b->{name} }
 		map {
 		{
 			name         => $_->{_source}{name},
