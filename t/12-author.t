@@ -26,7 +26,7 @@ subtest author => sub {
 		html_tidy_ok( $tidy, $html ) or diag $html;
 		contains(
 			$html,
-			q{<a href="CPAN-Test-Dummy-SCO-Pirated-1.03/">CPAN-Test-Dummy-SCO-Pirated-1.03</a>},
+			q{<a href="CPAN-Test-Dummy-SCO-Pirated-1.04/">CPAN-Test-Dummy-SCO-Pirated-1.04</a>},
 			'link to release'
 		);
 		contains(
@@ -41,14 +41,14 @@ subtest author => sub {
 # but old download links will have http://
 		contains(
 			$html,
-			q{<a href="https://cpan.metacpan.org/authors/id/S/SZ/SZABGAB/CPAN-Test-Dummy-SCO-Pirated-1.03.tar.gz">Download</a>},
+			q{<a href="https://cpan.metacpan.org/authors/id/S/SZ/SZABGAB/CPAN-Test-Dummy-SCO-Pirated-1.04.tar.gz">Download</a>},
 			'download link'
 		);
-		contains( $html, q{27 Oct 2014},
-			'release date of CPAN-Test-Dummy-SCO-Pirated-1.03' );
+		contains( $html, q{31 Oct 2014},
+			'release date of CPAN-Test-Dummy-SCO-Pirated-1.04' );
 		contains(
 			$html,
-			q{<a href="/src/SZABGAB/CPAN-Test-Dummy-SCO-Pirated-1.03/">Browse</a>},
+			q{<a href="/src/SZABGAB/CPAN-Test-Dummy-SCO-Pirated-1.04/">Browse</a>},
 			'link to source'
 		);
 		contains(
