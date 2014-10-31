@@ -161,7 +161,7 @@ subtest dist_cpan_test_dummy_sco_special => sub {
 	test_psgi $app, sub {
 		my $cb = shift;
 		my $html
-			= $cb->( GET '~szabgab/CPAN-Test-Dummy-SCO-Special-0.04/' )
+			= $cb->( GET '/~szabgab/CPAN-Test-Dummy-SCO-Special-0.04/' )
 			->content;
 		html_check($html);
 		html_tidy_ok( $tidy, $html );
@@ -365,7 +365,7 @@ subtest dist_cpan_test_dummy_sco_special_0_02 => sub {
 	};
 };
 
-subtest dosy_cpan_test_dummy_sco_special => sub {
+subtest dist_cpan_test_dummy_sco_special => sub {
 	plan tests => 5;
 
 	test_psgi $app, sub {

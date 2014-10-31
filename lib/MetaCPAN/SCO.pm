@@ -121,7 +121,7 @@ sub run {
 					return not_found();
 				}
 			}
-			my $ret = show_pod( $pauseid, $dist_name_ver, $file );
+			my $ret = show_pod( $request, $pauseid, $dist_name_ver, $file );
 			return $ret if $ret;
 		}
 
@@ -136,7 +136,7 @@ sub run {
 				my $data = get_dist_data( $pauseid, $dist_name_ver );
 				return template( 'dist', $data );
 			}
-			my $ret = show_pod( $pauseid, $dist_name_ver, $file );
+			my $ret = show_pod( $request, $pauseid, $dist_name_ver, $file );
 			return $ret if $ret;
 		}
 
@@ -226,7 +226,7 @@ sub run {
 }
 
 sub show_pod {
-	my ( $pauseid, $dist_name_ver, $file ) = @_;
+	my ( $request, $pauseid, $dist_name_ver, $file ) = @_;
 	my %files
 		= map { $_->{path} => $_ } get_files($dist_name_ver);
 
@@ -267,6 +267,10 @@ sub show_pod {
 
 	my $source
 		= get "http://api.metacpan.org/source/$pauseid/$dist_name_ver/$file";
+
+	if ( $request->path_info !~ m{/dist/} ) {
+		$data{canonical} = $request->base . "dist/$dist_name/$file";
+	}
 
 	if ( $file eq 'MANIFEST' ) {
 		my @rows = split /\r?\n/, $source;

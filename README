@@ -37,8 +37,8 @@ For example
        http://search.cpan.org/~szabgab/CPAN-Test-Dummy-SCO-Special-0.04/lib/CPAN/Test/Dummy/SCO/Separate.pod
   sets http://search.cpan.org/dist/CPAN-Test-Dummy-SCO-Special/lib/CPAN/Test/Dummy/SCO/Separate.pod
 
-       http://localhost:5000/~szabgab/CPAN-Test-Dummy-SCO-Special-0.04/
-  sets http://localhost:5000/dist/CPAN-Test-Dummy-SCO-Special/
+       http://search.cpan.org/~szabgab/CPAN-Test-Dummy-SCO-Special-0.04/
+  sets http://search.cpan.org/dist/CPAN-Test-Dummy-SCO-Special/
 
 See https://support.google.com/webmasters/answer/139066?hl=en
 https://github.com/szabgab/MetaCPAN-SCO/issues/17

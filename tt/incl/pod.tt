@@ -1,6 +1,6 @@
 <a name="_top"></a>
   <div class="path">
-<div id="permalink" class="noprint"><a href="/dist/<% dist_name %>/<% filename %>">permalink</a></div>
+  <div id="permalink" class="noprint"><a href="/dist/<% dist_name %>/<% filename %>">permalink</a></div>
   <a href="/~<% username %>/"><% author.name %></a> &gt;
   <a href="/~<% username %>/<% dist_name_ver %>/"><% dist_name_ver %></a> &gt;
   <% documentation %>
