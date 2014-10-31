@@ -1,0 +1,88 @@
+ <div class="path">
+  <a href="/~<% author.pauseid FILTER lower %>/"><% author.name %></a> &gt;
+  <a href="/~<% author.pauseid FILTER lower %>/<% current_release.name %>"><% current_release.name %></a> &gt;
+  tools
+ </div>
+
+<div class="box">
+<h2 class="t2">Diff Releases</h2>
+  <form action="/diff" class="tool">
+      <table border="0"><tr>
+      <td>From:&nbsp;</td>
+      <td>
+        <select name="from">
+          <% FOR release IN releases %>
+            <option <% IF release.name == prev_release.name %>selected<% END %> value="<% releases.name %>"><% release.name %>&nbsp;&nbsp;--&nbsp;&nbsp;<% date.format(release.date, '%d %b %Y') %></option>
+          <% END %>
+        </select>
+      </td>
+      </tr>
+      <tr>
+        <td>To:</td>
+        <td>
+          <select name="to">
+             <% FOR release IN releases %>
+                <option <% IF release.name == current_release.name %>selected<% END %> value="<% releases.name %>"><% release.name %>&nbsp;&nbsp;--&nbsp;&nbsp;<% date.format(release.date, '%d %b %Y') %></option>
+             <% END %>
+          </select>
+        </td>
+      </tr>
+ <tr>
+  <td>Ignore whitespace (-w):</td>
+  <td><input type="checkbox" name="w" value="1"></td>
+ </tr>
+<tr><td>
+      <input type="submit" value="Diff">
+      </td></tr>
+      </table>
+    </form>
+</div>
+
+
+<div class="box">
+<h2 class="t2">Grep Release</h2>
+ <form class="tool" action="/grep">
+<input type="hidden" name="cpanid" value="<% author.pauseid FILTER upper %>">
+ <table border="0">
+
+ <tr>
+   <td>Release:&nbsp;</td> 
+   <td>
+     <select name="release">
+           <% FOR release IN releases %>
+              <option <% IF release.name == current_release.name %>selected<% END %> value="<% releases.name %>"><% release.name %>&nbsp;&nbsp;--&nbsp;&nbsp;<% date.format(release.date, '%d %b %Y') %></option>
+           <% END %>
+     </select>
+   </td>
+ </tr>
+
+ <tr>
+  <td>String:</td>
+  <td><input type="text" value="" size="30" name="string"></td>
+ </tr>
+
+ <tr>
+  <td>Ignore Case (-i):</td>
+  <td><input checked type="checkbox" name="i" value="1"></td>
+ </tr>
+
+ <tr>
+  <td>Fixed String (-F):</td>
+  <td><input type="checkbox" name="F" value="1"></td>
+ </tr>
+
+ <tr>
+  <td>Line Numbers (-n):</td>
+  <td><input checked type="checkbox" name="n" value="1"></td>
+ </tr>
+ <tr>
+  <td>Context (-C):</td>
+  <td><input checked type="text" name="C" value="0"></td>
+ </tr>
+
+ <tr><td><input type="submit" value="Grep"></td></tr>
+</table>
+</form>
+</div>
+
+

@@ -146,6 +146,48 @@ sub run {
 			return redirect("http://api.metacpan.org/source/$1");
 		}
 
+		# This can be either
+		# http://search.cpan.org/tools/CPAN-Test-Dummy-SCO-Special
+		# http://search.cpan.org/tools/CPAN-Test-Dummy-SCO-Special-0.02
+		if ( $path_info =~ m{^/tools/([^/]+)$} ) {
+			my $dist = $1;    # either dist_name or dist_name_ver
+
+			# either selected release or latest release:
+			my $current_release = get_release_by_name_or_distribution($dist);
+			return not_found() if not $current_release;
+
+			#die Dumper $current_release;
+			my $author = get_author_info( $current_release->{author} ),
+				my @releases
+				= reverse sort { $a->{name} cmp $b->{name} }
+				get_releases( $current_release->{distribution} );
+
+			# get release based on dist_name_ver
+			# in Diff show the prev release and then the selected release
+			# in Grep show the selected release
+			# get latest release from dist_name
+			# same but the "selected" release is the last_release
+			my $prev_release = $current_release;
+			for my $i ( 0 .. @releases - 1 ) {
+				if (    $releases[$i]{name} eq $current_release->{name}
+					and $i + 1 < @releases )
+				{
+					$prev_release = $releases[ $i + 1 ];
+					last;
+				}
+			}
+			return template(
+				'tools',
+				{
+					current_release => $current_release,
+					prev_release    => $prev_release,
+					releases        => \@releases,
+					author          => $author
+				},
+			);
+
+		}
+
 		if ( $path_info eq '/redirect' ) {
 			my $url = $request->param('url');
 			return not_found() if not $url;
@@ -274,7 +316,7 @@ sub get_latest_release {
 sub get_releases {
 	my ($dist_name) = @_;
 	return reverse sort { $a->{date} cmp $b->{date} }
-		grep            { $_->{status} eq 'cpan' }
+		grep { $_->{status} eq 'cpan' or $_->{status} eq 'latest' }
 		get_api_fields(
 		"http://api.metacpan.org/v0/release/_search?q=distribution:$dist_name&size=30&fields=author,name,date,status,abstract"
 		);
@@ -292,6 +334,19 @@ sub get_ratings {
 	return get_api_fields(
 		"http://api.metacpan.org/v0/rating/_search?q=distribution:$distribution&size=1000&fields=rating"
 	);
+}
+
+sub get_release_by_name_or_distribution {
+	my ($dist) = @_;
+	my $data
+		= get_api(
+		"http://api.metacpan.org/v0/release/_search?q=name:$dist%20OR%20distribution:$dist&size=200"
+		);
+	return if not $data->{hits}{total};
+	my @releases
+		= reverse sort { $a->{_source}{date} cmp $b->{_source}{date} }
+		@{ $data->{hits}{hits} };
+	return $releases[0]{_source};
 }
 
 sub get_api_fields {
@@ -330,6 +385,7 @@ sub get_dist_data {
 	my @files    = get_files($dist_name_ver);
 	my @ratings  = get_ratings( $release->{distribution} );
 	my @releases = grep { $_->{name} ne $dist_name_ver }
+		grep { $_->{status} eq 'cpan' }
 		get_releases( $release->{metadata}{name} );
 
 	my %SPECIAL = map { $_ => 1 } qw(

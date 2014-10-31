@@ -18,6 +18,7 @@ my @urls = qw(
 	/~szabgab/CPAN-Test-Dummy-SCO-Special-0.0/
 	/~szabgab/CPAN-Test-Dummy-SCO-Special-0/
 	/~tlinden/apid-0.04/
+	/tools/CPAN-Test-Dummy-Perl5-Specia
 );
 
 plan tests => 2 * @urls;
