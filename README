@@ -19,19 +19,20 @@ Development environment:
 
 
 Enhancements
---------------
+=============
 
 Various places where the clone differs from the real sco that can be considered enhancements.
 
 The permalink in the top-right corner of
-http://sco.perlmaven.com/~szabgab/CPAN-Test-Dummy-SCO-Special-0.04/lib/CPAN/Test/Dummy/SCO/Special.pm
-links directly to the permanent url and not to /perldoc?
+--------------
+   http://sco.perlmaven.com/~szabgab/CPAN-Test-Dummy-SCO-Special-0.04/lib/CPAN/Test/Dummy/SCO/Special.pm
+  links directly to the permanent url and not to /perldoc?
 
 
-https://github.com/szabgab/MetaCPAN-SCO/issues/19
 https://github.com/szabgab/MetaCPAN-SCO/issues/18
 
 Canonical URLs
+---------------
 All the version-specific files set the non-version specific file as the canonical URL.
 For example
        http://search.cpan.org/~szabgab/CPAN-Test-Dummy-SCO-Special-0.04/lib/CPAN/Test/Dummy/SCO/Separate.pod
@@ -42,5 +43,26 @@ For example
 
 See https://support.google.com/webmasters/answer/139066?hl=en
 https://github.com/szabgab/MetaCPAN-SCO/issues/17
+
+
+Redirect URLs
+--------------
+
+Historically many people have been linking to version specific files on search.cpan.org.
+When that version of the module is removed from CPAN, these links become broken.
+
+Instead of showing a 'Not found' error sco. could redirect those URLs to the stable URL.
+
+For example
+
+    http://saerch.cpan.org/~szabgab/CPAN-Test-Dummy-SCO-Pirated-1.02/lib/CPAN/Test/Dummy/SCO/Pirated.pm
+ to http://sco.perlmaven.com/dist/CPAN-Test-Dummy-SCO-Pirated/lib/CPAN/Test/Dummy/SCO/Pirated.pm
+
+and
+
+    http://saerch.cpan.org/~szabgab/CPAN-Test-Dummy-SCO-Pirated-1.02/
+ to http://sco.perlmaven.com/dist/CPAN-Test-Dummy-SCO-Pirated/
+
+See https://github.com/szabgab/MetaCPAN-SCO/issues/19
 
 

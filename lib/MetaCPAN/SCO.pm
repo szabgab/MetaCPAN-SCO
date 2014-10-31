@@ -118,11 +118,34 @@ sub run {
 					return template( 'dist', $data );
 				}
 				else {
+
+		  # try to guess distribution name - remove the version specific part:
+					$dist_name_ver =~ s{-\d+\.\d+}{};
+					my $release = get_latest_release($dist_name_ver);
+					if ($release) {
+						return redirect( $request->base
+								. "dist/$release->{distribution}/" );
+					}
 					return not_found();
 				}
 			}
 			my $ret = show_pod( $request, $pauseid, $dist_name_ver, $file );
 			return $ret if $ret;
+
+		  # try to guess distribution name - remove the version specific part:
+			$dist_name_ver =~ s{-\d+\.\d+}{};
+			my $release = get_latest_release($dist_name_ver);
+			if ($release) {
+
+   # check if there is such a file in the distribution and redirect only then.
+				my %files
+					= map { $_->{path} => $_ } get_files( $release->{name} );
+				if ( $files{$file} ) {
+					return redirect( $request->base
+							. "dist/$release->{distribution}/$file" );
+				}
+			}
+			return not_found();
 		}
 
 		if ( $path_info =~ m{^/dist/([^/]+)/(.*)?$} ) {
