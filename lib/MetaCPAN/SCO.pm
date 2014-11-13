@@ -63,13 +63,20 @@ sub run {
 			my $recent = recent( $request->param('d') );
 			return template( 'recent', { recent => $recent } );
 		}
-		if ( $path_info =~ m{^/author/?$} ) {
-			my $query_string = $request->query_string;
-			my $authors      = [];
-			my $lead         = '';
-			if ($query_string) {
-				$lead = substr $query_string, 0, 1;
-				$authors = authors_starting_by( uc $lead );
+
+		if ( $path_info =~ m{^/author(?:/([A-Z]?))$} ) {
+			my $lead = $1 || '';
+			my $authors = [];
+
+			if ($lead) {
+				$authors = authors_starting_by($lead);
+			}
+			else {
+				my $query_string = $request->query_string;
+				if ($query_string) {
+					my $lead = substr uc $query_string, 0, 1;
+					return redirect("/author/$lead");
+				}
 			}
 
 			return template(

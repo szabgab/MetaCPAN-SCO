@@ -51,6 +51,18 @@ my @cases = (
 		'/~szabgab/CPAN-Test-Dummy-SCO-Special-0.0/' =>
 			'http://localhost/dist/CPAN-Test-Dummy-SCO-Special/'
 	],
+	[
+		'/author/?Q' => '/author/Q'
+	],
+	[
+		'/author/?q' => '/author/Q'
+	],
+	[
+		'/author/?QQRQ' => '/author/Q'
+	],
+	[
+		'/author/?1' => '/author/1'
+	],
 
 );
 

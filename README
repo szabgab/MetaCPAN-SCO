@@ -66,3 +66,22 @@ and
 See https://github.com/szabgab/MetaCPAN-SCO/issues/19
 
 
+Author lists
+-------------
+
+All these pages used to server the same content:
+
+   http://search.cpan.org/author/?a
+   http://search.cpan.org/author/?A
+   http://search.cpan.org/author/?Abc
+
+And then pages with different query_string had different content.
+
+Instead of that now all of them redirect to
+
+   http://search.cpan.org/author/A
+
+
+
+
+

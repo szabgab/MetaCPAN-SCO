@@ -9,7 +9,7 @@
             <% IF item == selected_letter %>
                 <% item %>
             <% ELSE %>
-                <a href="?<% item %>"> <% item %> </a>
+                <a href="/author/<% item %>"> <% item %> </a>
             <% END %>
           </td>
        <% END %>
